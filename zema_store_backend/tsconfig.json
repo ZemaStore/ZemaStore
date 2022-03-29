@@ -1,0 +1,36 @@
+{
+    "compilerOptions": {
+        "target": "ES2020",
+        "module": "commonjs",
+        "outDir": "dist",
+        "strict": true,
+        "noImplicitAny": false,
+        "strictNullChecks": false,
+        "checkJs": true,
+        "allowJs": true,
+        "moduleResolution": "node",
+        "types": [
+            "node"
+        ],
+        "typeRoots": ["./types", "./node_modules/@types"],
+        "lib": [
+            "ES6"
+        ],
+        "esModuleInterop": true,
+        "resolveJsonModule": true,
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true,
+        "allowUnreachableCode": true,
+        "useUnknownInCatchVariables": false,
+        "sourceMap": true,
+    },
+    "include": [
+      "src/**/*.ts",
+      "src/**/*.js"
+    ],
+    "exclude": [
+      "node_modules",
+      "dist",
+      "<node_internals>/**",
+    ]
+}

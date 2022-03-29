@@ -1,0 +1,24 @@
+{
+  "name": "zema_store_backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/app.js",
+  "scripts": {
+    "lint": "eslint . --ext .ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^17.0.23",
+    "@typescript-eslint/eslint-plugin": "^5.17.0",
+    "@typescript-eslint/parser": "^5.17.0",
+    "eslint": "^8.12.0",
+    "nodemon": "^2.0.15",
+    "typescript": "^4.6.3"
+  },
+  "dependencies": {
+    "express": "^4.17.3"
+  }
+}
