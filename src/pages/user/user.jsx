@@ -32,6 +32,7 @@ const columns = [
     { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
     { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
     { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
+    
   ];
 
   
@@ -41,7 +42,7 @@ const columns = [
       <div className='userlist'>
           sol
           {/* <DataGrid rows={rows} columns={columns} pageSize={5} rowsPerPageOptions={[5]} checkboxSelection */}
-      
+     
       </div>
     )
   }
