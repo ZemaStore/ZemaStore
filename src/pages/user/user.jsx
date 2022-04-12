@@ -46,4 +46,16 @@ const columns = [
       </div>
     )
   }
+
+
+//   ls 
+// cd
+// git init
+// git remote add origin <gitlink>
+// git remote -v
+// git add
+// git commit -m "first commit"
+// git push origin master
+
+// git help
   
