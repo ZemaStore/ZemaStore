@@ -1,11 +1,15 @@
 import express from "express";
-const app = express();
-const port = 3000;
 
-app.get("/", (req, res) => {
+import { authRouter } from './routes/index'
+
+const app = express();
+
+app.get("/api", (req, res) => {
   res.send("Hello World!");
 });
 
-app.listen(port, () => {
-  return console.log(`Express is listening at http://localhost:${port}`);
-});
+app.use(express.json({}));
+
+app.use("/api/v1/auth", authRouter);
+
+export default app;
