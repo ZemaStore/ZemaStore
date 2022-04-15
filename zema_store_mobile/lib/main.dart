@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:zema_store_mobile/models/user.dart';
+import 'package:zema_store_mobile/presentation/login.dart';
+import 'package:zema_store_mobile/presentation/screens/common/home_page.dart';
 
 void main() {
   runApp(MyApp());
@@ -20,6 +23,7 @@ class MyApp extends StatelessWidget {
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key? key, required this.title}) : super(key: key);
+
 
   final String title;
 
@@ -58,7 +62,12 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
+        onPressed:(){
+          User user = User(profile_id: 'profile_id', email: 'hy@gmail.com', password: 'password', role_id:'EMPLOYEER', status: 'status');
+          //Navigator.push(context, new MaterialPageRoute(builder:(context) => LoginPage()));
+          Navigator.push(context, new MaterialPageRoute(builder:(context) => HomePage(user: user)));
+        },
+        //_incrementCounter,
         tooltip: 'Increment',
         child: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
