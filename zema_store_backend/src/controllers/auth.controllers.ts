@@ -7,12 +7,7 @@ import { generateAccessToken } from "../services/auth-token";
 import { sendOtpCode, sendWelcomeEmail } from "../services/emails/send-email";
 import Generate_OTP from "../services/generate-code";
 import CustomerProfile from "../models/customer-profile";
-import {
-  forgotPasswordSchema,
-  resetPasswordSchema,
-  signInSchema,
-  signUpSchema,
-} from "../validation-schemas/auth.schemas";
+import { forgotPasswordSchema, resetPasswordSchema, signInSchema, signUpSchema } from "../validation-schemas/auth.schemas";
 
 const signUp = async (req: Request, res: Response, _next: NextFunction) => {
   try {
@@ -152,8 +147,7 @@ const forgotPassword = async (req: Request, res: Response) => {
 
     res.status(200).send({
       success: true,
-      message:
-        "Password reset code is sent to your email, please visit your email to get the code in the next 10 mins.",
+      message: "Password reset code is sent to your email, please visit your email to get the code in the next 10 mins.",
       data: null,
     });
   } catch (e) {

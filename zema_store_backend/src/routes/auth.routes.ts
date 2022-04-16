@@ -6,7 +6,7 @@ import {
   signIn,
   signUp,
 } from "../controllers/auth.controllers";
-import { verifyOTP } from "../middlewares/auth.middleware";
+import { verifyOTP } from "../middlewares/auth.middlewares";
 
 const router = Router();
 

@@ -9,7 +9,7 @@ export interface ISongDocument extends Document {
   albumId: mongoose.Schema.Types.ObjectId;
   artistId: mongoose.Schema.Types.ObjectId;
   title: String;
-  songURL: String;
+  song: String;
   genre: MusicGenre;
   listenersCount: Number;
   length: String;
@@ -19,6 +19,7 @@ export interface ISongDocument extends Document {
 const songSchema: Schema<ISongDocument> = new Schema({
   albumId: {
     type: mongoose.Schema.Types.ObjectId,
+    required: true,
   },
   artistId: {
     type: mongoose.Schema.Types.ObjectId,
@@ -28,7 +29,7 @@ const songSchema: Schema<ISongDocument> = new Schema({
     type: String,
     required: true,
   },
-  songURL: {
+  song: {
     type: String,
     required: true,
   },
