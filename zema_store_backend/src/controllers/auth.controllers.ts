@@ -7,10 +7,19 @@ import { generateAccessToken } from "../services/auth-token";
 import { sendOtpCode, sendWelcomeEmail } from "../services/emails/send-email";
 import Generate_OTP from "../services/generate-code";
 import CustomerProfile from "../models/customer-profile";
+import { forgotPasswordSchema, resetPasswordSchema, signInSchema, signUpSchema } from "../validation-schemas/auth.schemas";
 
 const signUp = async (req: Request, res: Response, _next: NextFunction) => {
   try {
     const { email, phone, password, fullName } = req.body;
+
+    const validate = signUpSchema.validate(req.body);
+    if (validate.error && validate.error !== null) {
+      return res
+        .status(400)
+        .send({ success: false, message: validate.error.message });
+    }
+
     const existingUser = await User.findOne({ email: req.body.email });
     if (existingUser != null) {
       throw new Error("Email already in use!");
@@ -59,18 +68,30 @@ const signUp = async (req: Request, res: Response, _next: NextFunction) => {
 const signIn = async (req: Request, res: Response, _next: NextFunction) => {
   try {
     const { email, password } = req.body;
+
+    const validate = signInSchema.validate(req.body);
+    if (validate.error && validate.error !== null) {
+      return res
+        .status(400)
+        .send({ success: false, message: validate.error.message });
+    }
+
     const user = await User.findOne({
       email,
     });
 
     if (!user) {
-      return res.status(400).send({ success: false, message: "Invalid credentials." });
+      return res
+        .status(400)
+        .send({ success: false, message: "Invalid credentials." });
     }
 
     const isMatch = await bcrypt.compare(password, user.password.toString());
 
     if (!isMatch) {
-      return res.status(400).send({ success: false, message: "Invalid credentials." });
+      return res
+        .status(400)
+        .send({ success: false, message: "Invalid credentials." });
     }
 
     const payload = {
@@ -93,6 +114,13 @@ const signIn = async (req: Request, res: Response, _next: NextFunction) => {
 const forgotPassword = async (req: Request, res: Response) => {
   try {
     const { email } = req.body;
+
+    const validate = forgotPasswordSchema.validate(req.body);
+    if (validate.error && validate.error !== null) {
+      return res
+        .status(400)
+        .send({ success: false, message: validate.error.message });
+    }
 
     const user = await User.findOne({
       email,
@@ -132,6 +160,14 @@ const forgotPassword = async (req: Request, res: Response) => {
 const resetPassword = async (req: Request, res: Response) => {
   try {
     const { password } = req.body;
+
+    const validate = resetPasswordSchema.validate(req.body);
+    if (validate.error && validate.error !== null) {
+      return res
+        .status(400)
+        .send({ success: false, message: validate.error.message });
+    }
+
     const user = await User.findOne({
       email: req["email"],
     });
@@ -143,7 +179,7 @@ const resetPassword = async (req: Request, res: Response) => {
     }
 
     user.password = password;
-    await user.save()
+    await user.save();
 
     res.status(200).send({
       success: true,
