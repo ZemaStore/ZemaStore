@@ -1,19 +1,14 @@
 import mongoose, { Schema, Document } from "mongoose";
 
 export interface IArtistProfileDocument extends Document {
-  firstName: String;
-  lastName: String;
+  fullName: String;
   photoUrl: String;
   followerNumber: Number;
   listenedHour: Number;
 }
 
 const profileSchema: Schema<IArtistProfileDocument> = new Schema({
-  firstName: {
-    type: String,
-    required: true,
-  },
-  lastName: {
+  fullName: {
     type: String,
     required: true,
   },

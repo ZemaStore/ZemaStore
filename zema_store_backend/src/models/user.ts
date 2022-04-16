@@ -3,7 +3,7 @@ import * as bcrypt from "bcryptjs";
 
 type otpType = {
   code: String;
-  expiryDate: Date;
+  createdAt: Date;
 };
 
 export interface IUserDocument extends Document {
@@ -41,7 +41,7 @@ const userSchema: Schema<IUserDocument> = new Schema(
     },
     profileId: {
       type: mongoose.Schema.Types.ObjectId,
-      refPath: "onMod",
+      refPath: "onModel",
       required: true,
     },
     onModel: {
