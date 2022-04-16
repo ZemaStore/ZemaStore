@@ -15,7 +15,7 @@ function App() {
         <Sidebar />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="users" element={<User />} />
+          <Route path="users" element={<UserLIst />} />
         </Routes>
 
       </div>

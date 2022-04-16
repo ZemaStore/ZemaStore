@@ -2,3 +2,20 @@
     
     flex: 4;
 }
+.edtbtn {
+    background-color: green;
+    border: none;
+    border-radius: 10px;
+    padding: 5px 10px ;
+    color: white;
+    cursor: pointer;
+    margin-right: 20px;
+}
+.dltbtn {
+    color: red;
+    cursor: pointer;
+}
+.tbemail.active, .tbemail:hover {
+    background-color: rgb(221, 221, 243);
+}
+
