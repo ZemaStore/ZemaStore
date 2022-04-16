@@ -24,6 +24,7 @@ const profileSchema: Schema<IArtistProfileDocument> = new Schema({
   listenedHour: {
     type: Number,
     required: true,
+    default: 0,
   },
 });
 

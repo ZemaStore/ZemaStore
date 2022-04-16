@@ -34,7 +34,7 @@ const forgotPasswordSchema = Joi.object({
 });
 
 const resetPasswordSchema = Joi.object({
-  code: Joi.string().min(6).max(6).required(),
+  code: Joi.string().length(6).required(),
   email: Joi.string().email().required(),
   password: Joi.string().pattern(
     new RegExp("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}")

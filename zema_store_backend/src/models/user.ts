@@ -68,7 +68,15 @@ userSchema.pre<IUserDocument>("save", async function (next: Function) {
   }
 });
 
-userSchema.methods.toJSON = function () {};
+userSchema.methods.toJSON = function () {
+  const user = this;
+
+  const userObject = user.toObject()
+
+  delete userObject.password;
+  
+  return userObject;
+};
 
 const User = mongoose.model<IUserDocument>("User", userSchema);
 
