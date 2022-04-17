@@ -1,13 +1,13 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import AddAlbumModal from "../Modals/AddAlbum";
+import AddSongModal from "../Modals/AddSong";
 
 type Props = {};
 
-const AlbumsTable = (props: Props) => {
+const SongsTable = (props: Props) => {
   const [show, setShow] = useState<number | null>(0);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const navigate = useNavigate();
+
   const onCloseModal = () => {
     console.log("closing modal");
     setIsModalOpen(false);
@@ -17,7 +17,7 @@ const AlbumsTable = (props: Props) => {
     setIsModalOpen(true);
   };
 
-  const [albums, setAlbums] = useState([
+  const [songs, setSongs] = useState([
     {
       id: "23323455232",
       title: "Single",
@@ -57,21 +57,16 @@ const AlbumsTable = (props: Props) => {
     },
   ]);
 
-  const handleAlbumDetails = (id: string) => (e: any) => {
-    console.log("hello world");
-    navigate(`/albums/${id}`);
-  };
-
   return (
     <>
       {isModalOpen && (
-        <AddAlbumModal onClose={onCloseModal} onSubmit={() => {}} />
+        <AddSongModal onClose={onCloseModal} onSubmit={() => {}} />
       )}
       <div className="w-full">
         <div className="px-4 md:px-10 py-4 md:py-7 bg-gray-100 rounded-tl-lg rounded-tr-lg">
           <div className="sm:flex items-center justify-between">
             <p className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold leading-normal text-gray-800">
-              Albums
+              Songs
             </p>
             <div>
               <button
@@ -79,7 +74,7 @@ const AlbumsTable = (props: Props) => {
                 className="inline-flex sm:ml-3 mt-4 sm:mt-0 items-start justify-start px-6 py-3 bg-indigo-700 hover:bg-indigo-600 focus:outline-none rounded"
               >
                 <p className="text-sm font-medium leading-none text-white">
-                  Add Album
+                  Add Songs
                 </p>
               </button>
             </div>
@@ -97,43 +92,39 @@ const AlbumsTable = (props: Props) => {
               </tr>
             </thead>
             <tbody className="w-full">
-              {albums.length &&
-                albums.map((album) => {
+              {songs.length &&
+                songs.map((song) => {
                   return (
-                    <tr
-                      key={album.id}
-                      onClick={handleAlbumDetails(album.id)}
-                      className="h-20 text-sm leading-none text-gray-800 bg-white hover:bg-gray-100 border-b border-t border-gray-100"
-                    >
+                    <tr className="h-20 text-sm leading-none text-gray-800 bg-white hover:bg-gray-100 border-b border-t border-gray-100">
                       <td className="pl-4 cursor-pointer">
                         <div className="flex items-center">
                           <div className="w-10 h-10">
-                            <img className="w-full h-full" src={album.cover} />
+                            <img className="w-full h-full" src={song.cover} />
                           </div>
                           <div className="pl-4">
-                            <p className="font-medium">{album.title}</p>
+                            <p className="font-medium">{song.title}</p>
                           </div>
                         </div>
                       </td>
                       <td className="pl-12">
                         <p className="text-sm font-medium leading-none text-gray-800">
-                          {album.artist}
+                          {song.artist}
                         </p>
                         <div className="w-24 h-3 bg-gray-100 rounded-full mt-2">
                           <div className="w-20 h-3 bg-green-progress rounded-full" />
                         </div>
                       </td>
                       <td className="pl-12">
-                        <p className="font-medium">{album.releaseDate}</p>
+                        <p className="font-medium">{song.releaseDate}</p>
                         <p className="text-xs leading-3 text-gray-600 mt-2">
                           before 5 years
                         </p>
                       </td>
                       <td className="pl-20">
-                        <p className="font-medium">{album.songs}</p>
+                        <p className="font-medium">{song.songs}</p>
                       </td>
                       <td className="pl-20">
-                        <p className="font-medium">{album.createdAt}</p>
+                        <p className="font-medium">{song.createdAt}</p>
                       </td>
                       <td className="px-7 2xl:px-0">
                         {show == 0 ? (
@@ -229,4 +220,4 @@ const AlbumsTable = (props: Props) => {
   );
 };
 
-export default AlbumsTable;
+export default SongsTable;

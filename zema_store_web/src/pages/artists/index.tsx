@@ -1,15 +1,12 @@
-import { Link } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 import BaseLayout from "../../common/Layout";
-import ArtistsTable from "../../components/ArtistsTable";
 
-function ArtistsPage() {
+function ArtistsIndexPage() {
   return (
     <BaseLayout>
-      <main>
-        <ArtistsTable />
-      </main>
+      <Outlet />
     </BaseLayout>
   );
 }
 
-export default ArtistsPage;
+export default ArtistsIndexPage;

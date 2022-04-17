@@ -1,5 +1,6 @@
+import clsx from "clsx";
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, Location, useLocation, useParams } from "react-router-dom";
 import { WithChildren } from "../../helpers/types";
 import Navbar from "../Navbar";
 
@@ -8,21 +9,41 @@ interface LayoutProps extends WithChildren {
 }
 
 export default function BaseLayout({ children }: LayoutProps) {
+  const location: Location = useLocation();
   const sidebarHandler = () => {};
   const dropdownHandler = () => {};
+
+  const paths = [
+    {
+      path: "/",
+    },
+  ];
 
   return (
     <div className="flex flex-col flex-no-wrap w-full">
       <Navbar />
       <div className="flex h-[calc(100vh-64px)] overflow-hidden">
         {/* Sidebar starts */}
+
         {/* Remove class [ hidden ] and replace [ sm:flex ] with [ flex ] */}
         <div className="min-h-full w-1/6 flex relative">
           <div className="w-full absolute sm:relative bg-indigo-100 shadow md:h-full flex-col justify-between hidden md:flex">
             <div>
-              <ul className="mt-10">
+              <ul className="my-5">
+                <div className="my-10">
+                  <h1 className="text-extrabold text-center text-4xl text-gray-900">
+                    Adminstrator
+                  </h1>
+                </div>
                 <Link to={`/dashboard`}>
-                  <li className="flex w-full justify-between text-gray-600 hover:text-gray-100 hover:bg-indigo-400 cursor-pointer items-center px-8 py-3">
+                  <li
+                    className={clsx(
+                      "flex w-full justify-between text-gray-600 hover:text-gray-100  hover:bg-indigo-400  cursor-pointer items-center px-8 py-3",
+
+                      location.pathname.includes("/dashboard") &&
+                        "text-white bg-indigo-300"
+                    )}
+                  >
                     <div className="flex items-center">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -45,7 +66,15 @@ export default function BaseLayout({ children }: LayoutProps) {
                   </li>
                 </Link>
                 <Link to={`/users`}>
-                  <li className="flex w-full justify-between text-gray-600 hover:text-gray-100 hover:bg-indigo-400 cursor-pointer items-center px-8 py-3">
+                  <li
+                    className={clsx(
+                      "flex w-full justify-between text-gray-600 hover:text-gray-100  hover:bg-indigo-400  cursor-pointer items-center px-8 py-3",
+
+                      location.pathname.includes("/users") &&
+                        "text-white bg-indigo-300"
+                    )}
+                  >
+                    {" "}
                     <div className="flex items-center">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -67,7 +96,15 @@ export default function BaseLayout({ children }: LayoutProps) {
                   </li>
                 </Link>
                 <Link to={`/artists`}>
-                  <li className="flex w-full justify-between text-gray-600 hover:text-gray-100 hover:bg-indigo-400 cursor-pointer items-center px-8 py-3">
+                  <li
+                    className={clsx(
+                      "flex w-full justify-between text-gray-600 hover:text-gray-100  hover:bg-indigo-400  cursor-pointer items-center px-8 py-3",
+
+                      location.pathname.includes("/artists") &&
+                        "text-white bg-indigo-300"
+                    )}
+                  >
+                    {" "}
                     <div className="flex items-center">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -90,7 +127,15 @@ export default function BaseLayout({ children }: LayoutProps) {
                   </li>
                 </Link>
                 <Link to={`/albums`}>
-                  <li className="flex w-full justify-between text-gray-600 hover:text-gray-100 hover:bg-indigo-400 cursor-pointer items-center px-8 py-3">
+                  <li
+                    className={clsx(
+                      "flex w-full justify-between text-gray-600 hover:text-gray-100  hover:bg-indigo-400  cursor-pointer items-center px-8 py-3",
+
+                      location.pathname.includes("/albums") &&
+                        "text-white bg-indigo-300"
+                    )}
+                  >
+                    {" "}
                     <div className="flex items-center">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -114,7 +159,15 @@ export default function BaseLayout({ children }: LayoutProps) {
                   </li>
                 </Link>
                 <Link to={`/events`}>
-                  <li className="flex w-full justify-between text-gray-600 hover:text-gray-100 hover:bg-indigo-400 cursor-pointer items-center  px-8 py-3">
+                  <li
+                    className={clsx(
+                      "flex w-full justify-between text-gray-600 hover:text-gray-100  hover:bg-indigo-400  cursor-pointer items-center px-8 py-3",
+
+                      location.pathname.includes("/events") &&
+                        "text-white bg-indigo-300"
+                    )}
+                  >
+                    {" "}
                     <div className="flex items-center">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -136,7 +189,15 @@ export default function BaseLayout({ children }: LayoutProps) {
                   </li>
                 </Link>
                 <Link to={`/subscriptions`}>
-                  <li className="flex w-full justify-between text-gray-600 hover:text-gray-100 hover:bg-indigo-400 cursor-pointer items-center px-8 py-3">
+                  <li
+                    className={clsx(
+                      "flex w-full justify-between text-gray-600 hover:text-gray-100  hover:bg-indigo-400  cursor-pointer items-center px-8 py-3",
+
+                      location.pathname.includes("/subscriptions") &&
+                        "text-white bg-indigo-300"
+                    )}
+                  >
+                    {" "}
                     <div className="flex items-center">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -161,27 +222,33 @@ export default function BaseLayout({ children }: LayoutProps) {
                 </Link>
               </ul>
             </div>
-            <div className="px-8 bg-indigo-400 text-white">
+            <div className="bg-indigo-400 text-white">
               <ul className="w-full flex items-center justify-between ">
-                <li className="cursor-pointer text-white pt-5 pb-3 flex items-center gap-x-10">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="icon icon-tabler icon-tabler-messages"
-                    width={20}
-                    height={20}
-                    viewBox="0 0 24 24"
-                    strokeWidth="1.5"
-                    stroke="currentColor"
-                    fill="none"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
+                <Link to={`/signin`}>
+                  <li
+                    className={clsx(
+                      "flex w-full gap-x-5 text-white-600 hover:text-gray-100  hover:bg-indigo-400  cursor-pointer items-center px-8 py-3"
+                    )}
                   >
-                    <path stroke="none" d="M0 0h24v24H0z" />
-                    <path d="M21 14l-3 -3h-7a1 1 0 0 1 -1 -1v-6a1 1 0 0 1 1 -1h9a1 1 0 0 1 1 1v10" />
-                    <path d="M14 15v2a1 1 0 0 1 -1 1h-7l-3 3v-10a1 1 0 0 1 1 -1h2" />
-                  </svg>
-                  <p>Logout</p>
-                </li>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="icon icon-tabler icon-tabler-messages"
+                      width={20}
+                      height={20}
+                      viewBox="0 0 24 24"
+                      strokeWidth="1.5"
+                      stroke="currentColor"
+                      fill="none"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path stroke="none" d="M0 0h24v24H0z" />
+                      <path d="M21 14l-3 -3h-7a1 1 0 0 1 -1 -1v-6a1 1 0 0 1 1 -1h9a1 1 0 0 1 1 1v10" />
+                      <path d="M14 15v2a1 1 0 0 1 -1 1h-7l-3 3v-10a1 1 0 0 1 1 -1h2" />
+                    </svg>
+                    <p>Logout</p>
+                  </li>
+                </Link>
               </ul>
             </div>
           </div>
@@ -190,7 +257,15 @@ export default function BaseLayout({ children }: LayoutProps) {
             onClick={dropdownHandler}
           >
             <ul className="p-y w-64 border-r bg-indigo-900 absolute rounded left-0 shadow mt-8 sm:mt-16 hidden">
-              <li className="flex w-full justify-between text-gray-600 hover:text-gray-100 hover:bg-indigo-400 cursor-pointer items-center py-3 px-2">
+              <li
+                className={clsx(
+                  "flex w-full justify-between text-gray-600 hover:text-gray-100  hover:bg-indigo-400  cursor-pointer items-center px-8 py-3",
+
+                  location.pathname.includes("/users") &&
+                    "text-white bg-indigo-300"
+                )}
+              >
+                {" "}
                 <div className="flex items-center">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
