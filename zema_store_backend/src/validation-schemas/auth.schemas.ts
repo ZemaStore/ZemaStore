@@ -10,7 +10,7 @@ const signInSchema = Joi.object({
 const signUpSchema = Joi.object({
   email: Joi.string().email().required(),
   phone: Joi.string()
-    .length(10)
+    .min(10)
     .pattern(/^[0-9]+$/)
     .required(),
   fullName: Joi.string().min(4),
