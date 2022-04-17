@@ -61,7 +61,7 @@ const signUp = async (req: Request, res: Response, _next: NextFunction) => {
       data: { user, token },
     });
   } catch (e) {
-    return res.status(500).json({ success: false, message: e.message });
+    return res.status(500).json({ success: false, message: (e as Error).message });
   }
 };
 

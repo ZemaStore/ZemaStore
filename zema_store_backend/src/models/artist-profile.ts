@@ -12,10 +12,6 @@ const profileSchema: Schema<IArtistProfileDocument> = new Schema({
     type: String,
     required: true,
   },
-  photoUrl: {
-    type: String,
-    required: true,
-  },
   followerNumber: {
     type: Number,
     required: true,

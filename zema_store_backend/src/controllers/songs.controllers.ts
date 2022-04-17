@@ -1,4 +1,9 @@
 import { Request, Response } from "express";
+
+import {
+  cloudinaryRemover,
+  cloudinaryUploader,
+} from "../middlewares/cloudinary.middlewares";
 import Song from "../models/song";
 import {
   addSongSchema,
@@ -47,25 +52,22 @@ const getSongs = async (req: Request, res: Response) => {
         .send({ success: false, message: validate.error.message });
     }
 
-    const songs = Song.find({})
+    const songs = await Song.find({})
       .limit(parseInt(limit.toString()))
       .skip(parseInt(skip.toString()))
       .sort(sort);
-  } catch (e) {}
+
+    res.status(200).send({ success: true, data: songs });
+  } catch (e) {
+    return res
+      .status(500)
+      .send({ success: false, message: (e as Error).message });
+  }
 };
 
 const addSong = async (req: Request, res: Response) => {
   try {
-    const {
-      albumId,
-      artistId,
-      title,
-      song,
-      genre,
-      listenersCount,
-      length,
-      releaseDate,
-    } = req.body;
+    const { albumId, artistId, title, genre, length, releaseDate } = req.body;
 
     const validate = addSongSchema.validate(req.body);
     if (validate.error && validate.error !== null) {
@@ -74,23 +76,34 @@ const addSong = async (req: Request, res: Response) => {
         .send({ success: false, message: validate.error.message });
     }
 
+    const { path = "", filename = "" } = req.file;
+
+    const upload = await cloudinaryUploader(
+      path,
+      "raw",
+      "AudioUploads",
+      filename,
+      res
+    );
+
+    console.log(upload.url.split("/"), "song url");
+
     const songData = new Song({
       albumId,
       artistId,
       title,
-      song,
+      song: upload.secure_url,
       genre,
-      listenersCount,
       length,
       releaseDate,
     });
 
-    await songData.save();
+    const song = await songData.save();
 
     res.status(201).send({
       success: true,
       message: "Song saved successfully",
-      data: songData,
+      data: song,
     });
   } catch (e) {
     return res
@@ -105,7 +118,6 @@ const updateSong = async (req: Request, res: Response) => {
       albumId,
       artistId,
       title,
-      song,
       genre,
       listenersCount,
       length,
@@ -132,11 +144,22 @@ const updateSong = async (req: Request, res: Response) => {
         .status(400)
         .send({ success: false, message: "Song is not found." });
     }
+    let upload;
+    if (req.file) {
+      const { path, filename } = req.file;
+      upload = await cloudinaryUploader(
+        path,
+        "raw",
+        "AudioUploader",
+        filename,
+        res
+      );
+    }
 
     songData.albumId = albumId || songData.albumId;
     songData.artistId = artistId || songData.artistId;
     songData.title = title || songData.title;
-    songData.song = song || songData.song;
+    songData.song = upload.secure_url || songData.song;
     songData.genre = genre || songData.genre;
     songData.listenersCount = listenersCount || songData.listenersCount;
     songData.length = length || songData.length;
@@ -165,7 +188,7 @@ const deleteSong = async (req: Request, res: Response) => {
         .send({ success: false, message: validate.error.message });
     }
 
-    const song = await Song.deleteOne({
+    const song = await Song.findOne({
       _id: req.params.id,
     });
 
@@ -175,12 +198,23 @@ const deleteSong = async (req: Request, res: Response) => {
         .send({ success: false, message: "Song not found." });
     }
 
+    await song.delete();
+
+    const url = song.song.split("/");
+    const public_id = [url[url.length - 2], url[url.length - 1]].join("/");
+    console.log(public_id.replace(/%20/g, " "));
+    await cloudinaryRemover(public_id.replace(/%20/g, " ").toString());
+
     res.status(200).send({
       success: true,
       message: "Song deleted successfully.",
       data: song,
     });
-  } catch (e) {}
+  } catch (e) {
+    return res
+      .status(500)
+      .send({ success: false, message: (e as Error).message });
+  }
 };
 
 export { getSong, getSongs, addSong, updateSong, deleteSong };

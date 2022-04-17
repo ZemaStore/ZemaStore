@@ -20,10 +20,12 @@ const songSchema: Schema<ISongDocument> = new Schema({
   albumId: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
+    ref: "Album",
   },
   artistId: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
+    ref: "User",
   },
   title: {
     type: String,

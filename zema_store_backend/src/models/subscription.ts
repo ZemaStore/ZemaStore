@@ -4,6 +4,7 @@ export interface ISubscriptionDocument extends Document {
   subscriptionType: String;
   subscriptionId: String;
   summary: String;
+  price: Number;
 }
 
 const subscriptionSchema: Schema<ISubscriptionDocument> = new Schema({
@@ -19,6 +20,10 @@ const subscriptionSchema: Schema<ISubscriptionDocument> = new Schema({
     type: String,
     required: true,
   },
+  price: {
+    type: Number,
+    required: true
+  }
 });
 
 const Subscription = mongoose.model<ISubscriptionDocument>(

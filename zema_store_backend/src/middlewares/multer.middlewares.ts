@@ -1,29 +1,46 @@
+import path from "path";
 import { Request } from "express";
 import multer from "multer";
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "./uploads/");
+    cb(null, path.join(__dirname, "..", "..", "/uploads/"));
   },
   filename: function (_req: Request, file, cb) {
     cb(null, new Date().toISOString().replace(/:/g, "-") + file.originalname);
   },
 });
 
-const fileFilter = (req, file, cb) => {
-  if (!file.originalname.match(/\.(mp3|m4a|wav)$/)) {
+const audioFilter = (req, file, cb) => {
+  if (!file.originalname.match(/\.(mp3|mpeg|wav)$/)) {
     return cb(new Error("Please upload an  audio file!"));
   }
 
   cb(undefined, true);
 };
 
-const uploader = multer({
+const imageFilter = (req, file, cb) => {
+  if (!file.originalname.match(/\.(png|jpg|jpeg)$/)) {
+    return cb(new Error("Please upload an  audio file!"));
+  }
+
+  cb(undefined, true);
+};
+
+const audioUploader = multer({
   storage,
   limits: {
-    fileSize: 1000000,
+    fileSize: 10000000,
   },
-  fileFilter,
+  fileFilter: audioFilter,
 });
 
-export default uploader;
+const imageUploader = multer({
+  storage,
+  limits: {
+    fileSize: 10000000,
+  },
+  fileFilter: imageFilter,
+});
+
+export { audioUploader, imageUploader };

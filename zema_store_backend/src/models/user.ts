@@ -10,10 +10,12 @@ export interface IUserDocument extends Document {
   email: String;
   phone: String;
   password: String;
+  photoUrl: String;
   roleId: mongoose.Schema.Types.ObjectId;
   otp: otpType;
   profileId: mongoose.Schema.Types.ObjectId;
   isActive: Boolean;
+  subscriptionId: mongoose.Schema.Types.ObjectId;
   onModel: String;
   createdAt: Date;
   updatedAt: Date;
@@ -32,6 +34,9 @@ const userSchema: Schema<IUserDocument> = new Schema(
       unique: true,
     },
     password: {
+      type: String,
+    },
+    photoUrl: {
       type: String,
     },
     roleId: {
@@ -56,6 +61,10 @@ const userSchema: Schema<IUserDocument> = new Schema(
       type: Boolean,
       default: false,
     },
+    subscriptionId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Subscription",
+    },
   },
   {
     timestamps: true,
@@ -71,10 +80,10 @@ userSchema.pre<IUserDocument>("save", async function (next: Function) {
 userSchema.methods.toJSON = function () {
   const user = this;
 
-  const userObject = user.toObject()
+  const userObject = user.toObject();
 
   delete userObject.password;
-  
+
   return userObject;
 };
 
