@@ -1,8 +1,12 @@
 import express from "express";
+const cors = require("cors");
 
 import { artistRouter, authRouter, songRouter } from "./routes/index.routes";
 
 const app = express();
+
+
+app.use(cors())
 
 app.get("/api", (req, res) => {
   res.send("Welcome to zema store!");

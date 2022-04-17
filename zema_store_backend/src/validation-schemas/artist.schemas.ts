@@ -24,7 +24,6 @@ const addArtistSchema = Joi.object({
     )
     .required(),
   fullName: Joi.string().min(4),
-  photoUrl: Joi.required(),
 });
 
 const updateArtistSchema = Joi.object({
@@ -46,9 +45,9 @@ const deleteArtistSchema = Joi.object({
 });
 
 export {
-    getArtistSchema,
-    getArtistsSchema,
-    addArtistSchema,
-    updateArtistSchema,
-    deleteArtistSchema
-}
+  getArtistSchema,
+  getArtistsSchema,
+  addArtistSchema,
+  updateArtistSchema,
+  deleteArtistSchema,
+};

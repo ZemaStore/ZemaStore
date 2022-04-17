@@ -10,6 +10,7 @@ import {
   addArtistSchema,
   deleteArtistSchema,
   getArtistSchema,
+  getArtistsSchema,
   updateArtistSchema,
 } from "../validation-schemas/artist.schemas";
 
@@ -46,7 +47,7 @@ const getArtist = async (req: Request, res: Response) => {
 
 const getArtists = async (req: Request, res: Response) => {
   try {
-    const validate = getArtistSchema.validate(req.query);
+    const validate = getArtistsSchema.validate(req.query);
     if (validate.error && validate.error !== null) {
       return res
         .status(400)
@@ -62,7 +63,13 @@ const getArtists = async (req: Request, res: Response) => {
       sort[parts[0]] = val;
     }
 
-    const users = await User.find({})
+    const role = await Role.findOne({
+      name: "ARTIST",
+    });
+
+    const users = await User.find({
+      roleId: role._id,
+    })
       .limit(parseInt(limit.toString()))
       .skip(parseInt(skip.toString()))
       .sort(sort)
@@ -86,6 +93,16 @@ const addArtist = async (req: Request, res: Response) => {
     }
 
     const { email, phone, password, fullName } = req.body;
+
+    const existingUser = await User.findOne({
+      email,
+    });
+
+    if (!isNil(existingUser)) {
+      return res
+        .status(400)
+        .send({ success: false, message: "Email is already in use." });
+    }
 
     const role = await Role.findOne({ name: "ARTIST" });
 
@@ -121,9 +138,11 @@ const addArtist = async (req: Request, res: Response) => {
 
     await user.save();
 
-    sendWelcomeEmail(email, fullName);
+    const savedUser = await User.findById(user._id).populate("profileId");
 
-    return res.status(201).send({ success: true, data: user });
+    // sendWelcomeEmail(email, fullName);
+
+    return res.status(201).send({ success: true, data: savedUser });
   } catch (e) {
     return res
       .status(500)
@@ -183,7 +202,9 @@ const updateArtist = async (req: Request, res: Response) => {
     await user.save();
     await artistProfile.save();
 
-    res.status(200).send({ success: true, data: user });
+    const udpatedUser = await User.findById(user._id).populate("profileId");
+
+    res.status(200).send({ success: true, data: udpatedUser });
   } catch (e) {
     return res
       .status(500)

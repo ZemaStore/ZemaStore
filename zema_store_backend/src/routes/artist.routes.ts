@@ -22,4 +22,4 @@ router
   .patch(imageUploader.single("photo"), updateArtist)
   .delete(deleteArtist);
 
-export default () => Router().use("/artists", isAdmin, router);
+export default (() => Router().use("/artists", isAdmin, router))();
