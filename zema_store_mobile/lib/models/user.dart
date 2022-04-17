@@ -9,8 +9,6 @@ class User {
     required this.status
   });
   final String profile_id;
-/*  final String first_name;
-  final String last_name;*/
   final String email;
   final String password;
   final String role_id;
