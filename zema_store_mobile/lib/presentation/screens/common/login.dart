@@ -1,8 +1,11 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:zema_store_mobile/bloc/authentication/login/login.dart';
+import 'package:zema_store_mobile/bloc/authentication/register/register.dart';
 import 'package:zema_store_mobile/presentation/button_widget.dart';
-import 'package:zema_store_mobile/presentation/forgot_password.dart';
+import 'package:zema_store_mobile/presentation/screens/common/forgot_password.dart';
 
 class LoginPage extends StatefulWidget{
   _LoginPage createState() => _LoginPage();
@@ -232,6 +235,7 @@ class _LoginPage extends State<LoginPage>{
                         onTap: () {
                           // ignore: avoid_print
                           print('Conditions of Use');
+                          //BlocProvider.of<LoginBloc>(context).add(LoginInWithEmailButtonPressed(email: _emailKey.toString(), password: _passwordKey.toString()));
                         },
                         child: Text(
                           "Conditions of Use",
@@ -326,23 +330,29 @@ class _LoginPage extends State<LoginPage>{
                         if (_confirmPasswordKey.currentState!
                             .validate()) {
                           if (checkedValue == false) {
-                            buildSnackError(
-                                'Accept our Privacy Policy and Term Of Use',
+                            buildSnackError('Accept our Privacy Policy and Term Of Use',
                                 context,
                                 size);
                           } else {
                             print('register');
+                            BlocProvider.of<RegisterBloc>(context).add(RegisterUser(
+              profile_id: '',
+              email: _emailKey.toString(),
+              password: _passwordKey.toString(),
+              role_id: '',
+              status: ''));
+                          }
                           }
                         }
                       }
                     }
                   }
                 }
-              } else {
+              else {
                 //validation for login
                 if (_emailKey.currentState!.validate()) {
                   if (_passwordKey.currentState!.validate()) {
-                    print('login');
+                    BlocProvider.of<LoginBloc>(context).add(LoginInWithEmailButtonPressed(email: _emailKey.toString(), password: _passwordKey.toString()));
                   }
                 }
               }
