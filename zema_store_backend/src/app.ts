@@ -8,9 +8,9 @@ app.get("/api", (req, res) => {
   res.send("Welcome to zema store!");
 });
 
-app.use(express.json({}));
+app.use(express.json({limit: "10mb"}));
 
-app.use("/uploads", express.static("uploads"));
+app.use(express.static(__dirname));
 
 app.use("/api", authRouter);
 app.use("/api", songRouter);

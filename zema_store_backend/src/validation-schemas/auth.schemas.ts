@@ -3,13 +3,7 @@ import Joi from "joi";
 const signInSchema = Joi.object({
   email: Joi.string().email().required(),
   password: Joi.string()
-    .email()
     .min(8)
-    .pattern(
-      new RegExp(
-        "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}"
-      )
-    )
     .required(),
 });
 
@@ -36,14 +30,18 @@ const forgotPasswordSchema = Joi.object({
 const resetPasswordSchema = Joi.object({
   code: Joi.string().length(6).required(),
   email: Joi.string().email().required(),
-  password: Joi.string().pattern(
-    new RegExp("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}")
-  ).required(),
+  password: Joi.string()
+    .pattern(
+      new RegExp(
+        "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}"
+      )
+    )
+    .required(),
 });
 
 export {
-    signInSchema,
-    signUpSchema,
-    forgotPasswordSchema,
-    resetPasswordSchema
-}
+  signInSchema,
+  signUpSchema,
+  forgotPasswordSchema,
+  resetPasswordSchema,
+};
