@@ -13,21 +13,22 @@ cloudinary.v2.config({
 
 const cloudinaryUploader = async (
   path: string,
+  resource_type: string,
+  folder: string,
   filename: string,
   res: Response
 ) => {
   const upload = await cloudinary.v2.uploader.upload(
     path,
     {
-      resource_type: "raw",
-      public_id: `AudioUploads/${filename}`,
+      resource_type,
+      public_id: `${folder}/${filename}`,
     },
 
-    (err, audio) => {
+    (err, file) => {
       if (err) return res.send({ success: false, message: err });
 
       fs.unlinkSync(path);
-      console.log(audio, "audio");
     }
   );
 

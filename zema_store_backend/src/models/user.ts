@@ -10,6 +10,7 @@ export interface IUserDocument extends Document {
   email: String;
   phone: String;
   password: String;
+  photoUrl: String;
   roleId: mongoose.Schema.Types.ObjectId;
   otp: otpType;
   profileId: mongoose.Schema.Types.ObjectId;
@@ -33,6 +34,9 @@ const userSchema: Schema<IUserDocument> = new Schema(
       unique: true,
     },
     password: {
+      type: String,
+    },
+    photoUrl: {
       type: String,
     },
     roleId: {

@@ -78,7 +78,13 @@ const addSong = async (req: Request, res: Response) => {
 
     const { path = "", filename = "" } = req.file;
 
-    const upload = await cloudinaryUploader(path, filename, res);
+    const upload = await cloudinaryUploader(
+      path,
+      "raw",
+      "AudioUploads",
+      filename,
+      res
+    );
 
     console.log(upload.url.split("/"), "song url");
 
@@ -141,9 +147,15 @@ const updateSong = async (req: Request, res: Response) => {
     let upload;
     if (req.file) {
       const { path, filename } = req.file;
-      upload = await cloudinaryUploader(path, filename, res);
+      upload = await cloudinaryUploader(
+        path,
+        "raw",
+        "AudioUploader",
+        filename,
+        res
+      );
     }
-    
+
     songData.albumId = albumId || songData.albumId;
     songData.artistId = artistId || songData.artistId;
     songData.title = title || songData.title;
@@ -186,11 +198,8 @@ const deleteSong = async (req: Request, res: Response) => {
         .send({ success: false, message: "Song not found." });
     }
 
-    await Song.deleteOne({
-      _id: song._id,
-    });
+    await song.delete();
 
-    console.log(song);
     const url = song.song.split("/");
     const public_id = [url[url.length - 2], url[url.length - 1]].join("/");
     console.log(public_id.replace(/%20/g, " "));

@@ -11,7 +11,7 @@ const storage = multer.diskStorage({
   },
 });
 
-const fileFilter = (req, file, cb) => {
+const audioFilter = (req, file, cb) => {
   if (!file.originalname.match(/\.(mp3|mpeg|wav)$/)) {
     return cb(new Error("Please upload an  audio file!"));
   }
@@ -19,12 +19,28 @@ const fileFilter = (req, file, cb) => {
   cb(undefined, true);
 };
 
-const uploader = multer({
+const imageFilter = (req, file, cb) => {
+  if (!file.originalname.match(/\.(png|jpg|jpeg)$/)) {
+    return cb(new Error("Please upload an  audio file!"));
+  }
+
+  cb(undefined, true);
+};
+
+const audioUploader = multer({
   storage,
   limits: {
     fileSize: 10000000,
   },
-  fileFilter,
+  fileFilter: audioFilter,
 });
 
-export default uploader;
+const imageUploader = multer({
+  storage,
+  limits: {
+    fileSize: 10000000,
+  },
+  fileFilter: imageFilter,
+});
+
+export { audioUploader, imageUploader };

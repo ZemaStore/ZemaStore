@@ -7,16 +7,16 @@ import {
   updateSong,
 } from "../controllers/songs.controllers";
 import { isAdmin } from "../middlewares/auth.middlewares";
-import uploader from "../middlewares/multer.middlewares";
+import { audioUploader } from "../middlewares/multer.middlewares";
 
 const router = Router();
 
-router.route("/").get(getSongs).post(uploader.single("song"), addSong);
+router.route("/").get(getSongs).post(audioUploader.single("song"), addSong);
 
 router
   .route("/:id")
   .get(getSong)
-  .patch(uploader.single("song"), updateSong)
+  .patch(audioUploader.single("song"), updateSong)
   .delete(deleteSong);
 
 export default (() => Router().use("/songs", isAdmin, router))();
