@@ -5,4 +5,3 @@ export 'role.dart';
 export 'artist.dart';
 export 'customer.dart';
 export 'artist.dart';
-export '';
