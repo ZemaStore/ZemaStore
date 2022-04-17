@@ -1,8 +1,30 @@
+import { baseUrl } from ".";
 import encryption from "../../utils/encryption";
+import jwt_decode from "jwt-decode";
+import Request from "../api/request";
 export const ACCESS_TOKEN_KEY = "token";
 export const PROFILE_KEY = "profile";
 
-const AuthService = {
+const AuthService: any = {
+  async login(user: any) {
+    const { email, password } = user;
+    const { data } = await Request.post(`${baseUrl}/auth/signin`, {
+      email,
+      password,
+    });
+    if (data.token) {
+      localStorage.setItem(ACCESS_TOKEN_KEY, data.token);
+    }
+
+    try {
+      let decoded = jwt_decode(data.token);
+      localStorage.setItem(PROFILE_KEY, encryption.encrypt(decoded));
+      return Promise.resolve(true);
+    } catch (error) {
+      return Promise.reject(new Error("Unauthorized"));
+    }
+    //
+  },
   logoutClientOnly() {
     localStorage.clear();
   },

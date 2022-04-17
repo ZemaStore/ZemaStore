@@ -1,76 +1,43 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useAppSelector } from "../../app/hooks/redux_hooks";
+import { usersSelector } from "../../app/store/features/users/usersSlice";
+import { User } from "../../helpers/types";
 
 type Props = {};
 
 const UsersTable = (props: Props) => {
   const [show, setShow] = useState<number | null>(0);
   const [selectedUserId, setSelectedUserId] = useState("");
+  const { searchUsersList } = useAppSelector(usersSelector);
 
-  const [users, setUsers] = useState([
-    {
-      id: "23243234234234",
-      fullName: "John Doe",
-      email: "email@email.com",
-      phone: "1234567890",
-      isActive: true,
-      avatar: "https://cdn.tuk.dev/assets/templates/olympus/projects(3).png",
-      subType: {
-        subscriptionType: "free",
-        subscriptionId: "free-subscription",
-        summary: "Free Subscription",
-        price: 0,
-      },
-      address: {
-        country: "Ethiopia",
-        city: "Addis Ababa",
-        street: "Kenya",
-        zip: "12345",
-      },
-      createdAt: "2020-01-01",
-    },
-    {
-      id: "322323234",
-      fullName: "Jane Doe",
-      email: "email@email.com",
-      phone: "1234567890",
-      isActive: true,
-      avatar: "https://cdn.tuk.dev/assets/templates/olympus/projects(1).png",
-      address: {
-        country: "USA",
-        city: "New York",
-        street: "123 Main St",
-        zip: "12345",
-      },
-      subType: {
-        subscriptionType: "free",
-        subscriptionId: "free-subscription",
-        summary: "Free Subscription",
-        price: 0,
-      },
-      createdAt: "2020-01-01",
-    },
-    {
-      id: "wef3232423423423",
-      fullName: "Thomas Doe",
-      email: "email@email.com",
-      phone: "1234567890",
-      isActive: true,
-      avatar: "https://cdn.tuk.dev/assets/templates/olympus/projects(2).png",
-      address: {
-        country: "UK",
-        city: "London",
-        street: "123 Main St",
-        zip: "12345",
-      },
-      subType: {
-        subscriptionType: "free",
-        subscriptionId: "free-subscription",
-        summary: "Free Subscription",
-        price: 0,
-      },
-      createdAt: "2020-01-01",
-    },
-  ]);
+  const [users, setUsers] = useState<Array<User>>([]);
+
+  useEffect(() => {
+    const data: Array<User> = searchUsersList.map((item, index) => {
+      return {
+        id: "242342" + index,
+        fullName: "John Doe",
+        email: "email@email.com",
+        phone: "1234567890",
+        isActive: true,
+        avatar: "https://cdn.tuk.dev/assets/templates/olympus/projects(3).png",
+        subType: {
+          subscriptionType: "free",
+          subscriptionId: "free-subscription",
+          summary: "Free Subscription",
+          price: 0,
+        },
+        address: {
+          country: "Ethiopia",
+          city: "Addis Ababa",
+          street: "Kenya",
+          zip: "12345",
+        },
+        createdAt: "2020-01-01",
+      };
+    });
+    setUsers(data);
+  }, [searchUsersList]);
 
   return (
     <>

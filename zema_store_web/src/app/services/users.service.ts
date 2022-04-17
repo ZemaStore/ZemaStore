@@ -1,8 +1,8 @@
+import { baseUrl } from ".";
 import Request from "../api/request";
-const baseUrl = process.env.REACT_APP_BACKEND_URL || "http://localhost:4000";
 
 const getUsers = async () => {
-  const { data } = await Request.get("/users");
+  const { data } = await Request.get(`${baseUrl}/users`);
   return { data };
 };
 

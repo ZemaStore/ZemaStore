@@ -27,3 +27,14 @@ export type User = {
   };
   createdAt: string;
 };
+
+export type Artist = {
+  id: string;
+  fullName: string;
+  avatar: string;
+  followers: number;
+  listenedHours: number;
+  albumsCount: number;
+  songsCount: number;
+  createdAt: string;
+};

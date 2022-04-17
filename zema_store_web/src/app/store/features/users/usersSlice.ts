@@ -35,7 +35,7 @@ export const getUsersApi = createAsyncThunk<any, any>(
   async (payload, { rejectWithValue, fulfillWithValue, dispatch }) => {
     try {
       const { data } = await UsersService.getUsers();
-      return fulfillWithValue(data.users);
+      return fulfillWithValue(data);
     } catch (err: any) {
       return rejectWithValue(err.response.data);
     }
