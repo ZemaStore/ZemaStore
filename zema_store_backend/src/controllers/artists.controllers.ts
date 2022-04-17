@@ -27,17 +27,7 @@ const getArtist = async (req: Request, res: Response) => {
 
     const profile = user.profileId;
 
-    const artist = {
-      ...user,
-      ...profile,
-    };
-    if (!artist) {
-      return res
-        .status(400)
-        .send({ success: false, message: "User artist not found." });
-    }
-
-    res.status(200).send({ success: true, data: artist });
+    res.status(200).send({ success: true, data: user });
   } catch (e) {
     return res
       .status(500)
