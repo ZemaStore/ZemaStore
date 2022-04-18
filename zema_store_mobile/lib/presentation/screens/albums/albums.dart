@@ -98,8 +98,7 @@ class _AlbumsState extends State<Albums>{
                 AssetImage(SampleData().albums[index].cover_url),
               ),
               SizedBox(height: 2,),
-              Expanded(
-                child: Text(
+              Text(
                   SampleData().albums[index].title,
                   style: TextStyle(
                       color: Colors.white,
@@ -107,17 +106,16 @@ class _AlbumsState extends State<Albums>{
                   ),
                   overflow: TextOverflow.fade,
                 ),
-              ),
-              //SizedBox(height: 2,),
-              Expanded(
-                child: Text(
+              SizedBox(height: 2,),
+
+                Text(
                   SampleData().albums[index].artist_id,
                   style: TextStyle(
                     color: Colors.grey,
                   ),
                   overflow: TextOverflow.clip,
                 ),
-              ),
+
             ],
           ),
         ),
