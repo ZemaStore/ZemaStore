@@ -6,7 +6,7 @@ import 'package:zema_store_mobile/models/models.dart';
 import 'package:http/http.dart' as http;
 class AuthenticationDataProvider{
 
-  final _baseUrl = '';
+  final _baseUrl = 'https://zema-store.herokuapp.com/api';
   late String token;
 
 

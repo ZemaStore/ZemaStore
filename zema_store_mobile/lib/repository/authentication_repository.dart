@@ -3,6 +3,9 @@ import 'package:zema_store_mobile/models/models.dart';
 
 class AuthenticationRepository {
   late final AuthenticationDataProvider authenticationDataProvider;
+  AuthenticationRepository({
+    required this.authenticationDataProvider
+});
 
   Future<User> login({required String email,required String password}) async{
     return authenticationDataProvider.signInWithEmailAndPassword(email, password);

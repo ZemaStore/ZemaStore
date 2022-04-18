@@ -1,6 +1,7 @@
 
 import 'dart:typed_data';
 
+import 'package:audio_manager/audio_manager.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -96,17 +97,17 @@ class _SongsState extends State<Songs> {
     for(int i = 0; i<SampleData().songs.length;i++){
       var song = MediaItem(
           id: SampleData().songs[i].resource_id,
-          album:SampleData().songs[i].album_id ,
-          title: SampleData().songs[i].title,
+         album:SampleData().songs[i].album_id ,
+        title: SampleData().songs[i].title,
          genre:  SampleData().songs[i].genre.toString(),
-        displayTitle: SampleData().songs[i].title,
-       artist:  SampleData().songs[i].artist_id,
-       artUri: SampleData().songs[i].url,
-       displayDescription: SampleData().songs[i].title,
-       displaySubtitle: SampleData().songs[i].title,
-       duration: SampleData().songs[i].length.inMinutes,
-        playable: SampleData().songs[i].isSingle,
-        rating: null,
+         displayTitle: SampleData().songs[i].title,
+         artist:  SampleData().songs[i].artist_id,
+         artUri: SampleData().songs[i].url,
+         displayDescription: SampleData().songs[i].title,
+         displaySubtitle: SampleData().songs[i].title,
+         duration: SampleData().songs[i].length.inMinutes,
+         playable: SampleData().songs[i].isSingle,
+         rating: null,
 
       );
       songs.add(song);
@@ -135,17 +136,16 @@ class _SongsState extends State<Songs> {
       });
     }
   }
-  void addToFav(Song songInfo, BuildContext context) async{
+  void addToFav(MediaItem mediaItem, BuildContext context) async{
+    bool isExist  = false;
     String msg = 'Added to favorite list';
-    /*favoriteSongList.setState((s) => s.addToFavoriteList(songInfo));
-    bool isExist = await favoriteService.addToFavorite(songInfo);
     if(!isExist){
       msg = "Already exist in favorite list";
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg), backgroundColor: Colors.red,));
     }
     else{
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg), backgroundColor: Colors.green,));
-    }*/
+    }
   }
 
   void createPlaylist(Song song, context){
@@ -208,13 +208,13 @@ class _SongsState extends State<Songs> {
                   onSelected: (value){
                     switch(value){
                       case 'fav':
-                        //addToFav(songs[index], context);
+                        addToFav(songs[index], context);
                         break;
                       case 'crtnew':
-                        //createPlaylist(songs[index], context);
+                        createPlaylist(SampleData().songs[index], context);
                         break;
                       case 'choose':
-                        //choosePlaylist(songs[index], context);
+                        choosePlaylist(SampleData().songs[index], context);
                         break;
                     }
                   },
@@ -252,14 +252,13 @@ class _SongsState extends State<Songs> {
                   ),
                 ),
                 onTap: () async {
-                  print("############################# here hrereee#");
-                  print(index);
+                  var x = songs[0].title;
                   audioManagerInstance2
-                      .start("assets/music ://${songs[index].id}", songs[index].title,
-                      desc: songs[index].displayTitle!,
+                      .start("assets/music/$x", songs[0].title,
+                      desc: songs[0].displayTitle!,
                       auto: true,
 
-                      cover: (songs[index].artUri != null)? songs[index].artUri.toString(): 'assets/song.png'
+                      cover: (songs[0].artUri != null)? songs[0].artUri.toString(): 'assets/song.png'
                   );
                   audioManagerInstance2.play(index: index,auto: true);
                 Navigator.push(context, new MaterialPageRoute(builder: (context)=> PlayerPage()));

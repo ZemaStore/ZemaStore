@@ -108,7 +108,7 @@ class _AlbumsState extends State<Albums>{
                   overflow: TextOverflow.fade,
                 ),
               ),
-              SizedBox(height: 2,),
+              //SizedBox(height: 2,),
               Expanded(
                 child: Text(
                   SampleData().albums[index].artist_id,

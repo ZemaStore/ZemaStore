@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:zema_store_mobile/models/models.dart';
 class UserDataProvider {
 
-  final _baseUrl = 'http://10.0.2.2:8383/api';
+  final _baseUrl = 'https://zema-store.herokuapp.com/api';
    late http.Client httpClient;
 
   Future<User> createUser(User user) async{
