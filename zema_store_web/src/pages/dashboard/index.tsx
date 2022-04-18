@@ -9,7 +9,6 @@ const DashboardPage = (props: Props) => {
   return (
     <BaseLayout>
       <DashboardComponent />
-      <Pagination />
     </BaseLayout>
   );
 };

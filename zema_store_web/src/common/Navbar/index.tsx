@@ -252,7 +252,7 @@ export default function Navbar() {
               className="bg-gray-800 opacity-50 w-full h-full"
               onClick={() => setShow(!show)}
             />
-            <div className="w-64 z-40 fixed overflow-y-auto z-40 top-0 bg-white shadow h-full flex-col justify-between xl:hidden pb-4 transition duration-150 ease-in-out">
+            <div className="w-64 fixed overflow-y-auto z-40 top-0 bg-white shadow h-full flex-col justify-between xl:hidden pb-4 transition duration-150 ease-in-out">
               <div className="px-6 h-full">
                 <div className="flex flex-col justify-between h-full w-full">
                   <div>
@@ -273,7 +273,7 @@ export default function Navbar() {
                               fill="#667EEA"
                             />
                           </svg>
-                          <p className="text-base md:text-2xl text-gray-800 ml-3">
+                          <p className="text-base md:text-xl text-gray-800 ml-2">
                             Zema Store
                           </p>
                         </div>
@@ -303,58 +303,13 @@ export default function Navbar() {
                     </div>
                     <ul className="f-m-m">
                       <a className="cursor-pointer">
-                        <li className="text-gray-800 pt-10">
-                          <div className="flex items-center">
-                            <div className="w-6 h-6 md:w-8 md:h-8 text-indigo-700">
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                className="icon icon-tabler icon-tabler-grid"
-                                viewBox="0 0 24 24"
-                                strokeWidth="1.5"
-                                stroke="currentColor"
-                                fill="none"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              >
-                                <path stroke="none" d="M0 0h24v24H0z" />
-                                <rect x={4} y={4} width={6} height={6} rx={1} />
-                                <rect
-                                  x={14}
-                                  y={4}
-                                  width={6}
-                                  height={6}
-                                  rx={1}
-                                />
-                                <rect
-                                  x={4}
-                                  y={14}
-                                  width={6}
-                                  height={6}
-                                  rx={1}
-                                />
-                                <rect
-                                  x={14}
-                                  y={14}
-                                  width={6}
-                                  height={6}
-                                  rx={1}
-                                />
-                              </svg>
-                            </div>
-                            <p className="text-indigo-700 xl:text-base text-base ml-3">
-                              Dashboard
-                            </p>
-                          </div>
-                        </li>
-                      </a>
-                      <a className="cursor-pointer">
-                        <li className="text-gray-800 pt-8">
-                          <div className="flex items-center justify-between">
+                        <Link to="/dashboard">
+                          <li className="text-gray-800 pt-10">
                             <div className="flex items-center">
-                              <div className="w-6 h-6 md:w-8 md:h-8 text-gray-800">
+                              <div className="w-6 h-6 md:w-8 md:h-8 text-indigo-700">
                                 <svg
                                   xmlns="http://www.w3.org/2000/svg"
-                                  className="icon icon-tabler icon-tabler-puzzle"
+                                  className="icon icon-tabler icon-tabler-grid"
                                   viewBox="0 0 24 24"
                                   strokeWidth="1.5"
                                   stroke="currentColor"
@@ -363,67 +318,183 @@ export default function Navbar() {
                                   strokeLinejoin="round"
                                 >
                                   <path stroke="none" d="M0 0h24v24H0z" />
-                                  <path d="M4 7h3a1 1 0 0 0 1 -1v-1a2 2 0 0 1 4 0v1a1 1 0 0 0 1 1h3a1 1 0 0 1 1 1v3a1 1 0 0 0 1 1h1a2 2 0 0 1 0 4h-1a1 1 0 0 0 -1 1v3a1 1 0 0 1 -1 1h-3a1 1 0 0 1 -1 -1v-1a2 2 0 0 0 -4 0v1a1 1 0 0 1 -1 1h-3a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1h1a2 2 0 0 0 0 -4h-1a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1" />
+                                  <rect
+                                    x={4}
+                                    y={4}
+                                    width={6}
+                                    height={6}
+                                    rx={1}
+                                  />
+                                  <rect
+                                    x={14}
+                                    y={4}
+                                    width={6}
+                                    height={6}
+                                    rx={1}
+                                  />
+                                  <rect
+                                    x={4}
+                                    y={14}
+                                    width={6}
+                                    height={6}
+                                    rx={1}
+                                  />
+                                  <rect
+                                    x={14}
+                                    y={14}
+                                    width={6}
+                                    height={6}
+                                    rx={1}
+                                  />
+                                </svg>
+                              </div>
+                              <p className="text-indigo-700 xl:text-base text-base ml-3">
+                                Dashboard
+                              </p>
+                            </div>
+                          </li>
+                        </Link>
+                      </a>
+                      <Link to="/users">
+                        <a className="cursor-pointer">
+                          <li className="text-gray-800 pt-8">
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center">
+                                <div className="w-6 h-6 md:w-8 md:h-8 text-gray-800">
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="icon icon-tabler icon-tabler-puzzle"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth="1.5"
+                                    stroke="currentColor"
+                                    fill="none"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                  >
+                                    <path stroke="none" d="M0 0h24v24H0z" />
+                                    <path d="M4 7h3a1 1 0 0 0 1 -1v-1a2 2 0 0 1 4 0v1a1 1 0 0 0 1 1h3a1 1 0 0 1 1 1v3a1 1 0 0 0 1 1h1a2 2 0 0 1 0 4h-1a1 1 0 0 0 -1 1v3a1 1 0 0 1 -1 1h-3a1 1 0 0 1 -1 -1v-1a2 2 0 0 0 -4 0v1a1 1 0 0 1 -1 1h-3a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1h1a2 2 0 0 0 0 -4h-1a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1" />
+                                  </svg>
+                                </div>
+                                <p className="text-gray-800 xl:text-base md:text-2xl text-base ml-3">
+                                  Users
+                                </p>
+                              </div>
+                            </div>
+                          </li>
+                        </a>
+                      </Link>
+                      <Link to="/artists">
+                        <a className="cursor-pointer">
+                          <li className="text-gray-800 pt-8">
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center">
+                                <div className="w-6 h-6 md:w-8 md:h-8 text-gray-800">
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="icon icon-tabler icon-tabler-puzzle"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth="1.5"
+                                    stroke="currentColor"
+                                    fill="none"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                  >
+                                    <path stroke="none" d="M0 0h24v24H0z" />
+                                    <path d="M4 7h3a1 1 0 0 0 1 -1v-1a2 2 0 0 1 4 0v1a1 1 0 0 0 1 1h3a1 1 0 0 1 1 1v3a1 1 0 0 0 1 1h1a2 2 0 0 1 0 4h-1a1 1 0 0 0 -1 1v3a1 1 0 0 1 -1 1h-3a1 1 0 0 1 -1 -1v-1a2 2 0 0 0 -4 0v1a1 1 0 0 1 -1 1h-3a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1h1a2 2 0 0 0 0 -4h-1a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1" />
+                                  </svg>
+                                </div>
+                                <p className="text-gray-800 xl:text-base md:text-2xl text-base ml-3">
+                                  Artists
+                                </p>
+                              </div>
+                            </div>
+                          </li>
+                        </a>
+                      </Link>
+                      <Link to="/albums">
+                        <a className="cursor-pointer">
+                          <li className="text-gray-800 pt-8">
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center">
+                                <div className="w-6 h-6 md:w-8 md:h-8 text-gray-800">
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="icon icon-tabler icon-tabler-puzzle"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth="1.5"
+                                    stroke="currentColor"
+                                    fill="none"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                  >
+                                    <path stroke="none" d="M0 0h24v24H0z" />
+                                    <path d="M4 7h3a1 1 0 0 0 1 -1v-1a2 2 0 0 1 4 0v1a1 1 0 0 0 1 1h3a1 1 0 0 1 1 1v3a1 1 0 0 0 1 1h1a2 2 0 0 1 0 4h-1a1 1 0 0 0 -1 1v3a1 1 0 0 1 -1 1h-3a1 1 0 0 1 -1 -1v-1a2 2 0 0 0 -4 0v1a1 1 0 0 1 -1 1h-3a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1h1a2 2 0 0 0 0 -4h-1a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1" />
+                                  </svg>
+                                </div>
+                                <p className="text-gray-800 xl:text-base md:text-2xl text-base ml-3">
+                                  Albums
+                                </p>
+                              </div>
+                            </div>
+                          </li>
+                        </a>
+                      </Link>
+                      <Link to="/events">
+                        <a className="cursor-pointer">
+                          <li className="text-gray-800 pt-8">
+                            <div className="flex items-center">
+                              <div className="w-6 h-6 md:w-8 md:h-8 text-gray-800">
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  className="icon icon-tabler icon-tabler-compass"
+                                  viewBox="0 0 24 24"
+                                  strokeWidth="1.5"
+                                  stroke="currentColor"
+                                  fill="none"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                >
+                                  <path stroke="none" d="M0 0h24v24H0z" />
+                                  <polyline points="8 16 10 10 16 8 14 14 8 16" />
+                                  <circle cx={12} cy={12} r={9} />
                                 </svg>
                               </div>
                               <p className="text-gray-800 xl:text-base md:text-2xl text-base ml-3">
-                                Products
+                                Events
+                              </p>
+                            </div>
+                          </li>
+                        </a>
+                      </Link>
+
+                      <Link to="/subscriptions">
+                        <li className="text-gray-800 pt-8 cursor-pointer">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center">
+                              <div className="w-6 h-6 md:w-8 md:h-8 text-gray-800">
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  className="icon icon-tabler icon-tabler-code"
+                                  viewBox="0 0 24 24"
+                                  strokeWidth="1.5"
+                                  stroke="currentColor"
+                                  fill="none"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                >
+                                  <path stroke="none" d="M0 0h24v24H0z" />
+                                  <polyline points="7 8 3 12 7 16" />
+                                  <polyline points="17 8 21 12 17 16" />
+                                  <line x1={14} y1={4} x2={10} y2={20} />
+                                </svg>
+                              </div>
+                              <p className="text-gray-800 xl:text-base md:text-2xl text-base ml-3">
+                                Subscriptions
                               </p>
                             </div>
                           </div>
                         </li>
-                      </a>
-                      <a className="cursor-pointer">
-                        <li className="text-gray-800 pt-8">
-                          <div className="flex items-center">
-                            <div className="w-6 h-6 md:w-8 md:h-8 text-gray-800">
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                className="icon icon-tabler icon-tabler-compass"
-                                viewBox="0 0 24 24"
-                                strokeWidth="1.5"
-                                stroke="currentColor"
-                                fill="none"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              >
-                                <path stroke="none" d="M0 0h24v24H0z" />
-                                <polyline points="8 16 10 10 16 8 14 14 8 16" />
-                                <circle cx={12} cy={12} r={9} />
-                              </svg>
-                            </div>
-                            <p className="text-gray-800 xl:text-base md:text-2xl text-base ml-3">
-                              Performance
-                            </p>
-                          </div>
-                        </li>
-                      </a>
-                      <li className="text-gray-800 pt-8 cursor-pointer">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center">
-                            <div className="w-6 h-6 md:w-8 md:h-8 text-gray-800">
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                className="icon icon-tabler icon-tabler-code"
-                                viewBox="0 0 24 24"
-                                strokeWidth="1.5"
-                                stroke="currentColor"
-                                fill="none"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              >
-                                <path stroke="none" d="M0 0h24v24H0z" />
-                                <polyline points="7 8 3 12 7 16" />
-                                <polyline points="17 8 21 12 17 16" />
-                                <line x1={14} y1={4} x2={10} y2={20} />
-                              </svg>
-                            </div>
-                            <p className="text-gray-800 xl:text-base md:text-2xl text-base ml-3">
-                              Deliverables
-                            </p>
-                          </div>
-                        </div>
-                      </li>
+                      </Link>
                     </ul>
                   </div>
                   <div className="w-full pt-4">

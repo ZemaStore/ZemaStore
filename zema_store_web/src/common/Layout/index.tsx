@@ -26,12 +26,12 @@ export default function BaseLayout({ children }: LayoutProps) {
         {/* Sidebar starts */}
 
         {/* Remove class [ hidden ] and replace [ sm:flex ] with [ flex ] */}
-        <div className="min-h-full w-1/6 flex relative">
+        <div className="hidden xl:flex min-h-full w-1/6 relative">
           <div className="w-full absolute sm:relative bg-indigo-100 shadow md:h-full flex-col justify-between hidden md:flex">
             <div>
               <ul className="my-5">
                 <div className="my-10">
-                  <h1 className="text-extrabold text-center text-4xl text-gray-900">
+                  <h1 className="text-2xl font-bold text-center text-gray-600">
                     Adminstrator
                   </h1>
                 </div>

@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useAppSelector } from "../../app/hooks/redux_hooks";
-import { usersSelector } from "../../app/store/features/users/usersSlice";
+import {
+  searchusers,
+  usersSelector,
+} from "../../app/store/features/users/usersSlice";
 import { User } from "../../helpers/types";
 
 type Props = {};
@@ -9,35 +12,6 @@ const UsersTable = (props: Props) => {
   const [show, setShow] = useState<number | null>(0);
   const [selectedUserId, setSelectedUserId] = useState("");
   const { searchUsersList } = useAppSelector(usersSelector);
-
-  const [users, setUsers] = useState<Array<User>>([]);
-
-  useEffect(() => {
-    const data: Array<User> = searchUsersList.map((item, index) => {
-      return {
-        id: "242342" + index,
-        fullName: "John Doe",
-        email: "email@email.com",
-        phone: "1234567890",
-        isActive: true,
-        avatar: "https://cdn.tuk.dev/assets/templates/olympus/projects(3).png",
-        subType: {
-          subscriptionType: "free",
-          subscriptionId: "free-subscription",
-          summary: "Free Subscription",
-          price: 0,
-        },
-        address: {
-          country: "Ethiopia",
-          city: "Addis Ababa",
-          street: "Kenya",
-          zip: "12345",
-        },
-        createdAt: "2020-01-01",
-      };
-    });
-    setUsers(data);
-  }, [searchUsersList]);
 
   return (
     <>
@@ -63,8 +37,8 @@ const UsersTable = (props: Props) => {
               </tr>
             </thead>
             <tbody className="w-full">
-              {users.length > 0 &&
-                [...users].map((user, index) => {
+              {searchUsersList.length > 0 &&
+                searchUsersList.map((user: User, index) => {
                   return (
                     <tr
                       key={user.id}

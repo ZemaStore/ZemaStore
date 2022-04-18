@@ -27,15 +27,7 @@ const SongsTable = (props: Props) => {
       songs: 21,
       createdAt: "2020-01-01",
     },
-    {
-      id: "3234234234",
-      title: "John Doe",
-      cover: "https://cdn.tuk.dev/assets/templates/olympus/projects(3).png",
-      artist: "sfasasfda",
-      releaseDate: "2020-02-01",
-      songs: 21,
-      createdAt: "2020-01-01",
-    },
+   
     {
       id: "1232322323234",
       title: "Thomas Doe",
@@ -48,7 +40,6 @@ const SongsTable = (props: Props) => {
     {
       id: "1wef3232423423423",
       title: "Thomas Doe",
-
       cover: "https://cdn.tuk.dev/assets/templates/olympus/projects(2).png",
       artist: "asdfasdfwerwe",
       releaseDate: "2020-05-01",

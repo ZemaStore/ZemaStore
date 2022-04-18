@@ -4,9 +4,9 @@ type Props = {};
 
 const DashboardComponent = (props: Props) => {
   return (
-    <div>
-      <div className="grid grid:cols-1 lg:grid-cols-3 2xlgrid-cols-4 justify-between mt-4 gap-10">
-        <div className="bg-white w-full rounded-xl shadow-lg flex items-center justify-around">
+    <div className="mt-20 relative">
+      <div className="z-0 my-5 w-full grid grid:cols-2 lg:grid-cols-3 2xl:grid-cols-4 justify-between gap-10">
+        <div className=" bg-white w-full rounded-xl shadow-lg flex items-center justify-around">
           <img src="https://i.imgur.com/VHc5SJE.png" alt="" />
           <div className="text-center">
             <h1 className="text-4xl font-bold text-gray-800">534</h1>
@@ -58,7 +58,7 @@ const DashboardComponent = (props: Props) => {
           </div>
         </div>
       </div>
-      <div className="flex space-x-4">
+      <div className="flex flex-col lg:flex-row space-x-4">
         <div className="justify-between rounded-xl mt-4 p-4 bg-white shadow-lg">
           <h1 className="text-xl font-bold text-gray-800 mt-4">
             Today’s Status

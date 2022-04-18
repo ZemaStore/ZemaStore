@@ -1,10 +1,14 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 type Props = {};
 
 const SigninComponent = (props: Props) => {
-  
+  const navigate = useNavigate();
 
+  const handleLogin = () => {
+    navigate("/");
+  };
 
   return (
     <div>
@@ -61,22 +65,13 @@ const SigninComponent = (props: Props) => {
                 </div>
                 <div className="mb-6">
                   <button
+                    onClick={handleLogin}
                     type="button"
                     className="w-full px-3 py-4 text-white bg-indigo-500 rounded-md focus:bg-indigo-600 focus:outline-none"
                   >
                     Sign in
                   </button>
                 </div>
-                <p className="text-sm text-center text-gray-400">
-                  Don&#x27;t have an account yet?{" "}
-                  <a
-                    href="#!"
-                    className="text-indigo-400 focus:outline-none focus:underline focus:text-indigo-500 dark:focus:border-indigo-800"
-                  >
-                    Sign up
-                  </a>
-                  .
-                </p>
               </form>
             </div>
           </div>
