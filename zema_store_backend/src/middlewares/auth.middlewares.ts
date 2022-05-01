@@ -5,6 +5,7 @@ import { isNil } from "lodash";
 import configs from "../configs/app.configs";
 import Role from "../models/role";
 import User from "../models/user";
+import { validateAccessToken } from "../services/auth-token";
 
 const isAuthorized = async (
   req: Request,
@@ -18,14 +19,12 @@ const isAuthorized = async (
       throw new Error("Invalid Authentication Credentials");
     }
 
-    const payload: any = jwt.verify(token, configs.JWT_SECRET);
-    const user = await User.findById(payload._id);
+    const user = await validateAccessToken(token);
 
     if (isNil(user)) {
       throw new Error("Invalid Authentication Credentials");
     }
-    req["user"] = user;
-    req["token"] = token;
+    res.locals.user = user;
 
     next();
   } catch (e) {
@@ -43,8 +42,7 @@ const isAdmin = async (req: Request, res: Response, next: NextFunction) => {
       throw new Error("Invalid Authentication Credentials");
     }
 
-    const payload: any = jwt.verify(token, configs.JWT_SECRET);
-    const user = await User.findById(payload._id);
+    const user = await validateAccessToken(token);
 
     if (isNil(user)) {
       throw new Error("Invalid Authentication credentials");

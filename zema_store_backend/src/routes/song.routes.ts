@@ -5,7 +5,7 @@ import {
   getSong,
   getSongs,
   updateSong,
-} from "../controllers/songs.controllers";
+} from "../controllers/song.controllers";
 import { isAdmin } from "../middlewares/auth.middlewares";
 import { audioUploader } from "../middlewares/multer.middlewares";
 
