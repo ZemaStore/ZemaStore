@@ -3,6 +3,7 @@ import mongoose, { Schema, Document } from "mongoose";
 enum MusicGenre {
   REGGAE = "reggae",
   POP = "pop",
+  ROCK = "rock"
 }
 
 export interface ISongDocument extends Document {
