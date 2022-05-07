@@ -18,10 +18,10 @@ class SongBloc extends Bloc<SongEvent, SongState> {
       yield SongLoading();
       try {
         List<Song> songs = [];
-        if (event.user.role_id == "") {
+        if (event.user.roleId == "") {
           songs  = await songRepository.getSongs();
         } else {
-          songs = await songRepository.getSongsByArtistId(event.user.profile_id);
+          songs = await songRepository.getSongsByArtistId(event.user.profile_id!);
         }
 
         yield SongLoadedSucess(songs: songs);
@@ -35,10 +35,10 @@ class SongBloc extends Bloc<SongEvent, SongState> {
         await songRepository.createSong(event.song);
 
         var songs;
-        if (event.user.role_id == "") {
+        if (event.user.roleId== "") {
           songs = await songRepository.getSongs();
         } else {
-          songs = await songRepository.getSongsByArtistId(event.user.profile_id);
+          songs = await songRepository.getSongsByArtistId(event.user.profile_id!);
         }
 
         yield SongLoadedSucess(songs: songs);
@@ -52,10 +52,10 @@ class SongBloc extends Bloc<SongEvent, SongState> {
       try {
         final job = await songRepository.updateSong(event.id, event.song);
         var songs;
-        if (event.user.role_id == "") {
+        if (event.user.roleId == "") {
           songs = songRepository.getSongs();
         } else {
-          songs  = await songRepository.getSongsByArtistId(event.user.profile_id);
+          songs  = await songRepository.getSongsByArtistId(event.user.profile_id!);
         }
         yield SongLoadedSucess(songs: songs);
       } catch (_) {
@@ -66,7 +66,7 @@ class SongBloc extends Bloc<SongEvent, SongState> {
     if (event is SongDelete) {
       yield SongLoading();
       try {
-        await songRepository.deleteSong(event.song.resource_id);
+        await songRepository.deleteSong(event.song.title);
         final songs = await songRepository.getSongs();
         yield SongLoadedSucess(songs: songs);
       } catch (_) {

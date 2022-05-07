@@ -24,12 +24,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
   TextEditingController searchController = TextEditingController();
   GlobalKey<AutoCompleteTextFieldState<Song>> key = GlobalKey();
   late AutoCompleteTextField searchTextField;
-  Song song1 = Song(resource_id: 'resource_id', url: 'assets/no_cover.png', title: 'love you ', genre:Genre.values[0] ,isSingle: true, album_id: '', tags: ['a','b'], artist_id: 'aster', views: 10, length:Duration(hours: 2, minutes: 3, seconds: 2), releasedDate: DateTime.utc(1989, 11, 9));
-  Song song2 = Song(resource_id: 'resource_id', url: 'assets/no_cover.png', title: 'love you ', genre:Genre.values[0] ,isSingle: true, album_id: '', tags: ['a','b'], artist_id: 'aster', views: 10, length:Duration(hours: 2, minutes: 3, seconds: 2), releasedDate: DateTime.utc(1989, 11, 9));
 
-  List<Song>songs  = [ Song(resource_id: 'resource_id', url: 'assets/no_cover.png', title: 'love you ', genre:Genre.values[0] ,isSingle: true, album_id: '', tags: ['a','b'], artist_id: 'aster', views: 10, length:Duration(hours: 2, minutes: 3, seconds: 2), releasedDate: DateTime.utc(1989, 11, 9)), Song(resource_id: 'resource_id', url: 'assets/no_cover.png', title: 'love you ', genre:Genre.values[0] ,isSingle: true, album_id: '', tags: ['a','b'], artist_id: 'aster', views: 10, length:Duration(hours: 2, minutes: 3, seconds: 2), releasedDate: DateTime.utc(1989, 11, 9))
-
-  ];
   @override
   Widget build(BuildContext context) {
 
@@ -112,7 +107,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                                 searchTextField.textField.controller!.text = item.title;
                               });
                             },
-                            suggestions: songs,
+                           // suggestions: songs,
                             style: TextStyle(
                                 color: Colors.grey
                             ),

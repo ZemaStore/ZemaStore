@@ -1,16 +1,24 @@
 class Role {
-  Role({required this.id, required this.name});
+  Role({
+    required this.name,
+    required this.createdAt,
+    required this.updatedAt,
+    });
 
-  final String id;
+
   final String name;
+  final DateTime createdAt;
+  final DateTime updatedAt;
 
   @override
-  List<Object> get props => [id, name];
+  List<Object> get props => [ name,createdAt,updatedAt];
 
   factory Role.fromJson(Map<String, dynamic> json) {
+    
     return Role(
-      id: json['_id'],
       name: json['name'],
+      createdAt: json['createdAt'],
+      updatedAt: json['updatedAt']
     );
   }
 }

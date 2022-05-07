@@ -12,7 +12,7 @@ class SongDataProvider {
 
   Future<Song> createSong(Song song) async{
     var data = {
-      'resource_id':song.resource_id,
+      //'resource_id':song.resource_id,
       'url':song.url,
       'title':song.title,
       'genre':song.genre,
@@ -20,7 +20,7 @@ class SongDataProvider {
       'album_id':song.album_id,
       'tags':song.tags,
       'artist_id':song.artist_id,
-      'views':song.views,
+      'listenersCount':song.listenersCount,
       'length':song.length,
       'releasedDate':song.releasedDate,
 
@@ -71,7 +71,7 @@ class SongDataProvider {
   }
   Future<Song> updateSong(String id, Song song) async {
     var data = {
-      'resource_id':song.resource_id,
+      //'resource_id':song.resource_id,
       'url':song.url,
       'title':song.title,
       'genre':song.genre,
@@ -79,7 +79,7 @@ class SongDataProvider {
       'album_id':song.album_id,
       'tags':song.tags,
       'artist_id':song.artist_id,
-      'views':song.views,
+      'listenerCount':song.listenersCount,
       'length':song.length,
       'releasedDate':song.releasedDate,
 

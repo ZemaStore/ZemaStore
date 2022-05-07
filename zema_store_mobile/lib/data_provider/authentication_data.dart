@@ -38,17 +38,15 @@ class AuthenticationDataProvider{
     }
   }
 
-  Future<bool> signUpWithEmailAndPassword(String profile_id,String email,String password,String role_id,String status) async{
+  Future<bool> signUpWithEmailAndPassword(String email,String password,String phone) async{
     final response = await http.post('$_baseUrl/signup',
         headers: <String, String>{
           'Content-Type': 'application/json',
         },
         body: jsonEncode(<String, String>{
-          'username': profile_id,
           'email': email,
           'password': password,
-          'role_id': role_id,
-          'status':status
+          'phone ': phone,
         }));
     if (response.statusCode == 201) {
       return true;
@@ -84,9 +82,13 @@ class AuthenticationDataProvider{
       var profile_id = payload['profile_id'];
       var email = payload['email'];
       var password = payload['password'];
-      var status = payload['status'];
-      var role_id = payload['role_id'];
-     var result = User(profile_id: profile_id, email: email, password: password, role_id: role_id, status: status);
+      var phone = payload['phone'];
+      //var fullName  = payload['fullName'];
+     var result = User(
+         email: email,
+         password: password,
+         phone: phone,
+     );
       return result;
     } else {
       return null;

@@ -4,7 +4,7 @@ class SampleData{
 
 
   List<Song> songs = [
-    Song(
+   /* Song(
         resource_id: '',
         url: 'assets/song.png',
         title: 'Asmerino ',
@@ -29,11 +29,11 @@ class SampleData{
         views: 10,
         length:Duration(hours: 2, minutes: 3, seconds: 2),
         releasedDate: DateTime.now()
-    )
+    )*/
   ];
 
   List<Album> albums = [
-    Album(
+  /*  Album(
       album_id: 'album_id',
       artist_id: 'Dawit',
       title: 'Yne zema',
@@ -47,10 +47,10 @@ class SampleData{
       title: 'Ethiopia',
       cover_url: 'assets/album.png',
       released_date: DateTime.now(),
-    )
+    )*/
   ];
   List<Artist> artists = [
-    Artist(
+    /*Artist(
         profile_id: 'dave',
         email: 'dave@gmai.com',
         password: "0912846672",
@@ -71,9 +71,23 @@ class SampleData{
         last_name: 'Kassahun',
         profile_picture: "assets/artist.png",
         follower_number: 100,
-        listen_hour: 100)
+        listen_hour: 100)*/
   ];
 
-  User user = User(profile_id: '1', email: 'hy@gmail.com', password: 'password', role_id: 'customer', status:'status');
+  User user =
+  User(
+      profile_id: '1',
+      email: 'hy@gmail.com',
+      password: 'password',
+      roleId: '',
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+      isActive: true,
+      onModel: '',
+      phone: '',
+      photoUrl: '',
+      subscriptionId: '',
+      otp: otpType(),
+  );
 
 }

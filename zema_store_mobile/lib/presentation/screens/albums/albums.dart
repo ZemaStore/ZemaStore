@@ -93,9 +93,9 @@ class _AlbumsState extends State<Albums>{
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               CircleAvatar(
-                backgroundImage: SampleData().albums[index].cover_url==null?
+                backgroundImage: SampleData().albums[index].imageUrl==null?
                 AssetImage('assets/album.png'):
-                AssetImage(SampleData().albums[index].cover_url),
+                AssetImage(SampleData().albums[index].imageUrl),
               ),
               SizedBox(height: 2,),
               Text(

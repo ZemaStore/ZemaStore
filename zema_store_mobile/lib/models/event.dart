@@ -5,7 +5,7 @@ class Event{
     required this.event_date
 });
   final String title;
-  final String venue;
+  final Object venue;
   final DateTime event_date;
 
   factory Event.fromJson(Map<String,dynamic> json){

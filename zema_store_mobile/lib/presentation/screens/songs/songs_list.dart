@@ -18,21 +18,16 @@ class SongsListPage extends StatefulWidget{
   _SongsListPage createState()=> _SongsListPage();
 }
 class _SongsListPage extends State<SongsListPage>{
-  Song song1 = Song(resource_id: 'resource_id', url: 'assets/no_cover.png', title: 'love you ', genre:Genre.values[0] ,isSingle: true, album_id: '', tags: ['a','b'], artist_id: 'aster', views: 10, length:Duration(hours: 2, minutes: 3, seconds: 2), releasedDate: DateTime.utc(1989, 11, 9));
-  Song song2 = Song(resource_id: 'resource_id', url: 'assets/no_cover.png', title: 'love you ', genre:Genre.values[0] ,isSingle: true, album_id: '', tags: ['a','b'], artist_id: 'aster', views: 10, length:Duration(hours: 2, minutes: 3, seconds: 2), releasedDate: DateTime.utc(1989, 11, 9));
 
-  List<Song>songs  = [ Song(resource_id: 'resource_id', url: 'assets/no_cover.png', title: 'love you ', genre:Genre.values[0] ,isSingle: true, album_id: '', tags: ['a','b'], artist_id: 'aster', views: 10, length:Duration(hours: 2, minutes: 3, seconds: 2), releasedDate: DateTime.utc(1989, 11, 9)), Song(resource_id: 'resource_id', url: 'assets/no_cover.png', title: 'love you ', genre:Genre.values[0] ,isSingle: true, album_id: '', tags: ['a','b'], artist_id: 'aster', views: 10, length:Duration(hours: 2, minutes: 3, seconds: 2), releasedDate: DateTime.utc(1989, 11, 9))
-  ];
 
 
   @override
   Widget build(BuildContext context) {
-    print('size of songs : $songs');
     return ListView.builder(
         shrinkWrap: true,
-      itemCount: songs.length,
+      itemCount: SampleData().songs.length,
       itemBuilder: (context,songIndex){
-          Song song = songs[songIndex];
+          Song song = SampleData().songs[songIndex];
           return ListItemWidget(
               title: Text(song.title),
               subtitle:  Column(
@@ -96,7 +91,7 @@ class _SongsState extends State<Songs> {
 
     for(int i = 0; i<SampleData().songs.length;i++){
       var song = MediaItem(
-          id: SampleData().songs[i].resource_id,
+          id: SampleData().songs[i].artist_id,
          album:SampleData().songs[i].album_id ,
         title: SampleData().songs[i].title,
          genre:  SampleData().songs[i].genre.toString(),

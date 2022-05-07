@@ -16,8 +16,15 @@ class UserDataProvider {
         'profile_id':user.profile_id,
           'email':user.email,
           'password':user.password,
-          'role_id':user.role_id,
-          'status':user.status,
+          'photoUrl':user.photoUrl,
+          'roleId':user.roleId,
+          'otp' : user.otp,
+          'phone':user.phone,
+          'isActive':user.isActive,
+          'subscriptionId':user.subscriptionId,
+          'onModel':user.onModel,
+          'createdAt':user.createdAt,
+          'updatedAt':user.updatedAt
         })
     );
     if(response.statusCode == 200){
@@ -50,8 +57,15 @@ class UserDataProvider {
         'profile_id': user.profile_id,
         'email': user.email,
         'password': user.password,
-        'role_id':user.role_id,
-        'status':user.status,
+        'photoUrl':user.photoUrl,
+        'roleId':user.roleId,
+        'otp' : user.otp,
+        'phone':user.phone,
+        'isActive':user.isActive,
+        'subscriptionId':user.subscriptionId,
+        'onModel':user.onModel,
+        'createdAt':user.createdAt,
+        'updatedAt':user.updatedAt
       }),
     );
 
