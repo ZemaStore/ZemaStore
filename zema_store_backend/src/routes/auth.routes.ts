@@ -2,6 +2,7 @@ import { Router } from "express";
 
 import {
   forgotPassword,
+  refreshToken,
   resetPassword,
   signIn,
   signUp,
@@ -14,5 +15,6 @@ router.route("/sign-up").post(signUp);
 router.route("/sign-in").post(signIn);
 router.route("/forgot-password").post(forgotPassword);
 router.route("/reset-password").patch(verifyOTP, resetPassword);
+router.route("/token/refresh").patch(refreshToken);
 
 export default (() => Router().use("/auth", router))();

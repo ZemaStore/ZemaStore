@@ -1,13 +1,27 @@
 import { Request, Response, NextFunction } from "express";
 import * as bcrypt from "bcryptjs";
+import { isNil } from "lodash";
 
 import Role from "../models/role";
 import User, { IUserDocument } from "../models/user";
-import { generateAccessToken } from "../services/auth-token";
+
+import {
+  getAccessToken,
+  getRefreshToken,
+  validateRefreshToken,
+} from "../services/auth-token";
 import { sendOtpCode, sendWelcomeEmail } from "../services/emails/send-email";
 import Generate_OTP from "../services/generate-code";
+
 import CustomerProfile from "../models/customer-profile";
-import { forgotPasswordSchema, resetPasswordSchema, signInSchema, signUpSchema } from "../validation-schemas/auth.schemas";
+
+import {
+  forgotPasswordSchema,
+  refreshTokenSchema,
+  resetPasswordSchema,
+  signInSchema,
+  signUpSchema,
+} from "../validation-schemas/auth.schemas";
 
 const signUp = async (req: Request, res: Response, _next: NextFunction) => {
   try {
@@ -54,14 +68,18 @@ const signUp = async (req: Request, res: Response, _next: NextFunction) => {
     const payload = {
       _id: user._id,
     };
-    const token = await generateAccessToken(payload);
-    return res.status(201).json({
+    const accessToken = await getAccessToken(payload);
+    const refreshToken = await getRefreshToken(payload);
+
+    return res.status(200).json({
       success: true,
       message: "User created successfully!",
-      data: { user, token },
+      data: { user, accessToken, refreshToken },
     });
   } catch (e) {
-    return res.status(500).json({ success: false, message: (e as Error).message });
+    return res
+      .status(500)
+      .json({ success: false, message: (e as Error).message });
   }
 };
 
@@ -98,11 +116,13 @@ const signIn = async (req: Request, res: Response, _next: NextFunction) => {
       _id: user._id,
     };
 
-    const token = await generateAccessToken(payload);
+    const accessToken = await getAccessToken(payload);
+    const refreshToken = await getRefreshToken(payload);
+
     res.status(200).send({
       success: true,
       message: "user signed in successfully.",
-      data: { user, token },
+      data: { user, accessToken, refreshToken },
     });
   } catch (e) {
     return res
@@ -147,7 +167,8 @@ const forgotPassword = async (req: Request, res: Response) => {
 
     res.status(200).send({
       success: true,
-      message: "Password reset code is sent to your email, please visit your email to get the code in the next 10 mins.",
+      message:
+        "Password reset code is sent to your email, please visit your email to get the code in the next 10 mins.",
       data: null,
     });
   } catch (e) {
@@ -193,4 +214,40 @@ const resetPassword = async (req: Request, res: Response) => {
   }
 };
 
-export { signUp, signIn, forgotPassword, resetPassword };
+const refreshToken = async (req: Request, res: Response) => {
+  try {
+    const validate = refreshTokenSchema.validate(req.body);
+    if (validate.error && validate.error !== null) {
+      return res
+        .status(400)
+        .send({ success: false, message: validate.error.message });
+    }
+
+    const refreshToken = req.body.refreshToken;
+    const userId = await validateRefreshToken(refreshToken);
+
+    if (isNil(userId)) {
+      return res.status(400).send({
+        success: false,
+        message: "Refresh token is invalid or expired, Please signin again!",
+      });
+    }
+
+    const payload = {
+      _id: userId,
+    };
+    const accessToken = await getAccessToken(payload);
+
+    res.status(200).send({
+      success: true,
+      data: { accessToken },
+      message: "Token successfully refreshed!",
+    });
+  } catch (e) {
+    return res
+      .status(500)
+      .send({ success: false, message: (e as Error).message });
+  }
+};
+
+export { signUp, signIn, forgotPassword, resetPassword, refreshToken };

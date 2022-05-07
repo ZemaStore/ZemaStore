@@ -5,7 +5,8 @@ dotenv.config({ path: path.resolve(__dirname, "..", "..", ".env") });
 
 const DATABASE_URL = process.env.DATABASE_URL || "";
 const PORT = process.env.PORT || 3000;
-const JWT_SECRET = process.env.JWT_SECRET || "JwtSecret";
+const JWT_ACCESS_TOKEN = process.env.JWT_ACCESS_TOKEN || "JwtSecret";
+const JWT_REFRESH_TOKEN = process.env.JWT_REFRESH_TOKEN || "JwtRefreshToken"
 const SEND_GRID_API_KEY = process.env.SEND_GRID_API_KEY || "";
 const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID || "";
 const TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN || "";
@@ -17,7 +18,8 @@ const API_KEY = process.env.API_KEY || "";
 const configs = {
   DATABASE_URL,
   PORT,
-  JWT_SECRET,
+  JWT_ACCESS_TOKEN,
+  JWT_REFRESH_TOKEN,
   TWILIO_ACCOUNT_SID,
   TWILIO_AUTH_TOKEN,
   TWILIO_NUMBER,

@@ -1,0 +1,1021 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Zema Store API with Swagger",
+        "version": "1.0.0",
+        "description": "Zema Store API",
+        "contact": {
+            "name": "Zema Store",
+            "url": "http://zema-store.herokuapp.com",
+            "email": "henokadane8@gmail.com"
+        }
+    },
+    "servers": [
+        {
+            "url": "http://zema-store.herokuapp.com/api"
+        },
+        {
+            "url": "http://localhost:3000/api"
+        }
+    ],
+    "tags": [
+        {
+            "name": "Authorization",
+            "description": "Endpoints related to authorization"
+        }
+    ],
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "paths": {
+        "/auth/sign-up": {
+            "post": {
+                "tags": [
+                    "Authorization"
+                ],
+                "summary": "Signs up user",
+                "description": "Signs up new user using email and password",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/User"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OkResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Error response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/sign-in": {
+            "post": {
+                "tags": [
+                    "Authorization"
+                ],
+                "summary": "Signs in user",
+                "description": "Signs in registered user using email and password",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SignInUser"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OkResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Error response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/forgot-password": {
+            "post": {
+                "tags": [
+                    "Authorization"
+                ],
+                "summary": "Sends password reset code",
+                "description": "Receives email and sends reset code through email",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "description": "User email address"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OkResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/reset-password": {
+            "patch": {
+                "tags": [
+                    "Authorization"
+                ],
+                "summary": "Resets password",
+                "description": "Resets user password if code is correct",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "description": "User email address"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "description": "User password"
+                                    },
+                                    "code": {
+                                        "type": "string",
+                                        "description": "Reset code"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OkResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/token/refresh": {
+            "patch": {
+                "tags": [
+                    "Authorization"
+                ],
+                "summary": "Refreshs token",
+                "description": "Receives refresh token and returns a valid access token",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "refreshToken": {
+                                        "type": "string",
+                                        "description": "Valid refresh token"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OkResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Returns list of users",
+                "description": "Returns list of all users with pagination",
+                "security": [
+                    {
+                        "bearerAuthorization": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OkResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/{id}": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Gets user data",
+                "description": "Gets user data with the specified id",
+                "security": [
+                    {
+                        "bearerAuthorization": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "description": "id of the specified user"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OkResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Updates user data",
+                "description": "Updates user data with specified id",
+                "security": [
+                    {
+                        "bearerAuthorization": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "description": "id of the specified user"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OkResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/songs": {
+            "get": {
+                "tags": [
+                    "Songs"
+                ],
+                "summary": "Returns list of songs",
+                "description": "Returns list of all songs",
+                "security": [
+                    {
+                        "bearerAuthorization": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OkResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Songs"
+                ],
+                "summary": "Adds a song",
+                "description": "Adds a song",
+                "security": [
+                    {
+                        "bearerAuthorization": []
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SongRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OkResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/songs/{id}": {
+            "get": {
+                "tags": [
+                    "Songs"
+                ],
+                "summary": "Returns song data",
+                "description": "Returns song data with specified id",
+                "security": [
+                    {
+                        "bearerAuthorization": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "description": "id of the specified song"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OkResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "Songs"
+                ],
+                "summary": "Updates song data",
+                "description": "Updates song data with specified id",
+                "security": [
+                    {
+                        "bearerAuthorization": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "description": "id of the specified song"
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SongRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OkResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Songs"
+                ],
+                "summary": "Deletes song data",
+                "description": "Deletes song data specified by id",
+                "security": [
+                    {
+                        "bearerAuthorization": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "description": "id of the specified song"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OkResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/artists": {
+            "get": {
+                "tags": [
+                    "Artists"
+                ],
+                "summary": "Returns list of artists",
+                "description": "Returns list of all artists",
+                "security": [
+                    {
+                        "bearerAuthorization": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OkResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Artists"
+                ],
+                "summary": "Adds an artist",
+                "description": "Adds an artist",
+                "security": [
+                    {
+                        "bearerAuthorization": []
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Artist"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OkResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/artists/{id}": {
+            "get": {
+                "tags": [
+                    "Artists"
+                ],
+                "summary": "Returns artist data",
+                "description": "Returns artist data specified by id",
+                "security": [
+                    {
+                        "bearerAuthorization": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "description": "id of the specified artist"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OkResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "Artists"
+                ],
+                "summary": "Updates artist data",
+                "description": "Updates artist data with specified id",
+                "security": [
+                    {
+                        "bearerAuthorization": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "description": "id of the specified artist"
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Artist"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OkResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Artists"
+                ],
+                "summary": "Deletes artist data",
+                "description": "Deletes artist data with specified id",
+                "security": [
+                    {
+                        "bearerAurhorization": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "description": "id of the specified artist"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OkResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "bearerAuthorization": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT",
+                "description": "Token should be accessToken for user"
+            }
+        },
+        "responses": {
+            "unauthorized": {
+                "description": "Unauthorized, must add authorization token or token is invalid. Please try to get new access token with refresh token, or signin again",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "bad-request": {
+                "description": "Bad request, the data that you sent is not valid or incomplete",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "forbidden": {
+                "description": "Forbidden, you are not allowed to call this operation",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "not-found": {
+                "description": "Some resource that is needed for request completion is not found"
+            },
+            "timeout": {
+                "description": "Request timed out, please try again",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "internal-server-error": {
+                "description": "Internal server error, something wrong and unhandled happened on API",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "found": {
+                "description": "An item that you want to add is probably already in database"
+            }
+        },
+        "schemas": {
+            "SuccessMessage": {
+                "type": "string",
+                "description": "Success message",
+                "nullable": true,
+                "required": true
+            },
+            "OnlyMessageResponse": {
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "$ref": "#/components/schemas/SuccessMessage"
+                    }
+                }
+            },
+            "ErrorResponse": {
+                "type": "object",
+                "properties": {
+                    "error": {
+                        "type": "string",
+                        "description": "Error message",
+                        "required": true
+                    },
+                    "data": {
+                        "type": "object",
+                        "required": true,
+                        "nullable": true
+                    }
+                }
+            },
+            "OkResponse": {
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "$ref": "#/components/schemas/SuccessMessage"
+                    },
+                    "data": {
+                        "type": "object",
+                        "required": true,
+                        "nullable": false
+                    }
+                },
+                "required": [
+                    "message",
+                    "data"
+                ]
+            },
+            "User": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "description": "Valid email address"
+                    },
+                    "password": {
+                        "type": "string",
+                        "description": "Password"
+                    },
+                    "phone": {
+                        "type": "string",
+                        "description": "User phone number"
+                    },
+                    "fullName": {
+                        "type": "string",
+                        "description": "Full Name"
+                    }
+                },
+                "required": [
+                    "email",
+                    "password",
+                    "fullName",
+                    "address"
+                ]
+            },
+            "Artist": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "description": "Valid email address"
+                    },
+                    "password": {
+                        "type": "string",
+                        "description": "Password"
+                    },
+                    "photo": {
+                        "type": "string",
+                        "format": "binary",
+                        "description": "Image of the artist"
+                    },
+                    "phone": {
+                        "type": "string",
+                        "description": "User phone number"
+                    },
+                    "fullName": {
+                        "type": "string",
+                        "description": "Full Name"
+                    }
+                },
+                "required": [
+                    "email",
+                    "password",
+                    "fullName",
+                    "address"
+                ]
+            },
+            "SignInUser": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "example": "test1@test.com",
+                        "description": "User email address"
+                    },
+                    "password": {
+                        "type": "string",
+                        "example": "Test1234-!",
+                        "description": "Password"
+                    }
+                }
+            },
+            "SongRequest": {
+                "type": "object",
+                "properties": {
+                    "albumId": {
+                        "type": "string",
+                        "description": "Album Id"
+                    },
+                    "artistId": {
+                        "type": "string",
+                        "description": "Artist Id"
+                    },
+                    "title": {
+                        "type": "string",
+                        "description": "Song title"
+                    },
+                    "song": {
+                        "type": "string",
+                        "format": "binary",
+                        "description": "Song file"
+                    },
+                    "genre": {
+                        "type": "string",
+                        "description": "Song genre",
+                        "enum": [
+                            "reggae",
+                            "pop",
+                            "rock"
+                        ]
+                    },
+                    "length": {
+                        "type": "number",
+                        "description": "Song duration"
+                    },
+                    "releaseDate": {
+                        "type": "string",
+                        "description": "Song release date",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "albumId",
+                    "artistId",
+                    "title",
+                    "song",
+                    "length",
+                    "releaseDate"
+                ]
+            }
+        }
+    }
+}

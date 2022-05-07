@@ -1,12 +1,46 @@
 import express from "express";
-const cors = require("cors");
+import cors from "cors";
+import swaggerUi from "swagger-ui-express";
 
-import { artistRouter, authRouter, songRouter } from "./routes/index.routes";
+import { getSwaggerDoc } from "./services/config";
+
+import {
+  artistRouter,
+  authRouter,
+  songRouter,
+  userRouter,
+} from "./routes/index.routes";
+
+const corsOptions = {
+  origin: "*",
+  optionSuccessStatus: 200,
+  credentials: true,
+};
 
 const app = express();
+app.use(cors(corsOptions));
 
+var options = {
+  swaggerOptions: {
+    authAction: {
+      JWT: {
+        name: "JWT",
+        schema: {
+          type: "apiKey",
+          in: "header",
+          name: "Authorization",
+          description: "",
+        },
+        value: "Bearer <JWT>",
+      },
+    },
+  },
+};
 
-app.use(cors())
+(async () => {
+  const swagger = await getSwaggerDoc();
+  app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swagger, options));
+})();
 
 app.get("/api", (req, res) => {
   res.send("Welcome to zema store!");
@@ -19,5 +53,6 @@ app.use(express.static(__dirname));
 app.use("/api", authRouter);
 app.use("/api", songRouter);
 app.use("/api", artistRouter);
+app.use("/api", userRouter);
 
 export default app;

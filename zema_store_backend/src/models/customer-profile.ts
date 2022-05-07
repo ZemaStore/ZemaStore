@@ -10,6 +10,9 @@ const profileSchema: Schema<ICustomerProfileDocument> = new Schema({
     type: String,
     required: true,
   },
+  subscriptionId: {
+    type: mongoose.Schema.Types.ObjectId,
+  },
 });
 
 const CustomerProfile = mongoose.model<ICustomerProfileDocument>(

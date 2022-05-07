@@ -2,15 +2,13 @@ import Joi from "joi";
 
 const signInSchema = Joi.object({
   email: Joi.string().email().required(),
-  password: Joi.string()
-    .min(8)
-    .required(),
+  password: Joi.string().min(8).required(),
 });
 
 const signUpSchema = Joi.object({
   email: Joi.string().email().required(),
   phone: Joi.string()
-    .length(10)
+    .min(10)
     .pattern(/^[0-9]+$/)
     .required(),
   fullName: Joi.string().min(4),
@@ -39,9 +37,14 @@ const resetPasswordSchema = Joi.object({
     .required(),
 });
 
+const refreshTokenSchema = Joi.object({
+  refreshToken: Joi.string().required(),
+});
+
 export {
   signInSchema,
   signUpSchema,
   forgotPasswordSchema,
   resetPasswordSchema,
+  refreshTokenSchema
 };
