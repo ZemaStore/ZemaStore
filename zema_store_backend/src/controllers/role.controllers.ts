@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 
-import Role from "../models/role";
+import Role from "../models/mongoose/role";
 
 export const addRole = async (req: Request, res: Response) => {
   const { name } = req.body.name;

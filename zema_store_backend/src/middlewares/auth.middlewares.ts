@@ -1,10 +1,8 @@
 import { Request, Response, NextFunction } from "express";
-import jwt from "jsonwebtoken";
 import { isNil } from "lodash";
 
-import configs from "../configs/app.configs";
-import Role from "../models/role";
-import User from "../models/user";
+import Role from "../models/mongoose/role";
+import User from "../models/mongoose/user";
 import { validateAccessToken } from "../services/auth-token";
 
 const isAuthorized = async (
@@ -88,8 +86,8 @@ const verifyOTP = async (req: Request, res: Response, next: NextFunction) => {
       throw new Error("Invalid or expired code.");
     }
 
-    req["email"] = email;
-    req["code"] = code;
+    res.locals.email = email;
+    res.locals.code = code;
 
     next();
   } catch (e) {

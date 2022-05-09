@@ -2,8 +2,8 @@ import { Request, Response, NextFunction } from "express";
 import * as bcrypt from "bcryptjs";
 import { isNil } from "lodash";
 
-import Role from "../models/role";
-import User, { IUserDocument } from "../models/user";
+import Role from "../models/mongoose/role";
+import User, { IUserDocument } from "../models/mongoose/user";
 
 import {
   getAccessToken,
@@ -13,7 +13,7 @@ import {
 import { sendOtpCode, sendWelcomeEmail } from "../services/emails/send-email";
 import Generate_OTP from "../services/generate-code";
 
-import CustomerProfile from "../models/customer-profile";
+import CustomerProfile from "../models/mongoose/customer-profile";
 
 import {
   forgotPasswordSchema,
@@ -190,7 +190,7 @@ const resetPassword = async (req: Request, res: Response) => {
     }
 
     const user = await User.findOne({
-      email: req["email"],
+      email: res.locals.email,
     });
 
     if (!user) {
@@ -225,7 +225,7 @@ const refreshToken = async (req: Request, res: Response) => {
 
     const refreshToken = req.body.refreshToken;
     const userId = await validateRefreshToken(refreshToken);
-
+    
     if (isNil(userId)) {
       return res.status(400).send({
         success: false,

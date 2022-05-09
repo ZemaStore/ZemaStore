@@ -5,9 +5,28 @@ const getSongSchema = Joi.object({
 });
 
 const getSongsSchema = Joi.object({
-  limit: Joi.string(),
-  skip: Joi.string(),
+  page: Joi.number(),
   sortBy: Joi.string(),
+});
+
+const getSongsByArtistSchema = Joi.object({
+  params: {
+    artistId: Joi.string().hex().required(),
+  },
+  query: {
+    page: Joi.number(),
+    sortBy: Joi.string(),
+  },
+});
+
+const getSongsByAlbumSchema = Joi.object({
+  params: {
+    albumId: Joi.string().hex().required(),
+  },
+  query: {
+    page: Joi.number(),
+    sortBy: Joi.string(),
+  },
 });
 
 const addSongSchema = Joi.object({
@@ -42,6 +61,8 @@ const deleteSongSchema = Joi.object({
 export {
   getSongSchema,
   getSongsSchema,
+  getSongsByAlbumSchema,
+  getSongsByArtistSchema,
   addSongSchema,
   updateSongSchema,
   deleteSongSchema,

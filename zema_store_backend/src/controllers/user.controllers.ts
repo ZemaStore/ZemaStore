@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
 import { isNil } from "lodash";
 import { cloudinaryUploader } from "../middlewares/cloudinary.middlewares";
-import CustomerProfile from "../models/customer-profile";
-import Role from "../models/role";
+import CustomerProfile from "../models/mongoose/customer-profile";
+import Role from "../models/mongoose/role";
 
-import User from "../models/user";
+import User from "../models/mongoose/user";
 import {
   getUserSchema,
   getUsersSchema,

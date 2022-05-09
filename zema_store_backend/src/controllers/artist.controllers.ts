@@ -2,10 +2,14 @@ import { Request, Response } from "express";
 import { isNil } from "lodash";
 
 import { cloudinaryUploader } from "../middlewares/cloudinary.middlewares";
-import ArtistProfie from "../models/artist-profile";
-import Role from "../models/role";
-import User, { IUserDocument } from "../models/user";
+import ArtistProfie from "../models/mongoose/artist-profile";
+import Role from "../models/mongoose/role";
+import User, { IUserDocument } from "../models/mongoose/user";
+import ErrorResponse from "../models/responses/error-response.model";
+import OkResponse from "../models/responses/ok-response.model";
 import { sendWelcomeEmail } from "../services/emails/send-email";
+import Utils from "../utils/utils";
+
 import {
   addArtistSchema,
   deleteArtistSchema,
@@ -20,7 +24,7 @@ const getArtist = async (req: Request, res: Response) => {
     if (validate.error && validate.error !== null) {
       return res
         .status(400)
-        .send({ success: false, message: validate.error.message });
+        .send(new ErrorResponse(validate.error.message, null));
     }
 
     const user = await User.findById(req.params.id).populate("profileId");
@@ -29,9 +33,7 @@ const getArtist = async (req: Request, res: Response) => {
 
     res.status(200).send({ success: true, data: user });
   } catch (e) {
-    return res
-      .status(500)
-      .send({ success: false, message: (e as Error).message });
+    Utils.instance.handleResponseException(res, e);
   }
 };
 
@@ -41,7 +43,7 @@ const getArtists = async (req: Request, res: Response) => {
     if (validate.error && validate.error !== null) {
       return res
         .status(400)
-        .send({ success: false, message: validate.error.message });
+        .send(new ErrorResponse(validate.error.message, null));
     }
 
     const { limit = "10", skip = "0", sortBy } = req.query;
@@ -65,11 +67,11 @@ const getArtists = async (req: Request, res: Response) => {
       .sort(sort)
       .populate("profileId");
 
-    res.status(200).send({ success: true, data: users });
+    res
+      .status(200)
+      .send(new OkResponse(users, "Artists successfully fetched!"));
   } catch (e) {
-    return res
-      .status(500)
-      .send({ success: false, message: (e as Error).message });
+    Utils.instance.handleResponseException(res, e);
   }
 };
 
@@ -130,13 +132,11 @@ const addArtist = async (req: Request, res: Response) => {
 
     const savedUser = await User.findById(user._id).populate("profileId");
 
-    // sendWelcomeEmail(email, fullName);
+    sendWelcomeEmail(email, fullName);
 
     return res.status(201).send({ success: true, data: savedUser });
   } catch (e) {
-    return res
-      .status(500)
-      .send({ success: false, message: (e as Error).message });
+    Utils.instance.handleResponseException(res, e);
   }
 };
 
@@ -196,9 +196,7 @@ const updateArtist = async (req: Request, res: Response) => {
 
     res.status(200).send({ success: true, data: udpatedUser });
   } catch (e) {
-    return res
-      .status(500)
-      .send({ success: false, message: (e as Error).message });
+    Utils.instance.handleResponseException(res, e);
   }
 };
 
@@ -222,9 +220,7 @@ const deleteArtist = async (req: Request, res: Response) => {
 
     res.status(200).send({ success: true, data: user });
   } catch (e) {
-    return res
-      .status(500)
-      .send({ success: false, message: (e as Error).message });
+    Utils.instance.handleResponseException(res, e);
   }
 };
 

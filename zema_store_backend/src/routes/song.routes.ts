@@ -4,6 +4,8 @@ import {
   deleteSong,
   getSong,
   getSongs,
+  getSongsByAlbum,
+  getSongsByArtist,
   updateSong,
 } from "../controllers/song.controllers";
 import { isAdmin } from "../middlewares/auth.middlewares";
@@ -18,5 +20,9 @@ router
   .get(getSong)
   .patch(audioUploader.single("song"), updateSong)
   .delete(deleteSong);
+
+router.route("/album/:albumId").get(getSongsByAlbum);
+
+router.route("/artist/:artistId").get(getSongsByArtist);
 
 export default (() => Router().use("/songs", isAdmin, router))();

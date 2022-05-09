@@ -5,8 +5,7 @@ const getArtistSchema = Joi.object({
 });
 
 const getArtistsSchema = Joi.object({
-  limit: Joi.string(),
-  skip: Joi.string(),
+  page: Joi.number(),
   sortBy: Joi.string(),
 });
 

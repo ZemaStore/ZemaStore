@@ -5,6 +5,7 @@ import swaggerUi from "swagger-ui-express";
 import { getSwaggerDoc } from "./services/config";
 
 import {
+  albumRouter,
   artistRouter,
   authRouter,
   songRouter,
@@ -54,5 +55,6 @@ app.use("/api", authRouter);
 app.use("/api", songRouter);
 app.use("/api", artistRouter);
 app.use("/api", userRouter);
+app.use("/api", albumRouter);
 
 export default app;

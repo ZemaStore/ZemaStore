@@ -379,6 +379,26 @@
                         "bearerAuthorization": []
                     }
                 ],
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "page",
+                        "type": "integer",
+                        "description": "The page number of song items to return"
+                    },
+                    {
+                        "in": "query",
+                        "name": "sortBy",
+                        "type": "string",
+                        "description": "song object field to sort returned songs",
+                        "enum": [
+                            "title",
+                            "releaseDate",
+                            "createdAt"
+                        ],
+                        "example": "title:asc"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "content": {
@@ -573,6 +593,126 @@
                 }
             }
         },
+        "/songs/album/{albumId}": {
+            "get": {
+                "tags": [
+                    "Songs"
+                ],
+                "summary": "Returns list of songs",
+                "description": "Returns list of songs that belong to an album",
+                "security": [
+                    {
+                        "bearerAuthorization": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "albumId",
+                        "required": true,
+                        "description": "id of the specified album"
+                    },
+                    {
+                        "in": "query",
+                        "name": "page",
+                        "type": "integer",
+                        "description": "The page number of song items to return"
+                    },
+                    {
+                        "in": "query",
+                        "name": "sortBy",
+                        "type": "string",
+                        "description": "song object field to sort returned songs",
+                        "enum": [
+                            "title",
+                            "releaseDate",
+                            "createdAt"
+                        ],
+                        "example": "title:asc"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OkResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/songs/artist/{artistId}": {
+            "get": {
+                "tags": [
+                    "Songs"
+                ],
+                "summary": "Returns list of songs",
+                "description": "Returns list of songs that belogn to an artist",
+                "security": [
+                    {
+                        "bearerAuthorization": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "artistId",
+                        "required": true,
+                        "description": "id of the specified artist"
+                    },
+                    {
+                        "in": "query",
+                        "name": "page",
+                        "type": "integer",
+                        "description": "The page number of song items to return"
+                    },
+                    {
+                        "in": "query",
+                        "name": "sortBy",
+                        "type": "string",
+                        "description": "song object field to sort returned songs",
+                        "enum": [
+                            "title",
+                            "releaseDate",
+                            "createdAt"
+                        ],
+                        "example": "title:asc"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OkResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/artists": {
             "get": {
                 "tags": [
@@ -583,6 +723,24 @@
                 "security": [
                     {
                         "bearerAuthorization": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "page",
+                        "type": "integer",
+                        "description": "The page number of artist items to return"
+                    },
+                    {
+                        "in": "query",
+                        "name": "sortBy",
+                        "type": "string",
+                        "description": "artist object field to sort returned artists",
+                        "enum": [
+                            "createdAt"
+                        ],
+                        "example": "createdAt:desc"
                     }
                 ],
                 "responses": {
@@ -619,7 +777,7 @@
                 ],
                 "requestBody": {
                     "content": {
-                        "application/json": {
+                        "multipart/form-data": {
                             "schema": {
                                 "$ref": "#/components/schemas/Artist"
                             }
@@ -710,7 +868,7 @@
                 ],
                 "requestBody": {
                     "content": {
-                        "application/json": {
+                        "multipart/form-data": {
                             "schema": {
                                 "$ref": "#/components/schemas/Artist"
                             }
@@ -755,6 +913,290 @@
                         "name": "id",
                         "required": true,
                         "description": "id of the specified artist"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OkResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/albums/{id}": {
+            "get": {
+                "tags": [
+                    "Albums"
+                ],
+                "summary": "Returns album data",
+                "description": "Returns album data specified by id",
+                "security": [
+                    {
+                        "bearerAuthorization": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "description": "id of the specified album"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OkResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "Albums"
+                ],
+                "summary": "Updates album data",
+                "description": "Updates album data with specified id",
+                "security": [
+                    {
+                        "bearerAuthorization": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "description": "id of the specified album"
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Album"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OkResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Albums"
+                ],
+                "summary": "Deletes album data",
+                "description": "Deletes album data with specified id",
+                "security": [
+                    {
+                        "bearerAuthorization": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "description": "id of the specified album"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OkResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/albums": {
+            "get": {
+                "tags": [
+                    "Albums"
+                ],
+                "summary": "Returns list of albums",
+                "description": "Returns list of all albums with pagination",
+                "security": [
+                    {
+                        "bearerAuthorization": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "page",
+                        "type": "integer",
+                        "description": "The page number of album items to return"
+                    },
+                    {
+                        "in": "query",
+                        "name": "sortBy",
+                        "type": "string",
+                        "description": "album object field to sort returned albums",
+                        "enum": [
+                            "title",
+                            "createdAt"
+                        ],
+                        "example": "title:asc"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OkResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Albums"
+                ],
+                "summary": "Adds album",
+                "description": "Adds album",
+                "security": [
+                    {
+                        "bearerAuthorization": []
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Album"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OkResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/albums/artist/{artistId}": {
+            "get": {
+                "tags": [
+                    "Albums"
+                ],
+                "summary": "Returns list of albums",
+                "description": "Returns list of albums that belong to an artist",
+                "security": [
+                    {
+                        "bearerAuthorization": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "artistId",
+                        "required": true,
+                        "description": "id of the specified album"
+                    },
+                    {
+                        "in": "query",
+                        "name": "page",
+                        "type": "integer",
+                        "description": "The page number of album items to return"
+                    },
+                    {
+                        "in": "query",
+                        "name": "sortBy",
+                        "type": "string",
+                        "description": "album object field to sort returned albums",
+                        "enum": [
+                            "title",
+                            "createdAt"
+                        ],
+                        "example": "title:asc"
                     }
                 ],
                 "responses": {
@@ -952,6 +1394,30 @@
                     "fullName",
                     "address"
                 ]
+            },
+            "Album": {
+                "type": "object",
+                "properties": {
+                    "artistId": {
+                        "type": "string",
+                        "description": "Artist Id"
+                    },
+                    "title": {
+                        "type": "string",
+                        "description": "Album title"
+                    },
+                    "photo": {
+                        "type": "string",
+                        "format": "binary",
+                        "description": "Album photo"
+                    },
+                    "releaseDate": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Album release date",
+                        "example": "2022-07-21"
+                    }
+                }
             },
             "SignInUser": {
                 "type": "object",

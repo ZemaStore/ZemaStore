@@ -1,17 +1,27 @@
 import { Request, Response } from "express";
+import { isNil } from "lodash";
 
 import {
   cloudinaryRemover,
   cloudinaryUploader,
 } from "../middlewares/cloudinary.middlewares";
-import Song from "../models/song";
+
+import Song from "../models/mongoose/song";
+import ErrorResponse from "../models/responses/error-response.model";
+import OkResponse from "../models/responses/ok-response.model";
+import Utils from "../utils/utils";
+
 import {
   addSongSchema,
   deleteSongSchema,
+  getSongsByAlbumSchema,
+  getSongsByArtistSchema,
   getSongSchema,
   getSongsSchema,
   updateSongSchema,
 } from "../validation-schemas/song.schemas";
+
+const limit = 10;
 
 const getSong = async (req: Request, res: Response) => {
   try {
@@ -38,30 +48,119 @@ const getSong = async (req: Request, res: Response) => {
 
 const getSongs = async (req: Request, res: Response) => {
   try {
-    const { limit = "10", skip = "0", sortBy } = req.query;
+    const validate = getSongsSchema.validate(req.query);
+    if (validate.error && validate.error !== null) {
+      return res
+        .status(400)
+        .send(new ErrorResponse(validate.error.message, null));
+    }
+
+    const page: number = isNil(req.query.page)
+      ? 0
+      : parseInt(req.query.page as string);
+    const sortBy: string = req.query.sortBy as string;
+
     const sort = {};
     if (sortBy) {
       const parts = sortBy.toString().split(" ");
       const val = parts[1] === "asc" ? 1 : -1;
       sort[parts[0]] = val;
-    }
-    const validate = getSongsSchema.validate(req.query);
-    if (validate.error && validate.error !== null) {
-      return res
-        .status(400)
-        .send({ success: false, message: validate.error.message });
+    } else {
+      sort["createdAt"] = -1;
     }
 
     const songs = await Song.find({})
-      .limit(parseInt(limit.toString()))
-      .skip(parseInt(skip.toString()))
+      .limit(limit)
+      .skip(page * limit)
       .sort(sort);
 
-    res.status(200).send({ success: true, data: songs });
+    res.status(200).send(new OkResponse(songs, "Songs successfully fetched!"));
   } catch (e) {
-    return res
-      .status(500)
-      .send({ success: false, message: (e as Error).message });
+    Utils.instance.handleResponseException(res, e);
+  }
+};
+
+const getSongsByAlbum = async (req: Request, res: Response) => {
+  try {
+    const params = req.params;
+    const query = req.query;
+    const validate = getSongsByAlbumSchema.validate(
+      { params, query },
+      { abortEarly: false }
+    );
+    if (validate.error && validate.error !== null) {
+      return res
+        .status(400)
+        .send(new ErrorResponse(validate.error.message, null));
+    }
+
+    const albumId = req.params.albumId;
+    const page: number = isNil(req.query.page)
+      ? 0
+      : parseInt(req.query.page as string);
+    const sortBy: string = req.query.sortBy as string;
+
+    const sort = {};
+    if (sortBy) {
+      const parts = sortBy.toString().split(" ");
+      const val = parts[1] === "asc" ? 1 : -1;
+      sort[parts[0]] = val;
+    } else {
+      sort["createdAt"] = -1;
+    }
+
+    const songs = await Song.find({
+      albumId,
+    })
+      .limit(limit)
+      .skip(page * limit)
+      .sort(sort);
+
+    res.status(200).send(new OkResponse(songs, "Songs successfully fetched!"));
+  } catch (e) {
+    Utils.instance.handleResponseException(res, e);
+  }
+};
+
+const getSongsByArtist = async (req: Request, res: Response) => {
+  try {
+    const params = req.params;
+    const query = req.query;
+    const validate = getSongsByArtistSchema.validate(
+      { params, query },
+      { abortEarly: false }
+    );
+    if (validate.error && validate.error !== null) {
+      return res
+        .status(400)
+        .send(new ErrorResponse(validate.error.message, null));
+    }
+
+    const artistId = req.params.artistId;
+    const page: number = isNil(req.query.page)
+      ? 0
+      : parseInt(req.query.page as string);
+    const sortBy: string = req.query.sortBy as string;
+
+    const sort = {};
+    if (sortBy) {
+      const parts = sortBy.toString().split(" ");
+      const val = parts[1] === "asc" ? 1 : -1;
+      sort[parts[0]] = val;
+    } else {
+      sort["createdAt"] = -1;
+    }
+
+    const songs = await Song.find({
+      artistId,
+    })
+      .limit(limit)
+      .skip(page * limit)
+      .sort(sort);
+
+    res.status(200).send(new OkResponse(songs, "Songs successfully fetched!"));
+  } catch (e) {
+    Utils.instance.handleResponseException(res, e);
   }
 };
 
@@ -150,7 +249,7 @@ const updateSong = async (req: Request, res: Response) => {
       upload = await cloudinaryUploader(
         path,
         "raw",
-        "AudioUploader",
+        "AudioUploads",
         filename,
         res
       );
@@ -217,4 +316,12 @@ const deleteSong = async (req: Request, res: Response) => {
   }
 };
 
-export { getSong, getSongs, addSong, updateSong, deleteSong };
+export {
+  getSong,
+  getSongs,
+  getSongsByAlbum,
+  getSongsByArtist,
+  addSong,
+  updateSong,
+  deleteSong,
+};

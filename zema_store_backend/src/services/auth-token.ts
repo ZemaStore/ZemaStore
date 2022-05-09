@@ -2,11 +2,14 @@ import jwt from "jsonwebtoken";
 import { isNil } from "lodash";
 
 import configs from "../configs/app.configs";
-import User from "../models/user";
+import User from "../models/mongoose/user";
+
+const jwtHashAlgorithm = "HS256";
 
 const getAccessToken = async (payload: any) => {
   return jwt.sign(payload, configs.JWT_ACCESS_TOKEN, {
-    expiresIn: "1800",
+    algorithm: jwtHashAlgorithm,
+    expiresIn: "1800s",
   });
 };
 
@@ -26,6 +29,7 @@ const validateAccessToken = async (accessToken: string) => {
 
 const getRefreshToken = async (payload: any) => {
   return jwt.sign(payload, configs.JWT_REFRESH_TOKEN, {
+    algorithm: jwtHashAlgorithm,
     expiresIn: "90d",
   });
 };
