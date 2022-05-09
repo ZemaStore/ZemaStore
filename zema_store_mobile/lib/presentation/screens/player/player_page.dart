@@ -14,6 +14,9 @@ class _PlayerState extends State<PlayerPage>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text(''),
+      ),
       backgroundColor: Colors.black54,
       body: Container(
         child: Column(children: <Widget>[

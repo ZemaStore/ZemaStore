@@ -54,59 +54,6 @@ class _HomePage extends State<HomePage> with SingleTickerProviderStateMixin, Aut
         ),
       ),
     );
-/*
-    return Scaffold(
-      //drawer: MyDrawer(),
-      *//*appBar: AppBar(
-        title: Text("Song List"),
-      ),*//*
-      body: NestedScrollView(
-        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-          return <Widget>[
-            SliverAppBar(
-              titleSpacing: 10,
-              floating: true,
-              pinned: true,
-              title: Text("Music"),
-              bottom: TabBar(
-                indicatorSize: TabBarIndicatorSize.tab,
-                isScrollable: true,
-                controller: _tabController,
-                labelColor: Theme.of(context).textTheme.bodyText1!.color,
-                unselectedLabelColor: Colors.grey,
-                tabs: [
-                  new Tab(text: "Artists"),
-                  new Tab(text: "Albums"),
-                  new Tab(text: "Songs"),
-                  new Tab(text: "Playlists"),
-                  new Tab(text: "Genre"),
-                  new Tab(text: "Folders"),
-                ],
-              ),
-            ),
-          ];
-        },
-        body: TabBarView(
-          controller: _tabController,
-          children: [
-            SongsListPage(),
-            Albums(),
-            SongsListPage(),
-            SongsListPage(),
-            SongsListPage(),
-            SongsListPage(),
-          ],
-        ),
-      ),
-      floatingActionButton: (
-          widget.user.role_id == "")
-          ? FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () {
-        },
-      )
-          : null,
-    );*/
   }
 
   @override
@@ -127,8 +74,9 @@ class Choice {
 const List<Choice> choices = <Choice>[
   Choice(title: 'STORE'),
   //Choice(title: 'PLAYLIST'),
-  Choice(title: 'SONGS'),
   Choice(title: 'ALBUMS'),
+  Choice(title: 'SONGS'),
+
   Choice(title: 'ARTISTS'),
   Choice(title: 'GENRES'),
   //Choice(title: 'FAVORITES'),
@@ -152,6 +100,8 @@ class ChoicePage extends StatelessWidget{
     playlists.add(playlist);playlists.add(playlist2);*/
     final TextStyle? textStyle = Theme.of(context).textTheme.headline4;
     switch(choice.title){
+      case "ALBUMS":
+        return Albums();
       case "SONGS":
         return Column(
           children: [
@@ -159,8 +109,6 @@ class ChoicePage extends StatelessWidget{
             Expanded(flex: 1,child: BottomPlayerPage()),
           ],
         );
-      case "ALBUMS":
-        return Albums();
       /*case "PLAYLIST":
         return PlayLists(playlists: playlists);*/
       case "ARTISTS":

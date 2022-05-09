@@ -77,14 +77,14 @@ class _ArtistsState extends State<Artists> {
               backgroundImage:AssetImage('assets/artist.png')
           ),
           title: Text(
-            '${SampleData().artists[index].first_name}  ${SampleData().artists[index].last_name}',
+            '${SampleData().artists[index].fullName}  ',
             style: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold
             ),
           ),
           subtitle: Text(
-            '${SampleData().artists[index].follower_number} followers',
+            '${SampleData().artists[index].followerNumber} followers',
             style: TextStyle(
               color: Colors.white,
             ),

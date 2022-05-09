@@ -26,11 +26,9 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     yield RegisterLoading();
     try {
       final bool isCreated = await authenticationRepository.register(
-          profile_id: event.profile_id,
           email: event.email,
           password: event.password,
-          role_id: event.role_id,
-           status: event.status,
+          phone: event.profile_id,
       );
 
       print("logged in user $isCreated");

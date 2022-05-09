@@ -4,8 +4,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:zema_store_mobile/bloc/authentication/login/login.dart';
 import 'package:zema_store_mobile/bloc/authentication/register/register.dart';
+import 'package:zema_store_mobile/data_provider/sample_data.dart';
 import 'package:zema_store_mobile/presentation/button_widget.dart';
 import 'package:zema_store_mobile/presentation/screens/common/forgot_password.dart';
+import 'package:zema_store_mobile/presentation/screens/common/home_page.dart';
 
 class LoginPage extends StatefulWidget{
   _LoginPage createState() => _LoginPage();
@@ -333,8 +335,11 @@ class _LoginPage extends State<LoginPage>{
                             buildSnackError('Accept our Privacy Policy and Term Of Use',
                                 context,
                                 size);
+                            
                           } else {
                             print('register');
+                            register = false;
+                            //Navigator.push(context, MaterialPageRoute(builder: (context)=> HomePage(user: SampleData().user)));
                             BlocProvider.of<RegisterBloc>(context).add(RegisterUser(
               profile_id: '',
               email: _emailKey.toString(),
@@ -352,7 +357,8 @@ class _LoginPage extends State<LoginPage>{
                 //validation for login
                 if (_emailKey.currentState!.validate()) {
                   if (_passwordKey.currentState!.validate()) {
-                    BlocProvider.of<LoginBloc>(context).add(LoginInWithEmailButtonPressed(email: _emailKey.toString(), password: _passwordKey.toString()));
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=> HomePage(user: SampleData().user)));
+                   // BlocProvider.of<LoginBloc>(context).add(LoginInWithEmailButtonPressed(email: _emailKey.toString(), password: _passwordKey.toString()));
                   }
                 }
               }

@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:zema_store_mobile/models/models.dart';
 class SongDataProvider {
-  final _baseUrl = 'http://10.0.2.2:8383/api';
+  final _baseUrl = 'https://zema-store.herokuapp.com/api';
   final http.Client httpClient;
   final String token;
 
@@ -12,7 +12,7 @@ class SongDataProvider {
 
   Future<Song> createSong(Song song) async{
     var data = {
-      'resource_id':song.resource_id,
+      //'resource_id':song.resource_id,
       'url':song.url,
       'title':song.title,
       'genre':song.genre,
@@ -20,7 +20,7 @@ class SongDataProvider {
       'album_id':song.album_id,
       'tags':song.tags,
       'artist_id':song.artist_id,
-      'views':song.views,
+      'listenersCount':song.listenersCount,
       'length':song.length,
       'releasedDate':song.releasedDate,
 
@@ -71,7 +71,7 @@ class SongDataProvider {
   }
   Future<Song> updateSong(String id, Song song) async {
     var data = {
-      'resource_id':song.resource_id,
+      //'resource_id':song.resource_id,
       'url':song.url,
       'title':song.title,
       'genre':song.genre,
@@ -79,7 +79,7 @@ class SongDataProvider {
       'album_id':song.album_id,
       'tags':song.tags,
       'artist_id':song.artist_id,
-      'views':song.views,
+      'listenerCount':song.listenersCount,
       'length':song.length,
       'releasedDate':song.releasedDate,
 
