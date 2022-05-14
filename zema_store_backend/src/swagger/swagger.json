@@ -904,7 +904,7 @@
                 "description": "Deletes artist data with specified id",
                 "security": [
                     {
-                        "bearerAurhorization": []
+                        "bearerAuthorization": []
                     }
                 ],
                 "parameters": [
@@ -1220,6 +1220,231 @@
                     }
                 }
             }
+        },
+        "/playlists/{id}": {
+            "get": {
+                "tags": [
+                    "Playlists"
+                ],
+                "summary": "Returns playlist data",
+                "description": "Returns playlist data specified by id",
+                "security": [
+                    {
+                        "bearerAuthorization": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "description": "id of the specified playlist"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OkResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "Playlists"
+                ],
+                "summary": "Updates playlist data",
+                "description": "Updates playlist data specified by id",
+                "security": [
+                    {
+                        "bearerAuthorization": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "description": "id of the specified playlist"
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Playlist"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OkResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Playlists"
+                ],
+                "summary": "Deletes playlist data",
+                "description": "Deletes playlist data specified by id",
+                "security": [
+                    {
+                        "bearerAuthorization": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "description": "id of the specified playlist"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OkResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/playlists": {
+            "get": {
+                "tags": [
+                    "Playlists"
+                ],
+                "summary": "Returns list of playlists",
+                "description": "Returns list of plaulists with pagination",
+                "security": [
+                    {
+                        "bearerAuthorization": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "page",
+                        "type": "integer",
+                        "description": "The page number of playlist items to return"
+                    },
+                    {
+                        "in": "query",
+                        "name": "sortBy",
+                        "type": "string",
+                        "description": "playlist object field to sort returned albums",
+                        "enum": [
+                            "title",
+                            "createdAt"
+                        ],
+                        "example": "title:asc"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OkResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Playlists"
+                ],
+                "summary": "Creates playlist",
+                "description": "Creates playlist",
+                "security": [
+                    {
+                        "bearerAuthorization": []
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Playlist"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OkResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "components": {
@@ -1481,6 +1706,26 @@
                     "length",
                     "releaseDate"
                 ]
+            },
+            "Playlist": {
+                "type": "object",
+                "properties": {
+                    "userId": {
+                        "type": "string",
+                        "description": "user id"
+                    },
+                    "title": {
+                        "type": "string",
+                        "description": "Playlist title"
+                    },
+                    "songs": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "description": "List of song id"
+                    }
+                }
             }
         }
     }

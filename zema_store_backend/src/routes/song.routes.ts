@@ -1,4 +1,5 @@
 import { Router } from "express";
+
 import {
   addSong,
   deleteSong,
@@ -8,7 +9,8 @@ import {
   getSongsByArtist,
   updateSong,
 } from "../controllers/song.controllers";
-import { isAdmin } from "../middlewares/auth.middlewares";
+
+import { isAuthorized } from "../middlewares/auth.middlewares";
 import { audioUploader } from "../middlewares/multer.middlewares";
 
 const router = Router();
@@ -25,4 +27,4 @@ router.route("/album/:albumId").get(getSongsByAlbum);
 
 router.route("/artist/:artistId").get(getSongsByArtist);
 
-export default (() => Router().use("/songs", isAdmin, router))();
+export default (() => Router().use("/songs", isAuthorized, router))();

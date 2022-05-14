@@ -21,7 +21,7 @@ import {
   updateSongSchema,
 } from "../validation-schemas/song.schemas";
 
-const limit = 10;
+const fetchItemCount = 10;
 
 const getSong = async (req: Request, res: Response) => {
   try {
@@ -29,20 +29,14 @@ const getSong = async (req: Request, res: Response) => {
     if (validate.error && validate.error !== null) {
       return res
         .status(400)
-        .send({ success: false, message: validate.error.message });
+        .send(new ErrorResponse(validate.error.message, null));
     }
 
     const song = await Song.findById(req.params.id);
 
-    res.status(200).send({
-      success: true,
-      message: "song returned successfylly",
-      data: song,
-    });
+    res.status(200).send(new OkResponse(song, "Song successfully fetched!"));
   } catch (e) {
-    return res
-      .status(500)
-      .send({ success: false, message: (e as Error).message });
+    Utils.instance.handleResponseException(res, e);
   }
 };
 
@@ -62,7 +56,7 @@ const getSongs = async (req: Request, res: Response) => {
 
     const sort = {};
     if (sortBy) {
-      const parts = sortBy.toString().split(" ");
+      const parts = sortBy.toString().split(":");
       const val = parts[1] === "asc" ? 1 : -1;
       sort[parts[0]] = val;
     } else {
@@ -70,8 +64,8 @@ const getSongs = async (req: Request, res: Response) => {
     }
 
     const songs = await Song.find({})
-      .limit(limit)
-      .skip(page * limit)
+      .limit(fetchItemCount)
+      .skip(page * fetchItemCount)
       .sort(sort);
 
     res.status(200).send(new OkResponse(songs, "Songs successfully fetched!"));
@@ -102,7 +96,7 @@ const getSongsByAlbum = async (req: Request, res: Response) => {
 
     const sort = {};
     if (sortBy) {
-      const parts = sortBy.toString().split(" ");
+      const parts = sortBy.toString().split(":");
       const val = parts[1] === "asc" ? 1 : -1;
       sort[parts[0]] = val;
     } else {
@@ -112,8 +106,8 @@ const getSongsByAlbum = async (req: Request, res: Response) => {
     const songs = await Song.find({
       albumId,
     })
-      .limit(limit)
-      .skip(page * limit)
+      .limit(fetchItemCount)
+      .skip(page * fetchItemCount)
       .sort(sort);
 
     res.status(200).send(new OkResponse(songs, "Songs successfully fetched!"));
@@ -144,7 +138,7 @@ const getSongsByArtist = async (req: Request, res: Response) => {
 
     const sort = {};
     if (sortBy) {
-      const parts = sortBy.toString().split(" ");
+      const parts = sortBy.toString().split(":");
       const val = parts[1] === "asc" ? 1 : -1;
       sort[parts[0]] = val;
     } else {
@@ -154,8 +148,8 @@ const getSongsByArtist = async (req: Request, res: Response) => {
     const songs = await Song.find({
       artistId,
     })
-      .limit(limit)
-      .skip(page * limit)
+      .limit(fetchItemCount)
+      .skip(page * fetchItemCount)
       .sort(sort);
 
     res.status(200).send(new OkResponse(songs, "Songs successfully fetched!"));
@@ -184,8 +178,6 @@ const addSong = async (req: Request, res: Response) => {
       filename,
       res
     );
-
-    console.log(upload.url.split("/"), "song url");
 
     const songData = new Song({
       albumId,
