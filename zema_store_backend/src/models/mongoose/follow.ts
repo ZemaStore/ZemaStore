@@ -12,15 +12,17 @@ const followerSchema: Schema<IFollowerDocument> = new Schema(
     artistId: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
+      ref: "ArtistProfile",
     },
     customerId: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
+      ref: "CustomerProfile",
     },
   },
   { timestamps: true }
 );
 
-const Follower = mongoose.model<IFollowerDocument>("Follower", followerSchema);
+const Follow = mongoose.model<IFollowerDocument>("Follow", followerSchema);
 
-export default Follower;
+export default Follow;

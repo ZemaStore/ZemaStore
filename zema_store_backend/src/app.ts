@@ -8,6 +8,7 @@ import {
   albumRouter,
   artistRouter,
   authRouter,
+  followRouter,
   playlistRouter,
   songRouter,
   userRouter,
@@ -58,5 +59,6 @@ app.use("/api", artistRouter);
 app.use("/api", userRouter);
 app.use("/api", albumRouter);
 app.use("/api", playlistRouter);
+app.use("/api", followRouter);
 
 export default app;

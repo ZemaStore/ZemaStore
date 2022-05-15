@@ -1445,6 +1445,353 @@
                     }
                 }
             }
+        },
+        "/follows/{id}": {
+            "get": {
+                "tags": [
+                    "Follows"
+                ],
+                "summary": "Returns follow data",
+                "description": "Returns follow data specified by id",
+                "security": [
+                    {
+                        "bearerAuthorization": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "description": "id of the specified follow"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OkResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "Follows"
+                ],
+                "summary": "Updates follow data",
+                "description": "Updates follow data specified by id",
+                "security": [
+                    {
+                        "bearerAuthorization": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "description": "id of the specified album"
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Follow"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OkResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/follows/artist/{artistId}": {
+            "get": {
+                "tags": [
+                    "Follows"
+                ],
+                "summary": "Returns followers of an artist",
+                "description": "Returns followers of an artist",
+                "security": [
+                    {
+                        "bearerAuthorization": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "artistId",
+                        "required": true,
+                        "description": "id of the specified artist"
+                    },
+                    {
+                        "in": "query",
+                        "name": "page",
+                        "type": "integer",
+                        "description": "The page number of followers to return"
+                    },
+                    {
+                        "in": "query",
+                        "name": "sortBy",
+                        "type": "string",
+                        "description": "follow object field to sort returned follows",
+                        "enum": [
+                            "artistId",
+                            "customerId",
+                            "createdAt"
+                        ],
+                        "example": "createdAt:desc"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OkResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/follows/user/{customerId}": {
+            "get": {
+                "tags": [
+                    "Follows"
+                ],
+                "summary": "Returns artists followed by a user",
+                "description": "Returns artists followed by specific user",
+                "security": [
+                    {
+                        "bearerAuthorization": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "customerId",
+                        "required": true,
+                        "description": "id of the specified customer"
+                    },
+                    {
+                        "in": "query",
+                        "name": "page",
+                        "type": "integer",
+                        "description": "The page number of followed artists to return"
+                    },
+                    {
+                        "in": "query",
+                        "name": "sortBy",
+                        "type": "string",
+                        "description": "follow object field to sort returned follows",
+                        "enum": [
+                            "artistId",
+                            "customerId",
+                            "createdAt"
+                        ],
+                        "example": "createdAt:desc"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OkResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/follows": {
+            "get": {
+                "tags": [
+                    "Follows"
+                ],
+                "summary": "Returns list of follow data",
+                "description": "Returns list of follow data",
+                "security": [
+                    {
+                        "bearerAuthorization": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "page",
+                        "type": "integer",
+                        "description": "The page number of follow items to return"
+                    },
+                    {
+                        "in": "query",
+                        "name": "sortBy",
+                        "type": "string",
+                        "description": "follow object field to sort returned follows",
+                        "enum": [
+                            "artistId",
+                            "customerId",
+                            "createdAt"
+                        ],
+                        "example": "createdAt:asc"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OkResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Follows"
+                ],
+                "summary": "Creates follow data",
+                "description": "Creates follow data",
+                "security": [
+                    {
+                        "bearerAuthorization": []
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Follow"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OkResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Follows"
+                ],
+                "summary": "Deletes follow data",
+                "description": "Deletes follow data",
+                "security": [
+                    {
+                        "bearerAuthorization": []
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Follow"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OkResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "components": {
@@ -1724,6 +2071,19 @@
                             "type": "string"
                         },
                         "description": "List of song id"
+                    }
+                }
+            },
+            "Follow": {
+                "type": "object",
+                "properties": {
+                    "artistId": {
+                        "type": "string",
+                        "description": "Artist Id"
+                    },
+                    "customerId": {
+                        "type": "string",
+                        "description": "Customer Id"
                     }
                 }
             }

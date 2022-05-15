@@ -1,4 +1,5 @@
 import { Router } from "express";
+
 import {
   addArtist,
   deleteArtist,
@@ -6,6 +7,7 @@ import {
   getArtists,
   updateArtist,
 } from "../controllers/artist.controllers";
+
 import { isAdmin } from "../middlewares/auth.middlewares";
 import { imageUploader } from "../middlewares/multer.middlewares";
 

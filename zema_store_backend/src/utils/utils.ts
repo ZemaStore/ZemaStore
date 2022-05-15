@@ -1,5 +1,5 @@
 import { isNil } from "lodash";
-import { Response } from "express";
+import { Request, Response } from "express";
 import ExceptionResponse from "../models/responses/exception-response.model";
 
 export default class Utils {
@@ -30,5 +30,23 @@ export default class Utils {
     res
       .status(statusCode)
       .send(new ExceptionResponse((error as Error).message));
+  }
+
+  public getPaginationData(req: Request) {
+    const page: number = isNil(req.query.page)
+      ? 0
+      : parseInt(req.query.page as string);
+    const sortBy: string = req.query.sortBy as string;
+
+    const sort = {};
+    if (sortBy) {
+      const parts = sortBy.toString().split(":");
+      const val = parts[1] === "asc" ? 1 : -1;
+      sort[parts[0]] = val;
+    } else {
+      sort["createdAt"] = -1;
+    }
+
+    return { page, sort };
   }
 }

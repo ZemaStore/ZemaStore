@@ -4,6 +4,7 @@ import artistRouter from "./artist.routes";
 import userRouter from "./user.routes";
 import albumRouter from "./album.routes";
 import playlistRouter from "./playlist.routes";
+import followRouter from "./follow.routes";
 
 export {
   authRouter,
@@ -12,4 +13,5 @@ export {
   userRouter,
   albumRouter,
   playlistRouter,
+  followRouter,
 };
