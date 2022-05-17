@@ -48,8 +48,10 @@ async function createServer() {
   return app;
 }
 
-createServer().then((app) => {
-  app.listen(3000, () => {
+const PORT = process.env.PORT || 3000;
+const server = createServer();
+server().then((app) => {
+  app.listen(PORT, () => {
     console.log("HTTP server is running at http://localhost:3000");
   });
 });

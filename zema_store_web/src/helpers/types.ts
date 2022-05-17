@@ -38,3 +38,25 @@ export type Artist = {
   songsCount: number;
   createdAt: string;
 };
+
+export type Album = {
+  id: string;
+  title: string;
+  cover: string;
+  artist: string;
+  releaseDate: string;
+  songs: number;
+  createdAt: string;
+};
+
+export type Song = {
+  id: string;
+  title: string;
+  cover: string;
+  song?: BinaryData;
+  album: string;
+  genre: string;
+  length: number;
+  releaseDate: string;
+  createdAt: string;
+};

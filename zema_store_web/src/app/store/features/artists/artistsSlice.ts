@@ -34,8 +34,42 @@ export const getArtistsApi = createAsyncThunk<any, any>(
   "/artists",
   async (payload, { rejectWithValue, fulfillWithValue, dispatch }) => {
     try {
-      const { data } = await ArtistsService.getArtists();
-      return fulfillWithValue(data.artists);
+      // const { data } = await ArtistsService.getArtists();
+      return fulfillWithValue([
+        {
+          id: "23243234234234",
+          fullName: "John Doe",
+          avatar:
+            "https://cdn.tuk.dev/assets/templates/olympus/projects(3).png",
+          followers: 12,
+          listenedHours: 4239,
+          albumsCount: 21,
+          songsCount: 21,
+          createdAt: "2020-01-01",
+        },
+        {
+          id: "322323234",
+          fullName: "Jane Doe",
+          avatar:
+            "https://cdn.tuk.dev/assets/templates/olympus/projects(1).png",
+          followers: 12,
+          listenedHours: 4239,
+          albumsCount: 21,
+          songsCount: 21,
+          createdAt: "2020-01-01",
+        },
+        {
+          id: "wef3232423423423",
+          fullName: "Thomas Doe",
+          avatar:
+            "https://cdn.tuk.dev/assets/templates/olympus/projects(1).png",
+          followers: 12,
+          listenedHours: 4239,
+          albumsCount: 21,
+          songsCount: 21,
+          createdAt: "2020-01-01",
+        },
+      ]);
     } catch (err: any) {
       return rejectWithValue(err.response.data);
     }
@@ -46,13 +80,13 @@ export const artistsSlice = createSlice({
   name: "artists",
   initialState,
   reducers: {
-    addUser: (state, { payload }) => {
+    addArtist: (state, { payload }) => {
       state.artists.push(payload);
       state.isLoading = false;
       state.searchArtistsList = state.artists;
     },
     //
-    updateUser: (state, { payload }) => {
+    updateArtist: (state, { payload }) => {
       state.artists =
         state.artists &&
         state.artists.map((artist: Artist) => {
@@ -64,14 +98,14 @@ export const artistsSlice = createSlice({
       state.searchArtistsList = state.artists;
     },
     // can be called when we want to remove User
-    removeUser: (state, { payload: id }) => {
+    removeArtist: (state, { payload: id }) => {
       state.artists =
         state.artists &&
         state.artists.filter((artist: Artist) => artist.id !== id);
       state.isLoading = false;
       state.searchArtistsList = state.artists;
     },
-    searchartists: (
+    searchArtists: (
       state,
       { payload }: { payload: { name: string; tag: string } }
     ) => {
@@ -109,11 +143,11 @@ export const artistsSlice = createSlice({
 
 // Action creators are generated for each case reducer function
 export const {
-  addUser,
-  searchartists,
-  removeUser,
+  addArtist,
+  searchArtists,
+  removeArtist,
   handlePaginate,
-  updateUser,
+  updateArtist,
 } = artistsSlice.actions;
 
 export const artistsSelector = (state: RootState) => state.artists;

@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAppSelector } from "../../app/hooks/redux_hooks";
+import { albumsSelector } from "../../app/store/features/albums/albumsSlice";
+import Loader from "../../common/Widgets/Loader";
 import AddAlbumModal from "../Modals/AddAlbum";
 
 type Props = {};
@@ -8,54 +11,10 @@ const AlbumsTable = (props: Props) => {
   const [show, setShow] = useState<number | null>(0);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const navigate = useNavigate();
-  const onCloseModal = () => {
-    console.log("closing modal");
-    setIsModalOpen(false);
-  };
 
-  const handleModalOpen = () => {
-    setIsModalOpen(true);
-  };
+  const [albums, setAlbums] = useState();
 
-  const [albums, setAlbums] = useState([
-    {
-      id: "23323455232",
-      title: "Single",
-      cover: "https://cdn.tuk.dev/assets/templates/olympus/projects(3).png",
-      artist: "sfasasfda",
-      releaseDate: "2020-02-01",
-      songs: 21,
-      createdAt: "2020-01-01",
-    },
-    {
-      id: "3234234234",
-      title: "John Doe",
-      cover: "https://cdn.tuk.dev/assets/templates/olympus/projects(3).png",
-      artist: "sfasasfda",
-      releaseDate: "2020-02-01",
-      songs: 21,
-      createdAt: "2020-01-01",
-    },
-    {
-      id: "1232322323234",
-      title: "Thomas Doe",
-      cover: "https://cdn.tuk.dev/assets/templates/olympus/projects(1).png",
-      artist: "sfasasfda",
-      releaseDate: "2020-01-01",
-      songs: 21,
-      createdAt: "2020-01-02",
-    },
-    {
-      id: "1wef3232423423423",
-      title: "Thomas Doe",
-
-      cover: "https://cdn.tuk.dev/assets/templates/olympus/projects(2).png",
-      artist: "asdfasdfwerwe",
-      releaseDate: "2020-05-01",
-      songs: 21,
-      createdAt: "2020-01-01",
-    },
-  ]);
+  const { searchAlbumsList, isLoading } = useAppSelector(albumsSelector);
 
   const handleAlbumDetails = (id: string) => (e: any) => {
     console.log("hello world");
@@ -63,29 +22,13 @@ const AlbumsTable = (props: Props) => {
   };
 
   return (
-    <>
-      {isModalOpen && (
-        <AddAlbumModal onClose={onCloseModal} onSubmit={() => {}} />
-      )}
-      <div className="w-full">
-        <div className="px-4 md:px-10 py-4 md:py-7 bg-gray-100 rounded-tl-lg rounded-tr-lg">
-          <div className="sm:flex items-center justify-between">
-            <p className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold leading-normal text-gray-800">
-              Albums
-            </p>
-            <div>
-              <button
-                onClick={handleModalOpen}
-                className="inline-flex sm:ml-3 mt-4 sm:mt-0 items-start justify-start px-6 py-3 bg-indigo-700 hover:bg-indigo-600 focus:outline-none rounded"
-              >
-                <p className="text-sm font-medium leading-none text-white">
-                  Add Album
-                </p>
-              </button>
-            </div>
+    <div className="w-full min-h-full">
+      <div className="bg-white shadow px-4 md:px-10 pt-4 md:pt-7 pb-5 overflow-y-auto">
+        {isLoading ? (
+          <div className="h-full w-full grid place-items-center">
+            <Loader className="h-4 w-4" />
           </div>
-        </div>
-        <div className="bg-white shadow px-4 md:px-10 pt-4 md:pt-7 pb-5 overflow-y-auto">
+        ) : (
           <table className="w-full whitespace-nowrap">
             <thead>
               <tr className="h-16 w-full text-sm leading-none text-gray-800">
@@ -97,8 +40,8 @@ const AlbumsTable = (props: Props) => {
               </tr>
             </thead>
             <tbody className="w-full">
-              {albums.length &&
-                albums.map((album) => {
+              {searchAlbumsList.length ? (
+                searchAlbumsList.map((album) => {
                   return (
                     <tr
                       key={album.id}
@@ -220,12 +163,17 @@ const AlbumsTable = (props: Props) => {
                       </td>
                     </tr>
                   );
-                })}
+                })
+              ) : (
+                <div className="text-center w-full p-10 grid place-items-center min-h-[200px]">
+                  <h1 className="text-4xl font-bold">No Data</h1>
+                </div>
+              )}
             </tbody>
           </table>
-        </div>
+        )}
       </div>
-    </>
+    </div>
   );
 };
 

@@ -6,28 +6,24 @@ const DashboardComponent = (props: Props) => {
   return (
     <div className="mt-20 relative">
       <div className="z-0 my-5 w-full grid grid:cols-2 lg:grid-cols-3 2xl:grid-cols-4 justify-between gap-10">
-        <div className=" bg-white w-full rounded-xl shadow-lg flex items-center justify-around">
-          <img src="https://i.imgur.com/VHc5SJE.png" alt="" />
+        <div className="min-h-[200px] bg-white w-full rounded-xl shadow-lg flex items-center justify-around">
+          <img className="w-24 h-24" src="/images/users.svg" alt="" />
           <div className="text-center">
             <h1 className="text-4xl font-bold text-gray-800">534</h1>
             <span className="text-gray-500">Users</span>
           </div>
         </div>
-        <div className="bg-white w-full rounded-xl shadow-lg flex items-center justify-around">
-          <img
-            className="w-20 h-20"
-            src="https://cdn.pixabay.com/photo/2019/10/09/17/49/headphones-4537928_960_720.png"
-            alt=""
-          />
+        <div className="min-h-[200px] bg-white w-full rounded-xl shadow-lg flex items-center justify-around">
+          <img className="w-24 h-24" src="/images/song.svg" alt="" />
           <div className="text-center">
             <h1 className="text-4xl font-bold text-gray-800">9.43k</h1>
             <span className="text-gray-500">Songs</span>
           </div>
         </div>
-        <div className="bg-white w-full rounded-xl shadow-lg flex items-center justify-around">
+        <div className="min-h-[200px] bg-white w-full rounded-xl shadow-lg flex items-center justify-around">
           <img
-            className="w-20 h-20"
-            src="https://cdn.pixabay.com/photo/2018/12/04/18/04/media-3856203_960_720.png"
+            className="w-24 h-24"
+            src="/images/folder-music.svg"
             alt=""
           />
           <div className="text-center">
@@ -35,10 +31,10 @@ const DashboardComponent = (props: Props) => {
             <span className="text-gray-500">Albums</span>
           </div>
         </div>
-        <div className="bg-white w-full rounded-xl shadow-lg flex items-center justify-around">
+        <div className="min-h-[200px] bg-white w-full rounded-xl shadow-lg flex items-center justify-around">
           <img
-            className="w-20 h-20"
-            src="https://cdn.pixabay.com/photo/2017/07/31/16/13/coin-2558676_960_720.jpg"
+            className="w-24 h-24"
+            src="/images/economy-grow.svg"
             alt=""
           />
           <div className="text-center">
@@ -46,10 +42,10 @@ const DashboardComponent = (props: Props) => {
             <span className="text-gray-500">Total Revenue</span>
           </div>
         </div>
-        <div className="bg-white w-full rounded-xl shadow-lg flex items-center justify-around">
+        <div className="min-h-[200px] bg-white w-full rounded-xl shadow-lg flex items-center justify-around">
           <img
-            className="w-20 h-20"
-            src="https://cdn.pixabay.com/photo/2013/04/01/09/18/calendar-98483_960_720.png"
+            className="w-24 h-24"
+            src="/images/concert.svg"
             alt=""
           />
           <div className="text-center">

@@ -1,6 +1,8 @@
 import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
 import usersReducer from "./features/users/usersSlice";
 import artistsReducer from "./features/artists/artistsSlice";
+import albumsReducer from "./features/albums/albumsSlice";
+import songsReducer from "./features/songs/songsSlice";
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof store.getState>;
@@ -13,6 +15,8 @@ export const createStore = () =>
     reducer: {
       users: usersReducer,
       artists: artistsReducer,
+      albums: albumsReducer,
+      songs: songsReducer,
     },
   });
 
