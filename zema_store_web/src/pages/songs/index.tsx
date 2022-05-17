@@ -54,8 +54,8 @@ function SongsPage(props: Props) {
           </div>
         </div>
         <SongsTable />
+        <Pagination />
       </div>
-      <Pagination />
     </main>
   );
 }

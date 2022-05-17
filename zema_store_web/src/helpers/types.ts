@@ -60,3 +60,12 @@ export type Song = {
   releaseDate: string;
   createdAt: string;
 };
+export type Subscription = {
+  id: string;
+  title: string;
+  summary: string;
+  cover: string;
+  price: number;
+  subType: string;
+  createdAt: string;
+};

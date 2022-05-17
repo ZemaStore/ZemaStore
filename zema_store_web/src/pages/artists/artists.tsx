@@ -1,22 +1,34 @@
 import { useCallback, useEffect, useState } from "react";
 import { useAppDispatch } from "../../app/hooks/redux_hooks";
-import { getAlbumsApi } from "../../app/store/features/albums/albumsSlice";
 import { getArtistsApi } from "../../app/store/features/artists/artistsSlice";
 import Pagination from "../../common/Paginations";
 import ArtistsTable from "../../components/ArtistsTable";
-import AddArtistModal from "../../components/Modals/AddArtist";
+import AddEditArtistModal from "../../components/Modals/AddEditArtist";
+import DeleteModal from "../../components/Modals/DeleteModal";
+import { Artist } from "../../helpers/types";
 
 function ArtistsPage() {
   const dispatch = useAppDispatch();
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isAddModalOpen, setIsAddModalOpen] = useState<boolean>(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
+  const [selectedArtist, setSelectedArtist] = useState<Artist | null>(null);
 
   const onCloseModal = () => {
     console.log("closing modal");
-    setIsModalOpen(false);
+    setIsAddModalOpen(false);
+    setIsEditModalOpen(false);
+    setIsDeleteModalOpen(false);
   };
 
-  const handleModalOpen = () => {
-    setIsModalOpen(true);
+  const handleModalOpen = (modalType = "add") => {
+    if (modalType === "add") {
+      setIsAddModalOpen(true);
+    } else if (modalType === "edit") {
+      setIsEditModalOpen(true);
+    } else {
+      setIsDeleteModalOpen(true);
+    }
   };
 
   const fetchArtists = useCallback(async () => {
@@ -30,8 +42,29 @@ function ArtistsPage() {
   return (
     <main>
       <div className="my-10 min-h-[600px]">
-        {isModalOpen && (
-          <AddArtistModal onClose={onCloseModal} onSubmit={() => {}} />
+        {isAddModalOpen && (
+          <AddEditArtistModal
+            onClose={onCloseModal}
+            onSubmit={() => {}}
+            isEditing={false}
+          />
+        )}{" "}
+        {isEditModalOpen && (
+          <AddEditArtistModal
+            onClose={onCloseModal}
+            artistData={selectedArtist}
+            onSubmit={() => {}}
+            isEditing={true}
+          />
+        )}
+        {isDeleteModalOpen && (
+          <DeleteModal
+            deleteMessage="Delete Artist"
+            deleteDescription="Are you sure you want to delete?"
+            buttonText="Delete"
+            onDelete={onCloseModal}
+            onClose={onCloseModal}
+          />
         )}
         <div className="w-full">
           <div className="px-4 md:px-10 py-4 md:py-7 bg-gray-100 rounded-tl-lg rounded-tr-lg">
@@ -41,7 +74,7 @@ function ArtistsPage() {
               </p>
               <div>
                 <button
-                  onClick={handleModalOpen}
+                  onClick={() => handleModalOpen()}
                   className="inline-flex sm:ml-3 mt-4 sm:mt-0 items-start justify-start px-6 py-3 bg-indigo-700 hover:bg-indigo-600 focus:outline-none rounded"
                 >
                   <p className="text-sm font-medium leading-none text-white">
@@ -51,7 +84,10 @@ function ArtistsPage() {
               </div>
             </div>
           </div>
-          <ArtistsTable />
+          <ArtistsTable
+            handleModalOpen={handleModalOpen}
+            setSelectedArtist={setSelectedArtist}
+          />
         </div>
       </div>
       <Pagination />

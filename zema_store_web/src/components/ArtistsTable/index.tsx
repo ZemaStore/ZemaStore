@@ -3,15 +3,45 @@ import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../app/hooks/redux_hooks";
 import { artistsSelector } from "../../app/store/features/artists/artistsSlice";
 import Loader from "../../common/Widgets/Loader";
+import { Artist } from "../../helpers/types";
 
-type Props = {};
+type Props = {
+  setSelectedArtist: React.Dispatch<React.SetStateAction<Artist | null>>;
+  handleModalOpen: (modalType?: string) => void;
+};
 
 const ArtistsTable = (props: Props) => {
   const [show, setShow] = useState<number | null>(0);
+  const [selectedArtistId, setSelectedArtistId] = useState<string | null>(null);
 
   const { isLoading, searchArtistsList } = useAppSelector(artistsSelector);
 
   const navigate = useNavigate();
+
+  const handleClickMore = (id: string) => (e: any) => {
+    e.stopPropagation();
+    if (selectedArtistId === id) {
+      setSelectedArtistId(null);
+    } else {
+      setSelectedArtistId(id);
+    }
+  };
+
+  const handleEditArtist = (selArtist: Artist) => {
+    try {
+      props.setSelectedArtist(selArtist);
+      setSelectedArtistId(null);
+      props.handleModalOpen("edit");
+    } catch (error) {}
+  };
+
+  const handleDeleteArtist = (selArtist: Artist) => {
+    try {
+      props.setSelectedArtist(selArtist);
+      setSelectedArtistId(null);
+      props.handleModalOpen("delete");
+    } catch (error) {}
+  };
 
   const handleArtistsDetails = (id: string) => (e: any) => {
     console.log("hello world");
@@ -67,9 +97,6 @@ const ArtistsTable = (props: Props) => {
                     </td>
                     <td className="pl-12">
                       <p className="font-medium">{artist.listenedHours}</p>
-                      {/* <p className="text-xs leading-3 text-gray-600 mt-2">
-                          5 tasks pending
-                        </p> */}
                     </td>
                     <td className="pl-20">
                       <p className="font-medium">{artist.albumsCount}</p>
@@ -81,85 +108,57 @@ const ArtistsTable = (props: Props) => {
                       </p>
                     </td>
 
-                    <td className="px-7 2xl:px-0">
-                      {show == 0 ? (
-                        <button
-                          onClick={() => setShow(null)}
-                          className="focus:outline-none pl-7"
+                    <td
+                      className="px-7 2xl:px-0 cursor-pointer"
+                      onClick={handleClickMore(artist.id)}
+                    >
+                      <button
+                        onClick={handleClickMore(artist.id)}
+                        className="focus:outline-none pl-7"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width={20}
+                          height={20}
+                          viewBox="0 0 20 20"
+                          fill="none"
                         >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width={20}
-                            height={20}
-                            viewBox="0 0 20 20"
-                            fill="none"
+                          <path
+                            d="M4.16667 10.8334C4.62691 10.8334 5 10.4603 5 10.0001C5 9.53984 4.62691 9.16675 4.16667 9.16675C3.70643 9.16675 3.33334 9.53984 3.33334 10.0001C3.33334 10.4603 3.70643 10.8334 4.16667 10.8334Z"
+                            stroke="#A1A1AA"
+                            strokeWidth="1.25"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                          <path
+                            d="M10 10.8334C10.4602 10.8334 10.8333 10.4603 10.8333 10.0001C10.8333 9.53984 10.4602 9.16675 10 9.16675C9.53976 9.16675 9.16666 9.53984 9.16666 10.0001C9.16666 10.4603 9.53976 10.8334 10 10.8334Z"
+                            stroke="#A1A1AA"
+                            strokeWidth="1.25"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                          <path
+                            d="M15.8333 10.8334C16.2936 10.8334 16.6667 10.4603 16.6667 10.0001C16.6667 9.53984 16.2936 9.16675 15.8333 9.16675C15.3731 9.16675 15 9.53984 15 10.0001C15 10.4603 15.3731 10.8334 15.8333 10.8334Z"
+                            stroke="#A1A1AA"
+                            strokeWidth="1.25"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </button>
+                      {selectedArtistId === artist.id && (
+                        <div className="dropdown-content bg-white shadow-lg shadow-blue-100 w-24 absolute z-50 right-0 mr-16">
+                          <div
+                            onClick={() => handleEditArtist(artist)}
+                            className="text-xs w-full hover:bg-indigo-700 py-4 px-4 cursor-pointer hover:text-white"
                           >
-                            <path
-                              d="M4.16667 10.8334C4.62691 10.8334 5 10.4603 5 10.0001C5 9.53984 4.62691 9.16675 4.16667 9.16675C3.70643 9.16675 3.33334 9.53984 3.33334 10.0001C3.33334 10.4603 3.70643 10.8334 4.16667 10.8334Z"
-                              stroke="#A1A1AA"
-                              strokeWidth="1.25"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                            <path
-                              d="M10 10.8334C10.4602 10.8334 10.8333 10.4603 10.8333 10.0001C10.8333 9.53984 10.4602 9.16675 10 9.16675C9.53976 9.16675 9.16666 9.53984 9.16666 10.0001C9.16666 10.4603 9.53976 10.8334 10 10.8334Z"
-                              stroke="#A1A1AA"
-                              strokeWidth="1.25"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                            <path
-                              d="M15.8333 10.8334C16.2936 10.8334 16.6667 10.4603 16.6667 10.0001C16.6667 9.53984 16.2936 9.16675 15.8333 9.16675C15.3731 9.16675 15 9.53984 15 10.0001C15 10.4603 15.3731 10.8334 15.8333 10.8334Z"
-                              stroke="#A1A1AA"
-                              strokeWidth="1.25"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
-                        </button>
-                      ) : (
-                        <button
-                          onClick={() => setShow(0)}
-                          className="focus:outline-none pl-7"
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width={20}
-                            height={20}
-                            viewBox="0 0 20 20"
-                            fill="none"
-                          >
-                            <path
-                              d="M4.16667 10.8334C4.62691 10.8334 5 10.4603 5 10.0001C5 9.53984 4.62691 9.16675 4.16667 9.16675C3.70643 9.16675 3.33334 9.53984 3.33334 10.0001C3.33334 10.4603 3.70643 10.8334 4.16667 10.8334Z"
-                              stroke="#A1A1AA"
-                              strokeWidth="1.25"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                            <path
-                              d="M10 10.8334C10.4602 10.8334 10.8333 10.4603 10.8333 10.0001C10.8333 9.53984 10.4602 9.16675 10 9.16675C9.53976 9.16675 9.16666 9.53984 9.16666 10.0001C9.16666 10.4603 9.53976 10.8334 10 10.8334Z"
-                              stroke="#A1A1AA"
-                              strokeWidth="1.25"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                            <path
-                              d="M15.8333 10.8334C16.2936 10.8334 16.6667 10.4603 16.6667 10.0001C16.6667 9.53984 16.2936 9.16675 15.8333 9.16675C15.3731 9.16675 15 9.53984 15 10.0001C15 10.4603 15.3731 10.8334 15.8333 10.8334Z"
-                              stroke="#A1A1AA"
-                              strokeWidth="1.25"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
-                        </button>
-                      )}
-                      {show == 0 && (
-                        <div className="dropdown-content bg-white shadow w-24 absolute z-30 right-0 mr-6 ">
-                          <div className="text-xs w-full hover:bg-indigo-700 py-4 px-4 cursor-pointer hover:text-white">
                             <p>Edit</p>
                           </div>
-                          <div className="text-xs w-full hover:bg-indigo-700 py-4 px-4 cursor-pointer hover:text-white">
-                            <p>Delete</p>
+                          <div
+                            onClick={() => handleDeleteArtist(artist)}
+                            className="text-xs w-full hover:bg-indigo-700 py-4 px-4 cursor-pointer hover:text-white"
+                          >
+                            <p className="text-red-500">Delete</p>
                           </div>
                         </div>
                       )}

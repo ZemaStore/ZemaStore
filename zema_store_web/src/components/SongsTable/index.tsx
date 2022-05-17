@@ -10,7 +10,6 @@ const SongsTable = (props: Props) => {
   const [show, setShow] = useState<number | null>(0);
 
   const { searchSongsList, isLoading } = useAppSelector(songsSelector);
-  console.log("sarh song is ", searchSongsList)
   return (
     <div className="bg-white shadow px-4 md:px-10 pt-4 md:pt-7 pb-5 overflow-y-auto">
       {isLoading ? (

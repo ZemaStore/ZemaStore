@@ -1,5 +1,6 @@
 import * as React from "react";
 import { Routes, Route, Link, BrowserRouter } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 import "./App.css";
 import NotFoundPage from "./pages/404";
 import AlbumsIndexPage from "./pages/albums";
@@ -14,10 +15,24 @@ import SettingsPage from "./pages/settings";
 import SongsPage from "./pages/songs";
 import SubscriptionsPage from "./pages/subscriptions";
 import UsersPage from "./pages/users";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   return (
     <div className="App">
+      <ToastContainer
+        progressClassName="w-10 h-10"
+        bodyClassName="w-10 h-10"
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={true}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
       <Routes>
         <Route path="/" element={<DashboardPage />} />
         <Route path="dashboard" element={<DashboardPage />} />

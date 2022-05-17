@@ -11,8 +11,16 @@ type Props = {};
 
 const UsersTable = (props: Props) => {
   const [show, setShow] = useState<number | null>(0);
-  const [selectedUserId, setSelectedUserId] = useState("");
+  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const { searchUsersList, error, isLoading } = useAppSelector(usersSelector);
+
+  const handleClickMore = (id: string) => (e: any) => {
+    if (selectedUserId === id) {
+      setSelectedUserId(null);
+    } else {
+      setSelectedUserId(id);
+    }
+  };
 
   return (
     <div className="h-full w-full bg-white shadow px-4 md:px-10 pt-4 md:pt-7 pb-5 overflow-y-auto  grid place-items-center">
@@ -30,7 +38,7 @@ const UsersTable = (props: Props) => {
               <th className="font-normal text-left pl-20">Status</th>
               <th className="font-normal text-left pl-20">Sub Type</th>
               <th className="font-normal text-left pl-20">Address</th>
-              <th className="font-normal text-left pl-16">More</th>
+              <th className="font-normal text-left pl-6">More</th>
             </tr>
           </thead>
           <tbody className="w-full">
@@ -88,8 +96,55 @@ const UsersTable = (props: Props) => {
                         {user.address.city},{user.address.country}
                       </p>
                     </td>
-                    <td className="px-7 2xl:px-0">
-                      {false ? (
+                    <td
+                      className="pl-20 px-7 2xl:px-0 overflow-visible cursor-pointer"
+                      onClick={handleClickMore(user.id)}
+                    >
+                      <button
+                        onClick={handleClickMore(user.id)}
+                        className="focus:outline-none pl-7"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width={20}
+                          height={20}
+                          viewBox="0 0 20 20"
+                          fill="none"
+                        >
+                          <path
+                            d="M4.16667 10.8334C4.62691 10.8334 5 10.4603 5 10.0001C5 9.53984 4.62691 9.16675 4.16667 9.16675C3.70643 9.16675 3.33334 9.53984 3.33334 10.0001C3.33334 10.4603 3.70643 10.8334 4.16667 10.8334Z"
+                            stroke="#A1A1AA"
+                            strokeWidth="1.25"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                          <path
+                            d="M10 10.8334C10.4602 10.8334 10.8333 10.4603 10.8333 10.0001C10.8333 9.53984 10.4602 9.16675 10 9.16675C9.53976 9.16675 9.16666 9.53984 9.16666 10.0001C9.16666 10.4603 9.53976 10.8334 10 10.8334Z"
+                            stroke="#A1A1AA"
+                            strokeWidth="1.25"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                          <path
+                            d="M15.8333 10.8334C16.2936 10.8334 16.6667 10.4603 16.6667 10.0001C16.6667 9.53984 16.2936 9.16675 15.8333 9.16675C15.3731 9.16675 15 9.53984 15 10.0001C15 10.4603 15.3731 10.8334 15.8333 10.8334Z"
+                            stroke="#A1A1AA"
+                            strokeWidth="1.25"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </button>
+                      {selectedUserId === user.id && (
+                        <div className="dropdown-content bg-white shadow-lg shadow-blue-100 w-24 absolute z-50 right-0 mr-16">
+                          <div className="text-xs w-full hover:bg-indigo-700 py-4 px-4 cursor-pointer hover:text-white">
+                            <p className="text-red-500 font-bold">Block</p>
+                          </div>
+                          <div className="text-xs w-full hover:bg-indigo-700 py-4 px-4 cursor-pointer hover:text-white">
+                            <p>Delete</p>
+                          </div>
+                        </div>
+                      )}
+                      {/* {true ? (
                         <button
                           onClick={() => setSelectedUserId(user.id)}
                           className="focus:outline-none pl-7"
@@ -159,8 +214,9 @@ const UsersTable = (props: Props) => {
                             />
                           </svg>
                         </button>
-                      )}
-                      {show == 1 && (
+                      )} */}
+
+                      {/* {true && (
                         <div className="dropdown-content bg-white shadow w-24 absolute z-30 right-0 mr-6 ">
                           <div className="text-xs w-full hover:bg-indigo-700 py-4 px-4 cursor-pointer hover:text-white">
                             <p>Edit</p>
@@ -169,7 +225,7 @@ const UsersTable = (props: Props) => {
                             <p>Delete</p>
                           </div>
                         </div>
-                      )}
+                      )} */}
                     </td>
                   </tr>
                 );

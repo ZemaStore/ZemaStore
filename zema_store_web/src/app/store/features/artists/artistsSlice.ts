@@ -76,6 +76,43 @@ export const getArtistsApi = createAsyncThunk<any, any>(
   }
 );
 
+export const addArtistsApi = createAsyncThunk<any, any>(
+  "/addArtist",
+  async (payload, { rejectWithValue, fulfillWithValue, dispatch }) => {
+    try {
+      console.log(payload, " is payload");
+      const { data } = await ArtistsService.addArtist(payload);
+      return fulfillWithValue(data);
+    } catch (err: any) {
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
+export const updateArtistsApi = createAsyncThunk<any, any>(
+  "/updateArtist",
+  async (payload, { rejectWithValue, fulfillWithValue, dispatch }) => {
+    try {
+      const { data } = await ArtistsService.updateArtist(payload);
+      return fulfillWithValue(data);
+    } catch (err: any) {
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
+export const deleteArtistsApi = createAsyncThunk<any, any>(
+  "/deleteArtist",
+  async (payload, { rejectWithValue, fulfillWithValue, dispatch }) => {
+    try {
+      const { data } = await ArtistsService.updateArtist(payload);
+      dispatch(removeArtist(payload));
+    } catch (err: any) {
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
 export const artistsSlice = createSlice({
   name: "artists",
   initialState,
@@ -135,6 +172,39 @@ export const artistsSlice = createSlice({
         state.searchArtistsList = state.artists;
       })
       .addCase(getArtistsApi.rejected, (state, { payload }) => {
+        state.isLoading = false;
+        state.error = true;
+      })
+      .addCase(addArtistsApi.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(addArtistsApi.fulfilled, (state, { payload }) => {
+        state.isLoading = false;
+        state.artists.push(payload);
+        state.searchArtistsList = state.artists;
+      })
+      .addCase(addArtistsApi.rejected, (state, { payload }) => {
+        state.isLoading = false;
+        state.error = true;
+      })
+      .addCase(updateArtistsApi.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(updateArtistsApi.fulfilled, (state, { payload }) => {
+        console.log(payload, " is th payload");
+
+        state.artists =
+          state.artists &&
+          state.artists.map((artist: Artist) => {
+            if (artist.id === payload.id) {
+              return payload;
+            }
+            return artist;
+          });
+        state.searchArtistsList = state.artists;
+        state.isLoading = false;
+      })
+      .addCase(updateArtistsApi.rejected, (state, { payload }) => {
         state.isLoading = false;
         state.error = true;
       });

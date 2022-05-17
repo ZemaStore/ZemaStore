@@ -3,8 +3,6 @@ import { Link } from "react-router-dom";
 export default function Navbar() {
   const [show, setShow] = useState<boolean>(false);
   const [profile, setProfile] = useState<boolean>(false);
-  const [product, setProduct] = useState(false);
-  const [deliverables, setDeliverables] = useState(false);
 
   const MenuHandler = (value: boolean) => {};
 
