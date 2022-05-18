@@ -20,4 +20,4 @@ router
 
 router.route("/").get(getPlaylists).post(createPlaylist);
 
-export default (() => Router().use("/playlists", isAuthorized, router))();
+export default (() => Router().use("/playlists", router))();

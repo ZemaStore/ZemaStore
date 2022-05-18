@@ -25,4 +25,4 @@ router.route("/").get(getAlbums).post(imageUploader.single("photo"), addAlbum);
 
 router.route("/artist/:artistId").get(getAlbumsByArtist);
 
-export default (() => Router().use("/albums", isAdmin, router))();
+export default (() => Router().use("/albums", router))();

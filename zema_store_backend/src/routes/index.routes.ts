@@ -5,6 +5,7 @@ import userRouter from "./user.routes";
 import albumRouter from "./album.routes";
 import playlistRouter from "./playlist.routes";
 import followRouter from "./follow.routes";
+import eventRouter from "./event.routes";
 
 export {
   authRouter,
@@ -14,4 +15,5 @@ export {
   albumRouter,
   playlistRouter,
   followRouter,
+  eventRouter,
 };
