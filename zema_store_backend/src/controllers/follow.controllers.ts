@@ -48,6 +48,8 @@ const getFollowers = async (req: Request, res: Response) => {
     }
 
     const { page, sort } = Utils.instance.getPaginationData(req);
+    const count = await Follow.count({});
+    const totalPages = Utils.instance.getNumberOfPages(count, fetchItemCount);
 
     const followers = await Follow.find({})
       .limit(fetchItemCount)
@@ -56,7 +58,12 @@ const getFollowers = async (req: Request, res: Response) => {
 
     res
       .status(200)
-      .send(new OkResponse(followers, "Followers successfully fetched!"));
+      .send(
+        new OkResponse(
+          { followers, totalPages, totalItems: count },
+          "Followers successfully fetched!"
+        )
+      );
   } catch (e) {
     Utils.instance.handleResponseException(res, e);
   }
@@ -78,6 +85,8 @@ const getArtistFollowers = async (req: Request, res: Response) => {
 
     const artistId = req.params.artistId;
     const { page, sort } = Utils.instance.getPaginationData(req);
+    const count = await Follow.count({ artistId });
+    const totalPages = Utils.instance.getNumberOfPages(count, fetchItemCount);
 
     const followers = await Follow.find({ artistId })
       .limit(fetchItemCount)
@@ -88,7 +97,10 @@ const getArtistFollowers = async (req: Request, res: Response) => {
     res
       .status(200)
       .send(
-        new OkResponse(followers, "Artist's followers successfully fetched!")
+        new OkResponse(
+          { followers, totalPages, totalItems: count },
+          "Artist's followers successfully fetched!"
+        )
       );
   } catch (e) {
     Utils.instance.handleResponseException(res, e);
@@ -111,6 +123,8 @@ const getArtistsFollowedByUser = async (req: Request, res: Response) => {
 
     const customerId = req.params.customerId;
     const { page, sort } = Utils.instance.getPaginationData(req);
+    const count = await Follow.count({ customerId });
+    const totalPages = Utils.instance.getNumberOfPages(count, fetchItemCount);
 
     const artists = await Follow.find({ customerId })
       .limit(fetchItemCount)
@@ -120,7 +134,12 @@ const getArtistsFollowedByUser = async (req: Request, res: Response) => {
 
     res
       .status(200)
-      .send(new OkResponse(artists, "Followed artists successfully fetched!"));
+      .send(
+        new OkResponse(
+          { artists, totalPages, totalItems: count },
+          "Followed artists successfully fetched!"
+        )
+      );
   } catch (e) {
     Utils.instance.handleResponseException(res, e);
   }

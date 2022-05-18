@@ -43,6 +43,9 @@ const getEvents = async (req: Request, res: Response) => {
 
     const { page, sort } = Utils.instance.getPaginationData(req);
 
+    const count = await Event.count();
+    const totalPages = Utils.instance.getNumberOfPages(count, fetchItemCount);
+
     const events = await Event.find({})
       .limit(fetchItemCount)
       .skip(page * fetchItemCount)
@@ -50,7 +53,12 @@ const getEvents = async (req: Request, res: Response) => {
 
     res
       .status(200)
-      .send(new OkResponse(events, "Events successfully fetched!"));
+      .send(
+        new OkResponse(
+          { events, totalPages, totalItems: count },
+          "Events successfully fetched!"
+        )
+      );
   } catch (e) {
     Utils.instance.handleResponseException(res, e);
   }

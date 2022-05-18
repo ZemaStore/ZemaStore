@@ -263,6 +263,24 @@
                         "bearerAuthorization": []
                     }
                 ],
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "page",
+                        "type": "integer",
+                        "description": "The page number of user items to return"
+                    },
+                    {
+                        "in": "query",
+                        "name": "sortBy",
+                        "type": "string",
+                        "description": "user object field to sort returned users",
+                        "enum": [
+                            "createdAt"
+                        ],
+                        "example": "createdAt:asc"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "content": {

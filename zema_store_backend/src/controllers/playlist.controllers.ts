@@ -47,19 +47,9 @@ const getPlaylists = async (req: Request, res: Response) => {
         .send(new ErrorResponse(validate.error.message, null));
     }
 
-    const page: number = isNil(req.query.page)
-      ? 0
-      : parseInt(req.query.page as string);
-    const sortBy: string = req.query.sortBy as string;
-
-    const sort = {};
-    if (sortBy) {
-      const parts = sortBy.toString().split(":");
-      const val = parts[1] === "asc" ? 1 : -1;
-      sort[parts[0]] = val;
-    } else {
-      sort["createdAt"] = -1;
-    }
+    const { page, sort } = Utils.instance.getPaginationData(req);
+    const count = await Playlist.count({});
+    const totalPages = Utils.instance.getNumberOfPages(count, fetchItemCount);
 
     const playlists = await Playlist.find({})
       .limit(fetchItemCount)
@@ -70,7 +60,12 @@ const getPlaylists = async (req: Request, res: Response) => {
 
     res
       .status(200)
-      .send(new OkResponse(playlists, "Playlists successfully fetched!"));
+      .send(
+        new OkResponse(
+          { playlists, totalPages, totalItems: count },
+          "Playlists successfully fetched!"
+        )
+      );
   } catch (e) {
     Utils.instance.handleResponseException(res, e);
   }

@@ -1,3 +1,4 @@
+import { count } from "console";
 import { Request, Response } from "express";
 import { isNil } from "lodash";
 
@@ -49,26 +50,23 @@ const getSongs = async (req: Request, res: Response) => {
         .send(new ErrorResponse(validate.error.message, null));
     }
 
-    const page: number = isNil(req.query.page)
-      ? 0
-      : parseInt(req.query.page as string);
-    const sortBy: string = req.query.sortBy as string;
-
-    const sort = {};
-    if (sortBy) {
-      const parts = sortBy.toString().split(":");
-      const val = parts[1] === "asc" ? 1 : -1;
-      sort[parts[0]] = val;
-    } else {
-      sort["createdAt"] = -1;
-    }
+    const { page, sort } = Utils.instance.getPaginationData(req);
+    const count = await Song.count({});
+    const totalPages = Utils.instance.getNumberOfPages(count, fetchItemCount);
 
     const songs = await Song.find({})
       .limit(fetchItemCount)
       .skip(page * fetchItemCount)
       .sort(sort);
 
-    res.status(200).send(new OkResponse(songs, "Songs successfully fetched!"));
+    res
+      .status(200)
+      .send(
+        new OkResponse(
+          { songs, totalPages, totalItems: count },
+          "Songs successfully fetched!"
+        )
+      );
   } catch (e) {
     Utils.instance.handleResponseException(res, e);
   }
@@ -89,19 +87,9 @@ const getSongsByAlbum = async (req: Request, res: Response) => {
     }
 
     const albumId = req.params.albumId;
-    const page: number = isNil(req.query.page)
-      ? 0
-      : parseInt(req.query.page as string);
-    const sortBy: string = req.query.sortBy as string;
-
-    const sort = {};
-    if (sortBy) {
-      const parts = sortBy.toString().split(":");
-      const val = parts[1] === "asc" ? 1 : -1;
-      sort[parts[0]] = val;
-    } else {
-      sort["createdAt"] = -1;
-    }
+    const { page, sort } = Utils.instance.getPaginationData(req);
+    const count = await Song.count({});
+    const totalPages = Utils.instance.getNumberOfPages(count, fetchItemCount);
 
     const songs = await Song.find({
       albumId,
@@ -110,7 +98,14 @@ const getSongsByAlbum = async (req: Request, res: Response) => {
       .skip(page * fetchItemCount)
       .sort(sort);
 
-    res.status(200).send(new OkResponse(songs, "Songs successfully fetched!"));
+    res
+      .status(200)
+      .send(
+        new OkResponse(
+          { songs, totalPages, totalItems: count },
+          "Songs successfully fetched!"
+        )
+      );
   } catch (e) {
     Utils.instance.handleResponseException(res, e);
   }
@@ -131,19 +126,9 @@ const getSongsByArtist = async (req: Request, res: Response) => {
     }
 
     const artistId = req.params.artistId;
-    const page: number = isNil(req.query.page)
-      ? 0
-      : parseInt(req.query.page as string);
-    const sortBy: string = req.query.sortBy as string;
-
-    const sort = {};
-    if (sortBy) {
-      const parts = sortBy.toString().split(":");
-      const val = parts[1] === "asc" ? 1 : -1;
-      sort[parts[0]] = val;
-    } else {
-      sort["createdAt"] = -1;
-    }
+    const { page, sort } = Utils.instance.getPaginationData(req);
+    const count = await Song.count({});
+    const totalPages = Utils.instance.getNumberOfPages(count, fetchItemCount);
 
     const songs = await Song.find({
       artistId,
@@ -152,7 +137,14 @@ const getSongsByArtist = async (req: Request, res: Response) => {
       .skip(page * fetchItemCount)
       .sort(sort);
 
-    res.status(200).send(new OkResponse(songs, "Songs successfully fetched!"));
+    res
+      .status(200)
+      .send(
+        new OkResponse(
+          { songs, totalPages, totalItems: count },
+          "Songs successfully fetched!"
+        )
+      );
   } catch (e) {
     Utils.instance.handleResponseException(res, e);
   }

@@ -5,11 +5,16 @@ import CustomerProfile from "../models/mongoose/customer-profile";
 import Role from "../models/mongoose/role";
 
 import User from "../models/mongoose/user";
+import ErrorResponse from "../models/responses/error-response.model";
+import OkResponse from "../models/responses/ok-response.model";
+import Utils from "../utils/utils";
 import {
   getUserSchema,
   getUsersSchema,
   udpateUserSchema,
 } from "../validation-schemas/user.schemas";
+
+const fetchItemCount = 10;
 
 const getUser = async (req: Request, res: Response) => {
   try {
@@ -17,21 +22,17 @@ const getUser = async (req: Request, res: Response) => {
     if (validate.error && validate.error !== null) {
       return res
         .status(400)
-        .send({ success: false, message: validate.error.message });
+        .send(new ErrorResponse(validate.error.message, null));
     }
 
     const user = await User.findById(req.params.id).populate("profileId");
     if (isNil(user)) {
-      return res
-        .status(400)
-        .send({ success: false, message: "User not found." });
+      return res.status(400).send(new ErrorResponse("User not found!", null));
     }
 
-    res.status(200).send({ success: true, data: user });
+    res.status(200).send(new OkResponse(user, "User successfully fetched!"));
   } catch (e) {
-    return res
-      .status(500)
-      .send({ success: false, message: (e as Error).message });
+    Utils.instance.handleResponseException(res, e);
   }
 };
 
@@ -41,35 +42,35 @@ const getusers = async (req: Request, res: Response) => {
     if (validate.error && validate.error !== null) {
       return res
         .status(400)
-        .send({ success: false, message: validate.error.message });
-    }
-
-    const { limit = "10", skip = "0", sortBy } = req.query;
-
-    const sort = {};
-    if (sortBy) {
-      const parts = sortBy.toString().split(":");
-      const val = parts[1] === "asc" ? 1 : -1;
-      sort[parts[0]] = val;
+        .send(new ErrorResponse(validate.error.message, null));
     }
 
     const role = await Role.findOne({
       name: "USER",
     });
 
+    const { page, sort } = Utils.instance.getPaginationData(req);
+    const count = await User.count({ roleId: role._id });
+    const totalPages = Utils.instance.getNumberOfPages(count, fetchItemCount);
+
     const users = await User.find({
       roleId: role._id,
     })
-      .limit(parseInt(limit.toString()))
-      .skip(parseInt(skip.toString()))
+      .limit(fetchItemCount)
+      .skip(page * fetchItemCount)
       .sort(sort)
       .populate("profileId");
 
-    res.status(200).send({ success: true, data: users });
+    res
+      .status(200)
+      .send(
+        new OkResponse(
+          { users, totalPages, totalItems: count },
+          "users successfully fetched!"
+        )
+      );
   } catch (e) {
-    return res
-      .status(500)
-      .send({ success: false, message: (e as Error).message });
+    Utils.instance.handleResponseException(res, e);
   }
 };
 
@@ -84,7 +85,7 @@ const updateUser = async (req: Request, res: Response) => {
     if (validate.error && validate.error !== null) {
       return res
         .status(400)
-        .send({ success: false, message: validate.error.message });
+        .send(new ErrorResponse(validate.error.message, null));
     }
 
     const { email, password, phone, fullName } = req.body;
@@ -116,11 +117,9 @@ const updateUser = async (req: Request, res: Response) => {
 
     await user.save();
 
-    res.status(200).send({ success: true, data: user });
+    res.status(200).send(new OkResponse(user, "User successfully updated!"));
   } catch (e) {
-    return res
-      .status(500)
-      .send({ success: false, message: (e as Error).message });
+    Utils.instance.handleResponseException(res, e);
   }
 };
 

@@ -18,6 +18,8 @@ import {
   updateArtistSchema,
 } from "../validation-schemas/artist.schemas";
 
+const limit = 10;
+
 const getArtist = async (req: Request, res: Response) => {
   try {
     const validate = getArtistSchema.validate(req.params);
@@ -46,30 +48,31 @@ const getArtists = async (req: Request, res: Response) => {
         .send(new ErrorResponse(validate.error.message, null));
     }
 
-    const { limit = "10", skip = "0", sortBy } = req.query;
-
-    const sort = {};
-    if (sortBy) {
-      const parts = sortBy.toString().split(":");
-      const val = parts[1] === "asc" ? 1 : -1;
-      sort[parts[0]] = val;
-    }
+    const { page, sort } = Utils.instance.getPaginationData(req);
 
     const role = await Role.findOne({
       name: "ARTIST",
     });
 
-    const users = await User.find({
+    const count = await User.count({ roleId: role._id });
+    const totalPages = Utils.instance.getNumberOfPages(count, limit);
+
+    const artists = await User.find({
       roleId: role._id,
     })
-      .limit(parseInt(limit.toString()))
-      .skip(parseInt(skip.toString()))
+      .limit(limit)
+      .skip(page * limit)
       .sort(sort)
       .populate("profileId");
 
     res
       .status(200)
-      .send(new OkResponse(users, "Artists successfully fetched!"));
+      .send(
+        new OkResponse(
+          { artists, totalPages, totalItems: count },
+          "Artists successfully fetched!"
+        )
+      );
   } catch (e) {
     Utils.instance.handleResponseException(res, e);
   }

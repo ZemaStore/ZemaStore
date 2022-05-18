@@ -17,7 +17,7 @@ import {
 } from "../validation-schemas/album.schemas";
 
 const albumImagesPath = "Album/Images";
-const limit = 10;
+const fetchItemCount = 10;
 
 const getAlbum = async (req: Request, res: Response) => {
   try {
@@ -38,6 +38,9 @@ const getAlbum = async (req: Request, res: Response) => {
 
 const getAlbums = async (req: Request, res: Response) => {
   try {
+    const count = await Album.count();
+    const totalPages = Utils.instance.getNumberOfPages(count, fetchItemCount);
+
     const validate = getAlbumsSchema.validate(req.query);
     if (validate.error && validate.error !== null) {
       return res
@@ -45,26 +48,16 @@ const getAlbums = async (req: Request, res: Response) => {
         .send(new ErrorResponse(validate.error.message, null));
     }
 
-    const page: number = isNil(req.query.page)
-      ? 0
-      : parseInt(req.query.page as string);
-    const sortBy: string = req.query.sortBy as string;
-
-    const sort = {};
-    if (sortBy) {
-      const parts = sortBy.split(":");
-      const val = parts[1] === "asc" ? 1 : -1;
-      sort[parts[0]] = val;
-    } else {
-      sort["createdAt"] = -1;
-    }
+    const { page, sort } = Utils.instance.getPaginationData(req);
 
     const albums = await Album.find({})
-      .limit(limit)
-      .skip(page * limit)
+      .limit(fetchItemCount)
+      .skip(page * fetchItemCount)
       .sort(sort);
 
-    res.status(200).send(new OkResponse(albums, null));
+    res
+      .status(200)
+      .send(new OkResponse({ albums, totalPages, totalItems: count }, null));
   } catch (e) {
     Utils.instance.handleResponseException(res, e);
   }
@@ -85,30 +78,28 @@ const getAlbumsByArtist = async (req: Request, res: Response) => {
     }
 
     const artistId: string = req.params.artistId;
-    const page: number = isNil(req.query.page)
-      ? 0
-      : parseInt(req.query.page as string);
-    const sortBy: string = req.query.sortBy as string;
+    const { page, sort } = Utils.instance.getPaginationData(req);
 
-    const sort = {};
-    if (sortBy) {
-      const parts = sortBy.split(":");
-      const val = parts[1] === "asc" ? 1 : -1;
-      sort[parts[0]] = val;
-    } else {
-      sort["createdAt"] = -1;
-    }
+    const count = await Album.count({
+      artistId,
+    });
+    const totalPages = Utils.instance.getNumberOfPages(count, fetchItemCount);
 
     const albums = await Album.find({
       artistId,
     })
-      .limit(limit)
-      .skip(page * limit)
+      .limit(fetchItemCount)
+      .skip(page * fetchItemCount)
       .sort(sort);
 
     res
       .status(200)
-      .send(new OkResponse(albums, "Albums successfully fetched!"));
+      .send(
+        new OkResponse(
+          { albums, totalPages, totalItems: count },
+          "Albums successfully fetched!"
+        )
+      );
   } catch (e) {
     Utils.instance.handleResponseException(res, e);
   }

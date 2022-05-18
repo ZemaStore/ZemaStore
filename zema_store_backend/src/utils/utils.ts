@@ -49,4 +49,13 @@ export default class Utils {
 
     return { page, sort };
   }
+
+  public getNumberOfPages(count: number, fetchItemCount: number) {
+    const totalPages =
+      count % fetchItemCount === 0
+        ? count / fetchItemCount
+        : Math.floor(count / fetchItemCount) + 1;
+
+    return totalPages;
+  }
 }
