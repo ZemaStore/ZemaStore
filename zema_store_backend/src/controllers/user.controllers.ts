@@ -65,8 +65,8 @@ const getusers = async (req: Request, res: Response) => {
       .status(200)
       .send(
         new OkResponse(
-          { users, totalPages, totalItems: count },
-          "users successfully fetched!"
+          { users, totalPages, totalItems: count, pageNumber: page },
+          "Users successfully fetched!"
         )
       );
   } catch (e) {

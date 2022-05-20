@@ -60,7 +60,7 @@ const getFollowers = async (req: Request, res: Response) => {
       .status(200)
       .send(
         new OkResponse(
-          { followers, totalPages, totalItems: count },
+          { followers, totalPages, totalItems: count, pageNumber: page },
           "Followers successfully fetched!"
         )
       );
@@ -98,7 +98,7 @@ const getArtistFollowers = async (req: Request, res: Response) => {
       .status(200)
       .send(
         new OkResponse(
-          { followers, totalPages, totalItems: count },
+          { followers, totalPages, totalItems: count, pageNumber: page },
           "Artist's followers successfully fetched!"
         )
       );
@@ -136,7 +136,7 @@ const getArtistsFollowedByUser = async (req: Request, res: Response) => {
       .status(200)
       .send(
         new OkResponse(
-          { artists, totalPages, totalItems: count },
+          { artists, totalPages, totalItems: count, pageNumber: page },
           "Followed artists successfully fetched!"
         )
       );

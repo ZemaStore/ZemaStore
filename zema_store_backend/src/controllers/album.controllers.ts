@@ -57,7 +57,12 @@ const getAlbums = async (req: Request, res: Response) => {
 
     res
       .status(200)
-      .send(new OkResponse({ albums, totalPages, totalItems: count }, null));
+      .send(
+        new OkResponse(
+          { albums, totalPages, totalItems: count, pageNumber: page },
+          null
+        )
+      );
   } catch (e) {
     Utils.instance.handleResponseException(res, e);
   }
@@ -96,7 +101,7 @@ const getAlbumsByArtist = async (req: Request, res: Response) => {
       .status(200)
       .send(
         new OkResponse(
-          { albums, totalPages, totalItems: count },
+          { albums, totalPages, totalItems: count, pageNumber: page },
           "Albums successfully fetched!"
         )
       );

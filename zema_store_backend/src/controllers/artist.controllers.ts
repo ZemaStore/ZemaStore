@@ -69,7 +69,7 @@ const getArtists = async (req: Request, res: Response) => {
       .status(200)
       .send(
         new OkResponse(
-          { artists, totalPages, totalItems: count },
+          { artists, totalPages, totalItems: count, pageNumber: page },
           "Artists successfully fetched!"
         )
       );

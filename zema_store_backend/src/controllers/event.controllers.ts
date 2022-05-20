@@ -55,7 +55,7 @@ const getEvents = async (req: Request, res: Response) => {
       .status(200)
       .send(
         new OkResponse(
-          { events, totalPages, totalItems: count },
+          { events, totalPages, totalItems: count, pageNumber: page },
           "Events successfully fetched!"
         )
       );

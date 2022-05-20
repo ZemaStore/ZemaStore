@@ -63,7 +63,7 @@ const getSongs = async (req: Request, res: Response) => {
       .status(200)
       .send(
         new OkResponse(
-          { songs, totalPages, totalItems: count },
+          { songs, totalPages, totalItems: count, pageNumber: page },
           "Songs successfully fetched!"
         )
       );
@@ -102,7 +102,7 @@ const getSongsByAlbum = async (req: Request, res: Response) => {
       .status(200)
       .send(
         new OkResponse(
-          { songs, totalPages, totalItems: count },
+          { songs, totalPages, totalItems: count, pageNumber: page },
           "Songs successfully fetched!"
         )
       );
@@ -141,7 +141,7 @@ const getSongsByArtist = async (req: Request, res: Response) => {
       .status(200)
       .send(
         new OkResponse(
-          { songs, totalPages, totalItems: count },
+          { songs, totalPages, totalItems: count, pageNumber: page },
           "Songs successfully fetched!"
         )
       );

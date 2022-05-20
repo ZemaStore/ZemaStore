@@ -62,7 +62,7 @@ const getPlaylists = async (req: Request, res: Response) => {
       .status(200)
       .send(
         new OkResponse(
-          { playlists, totalPages, totalItems: count },
+          { playlists, totalPages, totalItems: count, pageNumber: page },
           "Playlists successfully fetched!"
         )
       );
