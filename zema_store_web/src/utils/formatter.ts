@@ -1,5 +1,5 @@
 const formatter = {
-  tin(v) {
+  tin(v: string) {
     if (!v || v === undefined) return v;
     else {
       var r = v.replace(/\D/g, "");
@@ -14,7 +14,7 @@ const formatter = {
       return r;
     }
   },
-  date(v) {
+  date(v: string) {
     if (!v || v === undefined) return v;
     else {
       var r = v.replace(/\D/g, "");
@@ -31,13 +31,13 @@ const formatter = {
       return r;
     }
   },
-  currency(amount) {
+  currency(amount: string) {
     let number = `${amount}`.replaceAll(",", "");
     if (!isNaN(parseFloat(number))) {
       return Number(number).toLocaleString();
     } else return "";
   },
-  usaSSN(v) {
+  usaSSN(v: string) {
     if (!v || v === undefined) return v;
     else {
       var r = v.replace(/\D/g, "");
@@ -62,11 +62,8 @@ const formatter = {
     //   return val;
     // }
   },
-  zipcode(zipcode) {
-    var zipCodePattern = /^\d{5}$|^\d{5}-\d{4}$/;
-    return zipCodePattern.test(zipcode);
-  },
-  phone(phone) {
+
+  phone(phone: string) {
     if (!phone || phone === undefined) return phone;
     else {
       let val = phone

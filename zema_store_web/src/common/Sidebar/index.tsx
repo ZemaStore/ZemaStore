@@ -1,13 +1,21 @@
 import clsx from "clsx";
-import React from "react";
+import React, { useCallback } from "react";
 import { Link, Location, useLocation } from "react-router-dom";
+import { useAppDispatch } from "../../app/hooks/redux_hooks";
+import { logoutApi } from "../../app/store/features/auth/authSlice";
 
 type Props = {};
 
 const Sidebar = (props: Props) => {
   const dropdownHandler = () => {};
   const location: Location = useLocation();
-  
+  const dispatch = useAppDispatch();
+
+  const handleLogout = useCallback(() => {
+    dispatch(logoutApi({}));
+    window.location.reload();
+  }, [dispatch]);
+
   return (
     <div className="w-full h-full">
       {/* Sidebar starts */}
@@ -208,31 +216,30 @@ const Sidebar = (props: Props) => {
         </div>
         <div className="bg-indigo-400 text-white">
           <ul className="w-full flex items-center justify-between ">
-            <Link to={`/signin`}>
-              <li
-                className={clsx(
-                  "flex w-full gap-x-5 text-white-600 hover:text-gray-100  hover:bg-indigo-400  cursor-pointer items-center px-8 py-3"
-                )}
+            <li
+              className={clsx(
+                "flex w-full gap-x-5 text-white-600 hover:text-gray-100  hover:bg-indigo-400  cursor-pointer items-center px-8 py-3"
+              )}
+              onClick={handleLogout}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="icon icon-tabler icon-tabler-messages"
+                width={20}
+                height={20}
+                viewBox="0 0 24 24"
+                strokeWidth="1.5"
+                stroke="currentColor"
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="icon icon-tabler icon-tabler-messages"
-                  width={20}
-                  height={20}
-                  viewBox="0 0 24 24"
-                  strokeWidth="1.5"
-                  stroke="currentColor"
-                  fill="none"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path stroke="none" d="M0 0h24v24H0z" />
-                  <path d="M21 14l-3 -3h-7a1 1 0 0 1 -1 -1v-6a1 1 0 0 1 1 -1h9a1 1 0 0 1 1 1v10" />
-                  <path d="M14 15v2a1 1 0 0 1 -1 1h-7l-3 3v-10a1 1 0 0 1 1 -1h2" />
-                </svg>
-                <p>Logout</p>
-              </li>
-            </Link>
+                <path stroke="none" d="M0 0h24v24H0z" />
+                <path d="M21 14l-3 -3h-7a1 1 0 0 1 -1 -1v-6a1 1 0 0 1 1 -1h9a1 1 0 0 1 1 1v10" />
+                <path d="M14 15v2a1 1 0 0 1 -1 1h-7l-3 3v-10a1 1 0 0 1 1 -1h2" />
+              </svg>
+              <p>Logout</p>
+            </li>
           </ul>
         </div>
       </div>

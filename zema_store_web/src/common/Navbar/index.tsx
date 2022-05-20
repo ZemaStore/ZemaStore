@@ -1,10 +1,18 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { Link } from "react-router-dom";
+import { useAppDispatch } from "../../app/hooks/redux_hooks";
+import { logout, logoutApi } from "../../app/store/features/auth/authSlice";
 export default function Navbar() {
   const [show, setShow] = useState<boolean>(false);
   const [profile, setProfile] = useState<boolean>(false);
 
   const MenuHandler = (value: boolean) => {};
+  const dispatch = useAppDispatch();
+
+  const handleLogout = useCallback(() => {
+    dispatch(logoutApi({}));
+    window.location.reload();
+  }, [dispatch]);
 
   return (
     <>
@@ -68,6 +76,7 @@ export default function Navbar() {
                     src="/images/listen-to-music.png"
                     alt="logo"
                   />
+
                   <h2 className="hidden sm:block text-base text-gray-700 font-bold leading-normal pl-3">
                     Zema Store
                   </h2>
@@ -81,7 +90,7 @@ export default function Navbar() {
                       onClick={() => setProfile(!profile)}
                     >
                       {profile && (
-                        <ul className="p-2 w-40 border-r bg-white absolute rounded right-0 shadow top-0 mt-16 ">
+                        <ul className="p-2 w-40 border-r bg-white absolute rounded right-0 shadow top-0 mt-16 z-50 ">
                           <Link to="/me">
                             <li className="cursor-pointer text-gray-600 text-sm leading-3 tracking-normal py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none">
                               <div className="flex items-center">
@@ -146,6 +155,12 @@ export default function Navbar() {
                               <span className="ml-2">Account Settings</span>
                             </li>
                           </Link>
+                          <li
+                            onClick={() => handleLogout()}
+                            className="cursor-pointer text-gray-600 text-sm leading-3 tracking-normal mt-2 py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none flex items-center"
+                          >
+                            <span className="ml-2">Sign out</span>
+                          </li>
                         </ul>
                       )}
                       <div className="cursor-pointer flex items-center gap-x-5 text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-white transition duration-150 ease-in-out">
@@ -183,25 +198,16 @@ export default function Navbar() {
         <nav>
           <div className="py-4 px-6 w-full flex xl:hidden justify-between items-center bg-white fixed top-0 z-40">
             <div className="w-24">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width={43}
-                height={44}
-                viewBox="0 0 43 44"
-                fill="none"
-              >
-                <path
-                  fillRule="evenodd"
-                  clipRule="evenodd"
-                  d="M37.8735 0C36.1688 0 34.7818 1.37956 34.7818 3.0751C34.7818 4.77063 36.1688 6.15019 37.8735 6.15019C39.5782 6.15019 40.9653 4.77063 40.9653 3.0751C40.9653 1.37956 39.5782 0 37.8735 0ZM37.8735 4.61264C37.021 4.61264 36.3277 3.92305 36.3277 3.0751C36.3277 2.22714 37.021 1.53755 37.8735 1.53755C38.7261 1.53755 39.4194 2.22714 39.4194 3.0751C39.4194 3.92305 38.7261 4.61264 37.8735 4.61264ZM26.6663 1.0513C26.1828 1.0513 25.7909 1.44107 25.7909 1.92193C25.7909 2.4028 26.1828 2.79238 26.6663 2.79238C27.1497 2.79238 27.5416 2.40261 27.5416 1.92193C27.5416 1.44107 27.1497 1.0513 26.6663 1.0513ZM43 13.4535C43 13.9342 42.6081 14.324 42.1247 14.324C41.6412 14.324 41.2493 13.9342 41.2493 13.4535C41.2493 12.9727 41.6412 12.5829 42.1247 12.5829C42.6081 12.5829 43 12.9729 43 13.4535ZM18.1654 2.59019L35.1698 12.4044C35.4079 12.5418 35.5548 12.7951 35.5548 13.0692V33.0573C35.5548 33.3273 35.4123 33.5772 35.1803 33.7161L18.1758 43.8901C18.0533 43.9633 17.915 44 17.7774 44C17.6398 44 17.5016 43.9633 17.3789 43.8901L0.374484 33.7161C0.142219 33.5772 0 33.3271 0 33.0573V13.0692C0 12.7951 0.146857 12.5418 0.384919 12.4044L17.3894 2.59019C17.6296 2.45124 17.9254 2.45124 18.1654 2.59019ZM17.7774 4.14388L33.2524 13.0751L23.0207 19.0887L18.5503 16.4735V12.3004C18.5503 11.8758 18.2042 11.5316 17.7774 11.5316C17.3505 11.5316 17.0044 11.8758 17.0044 12.3004V16.4735L11.9752 19.4158C11.7389 19.554 11.5939 19.8057 11.5939 20.0783V25.8047L1.54586 31.7102V13.5118L17.7774 4.14388ZM2.28227 33.0632L17.7774 42.3341L34.0091 32.6225V14.4162L23.961 20.322V26.4081C23.961 26.6807 23.8161 26.9325 23.5798 27.0706L18.5505 30.0125V33.826C18.5505 34.2506 18.2044 34.5948 17.7776 34.5948C17.3507 34.5948 17.0046 34.2506 17.0046 33.826V30.0125L12.2274 27.2182L2.28227 33.0632Z"
-                  fill="#667EEA"
-                />
-              </svg>
+              <img
+                className="w-12 h-12"
+                src="/images/listen-to-music.png"
+                alt="logo"
+              />
             </div>
             <div className="flex items-center">
               <div
                 id="menu"
-                className="text-gray-800"
+                className="text-gray-800 hover:text-indigo-700"
                 onClick={() => setShow(!show)}
               >
                 {show ? (
@@ -247,34 +253,26 @@ export default function Navbar() {
                     <div className="mt-6 flex w-full items-center justify-between">
                       <div className="flex items-center justify-between w-full">
                         <div className="flex items-center">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width={43}
-                            height={44}
-                            viewBox="0 0 43 44"
-                            fill="none"
-                          >
-                            <path
-                              fillRule="evenodd"
-                              clipRule="evenodd"
-                              d="M37.8735 0C36.1688 0 34.7818 1.37956 34.7818 3.0751C34.7818 4.77063 36.1688 6.15019 37.8735 6.15019C39.5782 6.15019 40.9653 4.77063 40.9653 3.0751C40.9653 1.37956 39.5782 0 37.8735 0ZM37.8735 4.61264C37.021 4.61264 36.3277 3.92305 36.3277 3.0751C36.3277 2.22714 37.021 1.53755 37.8735 1.53755C38.7261 1.53755 39.4194 2.22714 39.4194 3.0751C39.4194 3.92305 38.7261 4.61264 37.8735 4.61264ZM26.6663 1.0513C26.1828 1.0513 25.7909 1.44107 25.7909 1.92193C25.7909 2.4028 26.1828 2.79238 26.6663 2.79238C27.1497 2.79238 27.5416 2.40261 27.5416 1.92193C27.5416 1.44107 27.1497 1.0513 26.6663 1.0513ZM43 13.4535C43 13.9342 42.6081 14.324 42.1247 14.324C41.6412 14.324 41.2493 13.9342 41.2493 13.4535C41.2493 12.9727 41.6412 12.5829 42.1247 12.5829C42.6081 12.5829 43 12.9729 43 13.4535ZM18.1654 2.59019L35.1698 12.4044C35.4079 12.5418 35.5548 12.7951 35.5548 13.0692V33.0573C35.5548 33.3273 35.4123 33.5772 35.1803 33.7161L18.1758 43.8901C18.0533 43.9633 17.915 44 17.7774 44C17.6398 44 17.5016 43.9633 17.3789 43.8901L0.374484 33.7161C0.142219 33.5772 0 33.3271 0 33.0573V13.0692C0 12.7951 0.146857 12.5418 0.384919 12.4044L17.3894 2.59019C17.6296 2.45124 17.9254 2.45124 18.1654 2.59019ZM17.7774 4.14388L33.2524 13.0751L23.0207 19.0887L18.5503 16.4735V12.3004C18.5503 11.8758 18.2042 11.5316 17.7774 11.5316C17.3505 11.5316 17.0044 11.8758 17.0044 12.3004V16.4735L11.9752 19.4158C11.7389 19.554 11.5939 19.8057 11.5939 20.0783V25.8047L1.54586 31.7102V13.5118L17.7774 4.14388ZM2.28227 33.0632L17.7774 42.3341L34.0091 32.6225V14.4162L23.961 20.322V26.4081C23.961 26.6807 23.8161 26.9325 23.5798 27.0706L18.5505 30.0125V33.826C18.5505 34.2506 18.2044 34.5948 17.7776 34.5948C17.3507 34.5948 17.0046 34.2506 17.0046 33.826V30.0125L12.2274 27.2182L2.28227 33.0632Z"
-                              fill="#667EEA"
-                            />
-                          </svg>
-                          <p className="text-base md:text-xl text-gray-800 ml-2">
+                          <img
+                            className="w-12 h-12"
+                            src="/images/listen-to-music.png"
+                            alt="logo"
+                          />
+
+                          <p className="text-base md:text-lg text-gray-800 hover:text-indigo-700 ml-2">
                             Zema Store
                           </p>
                         </div>
                         <div
                           id="cross"
-                          className="text-gray-800"
+                          className="text-gray-800 hover:text-indigo-700"
                           onClick={() => setShow(!show)}
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             className="icon icon-tabler icon-tabler-x"
-                            width={24}
-                            height={24}
+                            width={20}
+                            height={20}
                             viewBox="0 0 24 24"
                             strokeWidth="1.5"
                             stroke="currentColor"
@@ -290,14 +288,59 @@ export default function Navbar() {
                       </div>
                     </div>
                     <ul className="f-m-m">
-                      <a className="cursor-pointer">
-                        <Link to="/dashboard">
-                          <li className="text-gray-800 pt-10">
+                      <Link to="/dashboard" className="cursor-pointer">
+                        <li className="text-gray-800 hover:text-indigo-700 pt-10">
+                          <div className="flex items-center">
+                            <div className="w-5 h-5 md:w-5 md:h-5 text-gray-800 hover:text-indigo-700 hover:text-indigo-700">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="icon icon-tabler icon-tabler-grid"
+                                viewBox="0 0 24 24"
+                                strokeWidth="1.5"
+                                stroke="currentColor"
+                                fill="none"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              >
+                                <path stroke="none" d="M0 0h24v24H0z" />
+                                <rect x={4} y={4} width={6} height={6} rx={1} />
+                                <rect
+                                  x={14}
+                                  y={4}
+                                  width={6}
+                                  height={6}
+                                  rx={1}
+                                />
+                                <rect
+                                  x={4}
+                                  y={14}
+                                  width={6}
+                                  height={6}
+                                  rx={1}
+                                />
+                                <rect
+                                  x={14}
+                                  y={14}
+                                  width={6}
+                                  height={6}
+                                  rx={1}
+                                />
+                              </svg>
+                            </div>
+                            <p className="text-indigo-700 xl:text-base text-base ml-3">
+                              Dashboard
+                            </p>
+                          </div>
+                        </li>
+                      </Link>
+                      <Link to="/users">
+                        <li className="cursor-pointer text-gray-800 hover:text-indigo-700 pt-8">
+                          <div className="flex items-center justify-between">
                             <div className="flex items-center">
-                              <div className="w-6 h-6 md:w-8 md:h-8 text-indigo-700">
+                              <div className="w-5 h-5 md:w-5 md:h-5 text-gray-800 hover:text-indigo-700 hover:text-indigo-700">
                                 <svg
                                   xmlns="http://www.w3.org/2000/svg"
-                                  className="icon icon-tabler icon-tabler-grid"
+                                  className="icon icon-tabler icon-tabler-puzzle"
                                   viewBox="0 0 24 24"
                                   strokeWidth="1.5"
                                   stroke="currentColor"
@@ -306,135 +349,24 @@ export default function Navbar() {
                                   strokeLinejoin="round"
                                 >
                                   <path stroke="none" d="M0 0h24v24H0z" />
-                                  <rect
-                                    x={4}
-                                    y={4}
-                                    width={6}
-                                    height={6}
-                                    rx={1}
-                                  />
-                                  <rect
-                                    x={14}
-                                    y={4}
-                                    width={6}
-                                    height={6}
-                                    rx={1}
-                                  />
-                                  <rect
-                                    x={4}
-                                    y={14}
-                                    width={6}
-                                    height={6}
-                                    rx={1}
-                                  />
-                                  <rect
-                                    x={14}
-                                    y={14}
-                                    width={6}
-                                    height={6}
-                                    rx={1}
-                                  />
+                                  <path d="M4 7h3a1 1 0 0 0 1 -1v-1a2 2 0 0 1 4 0v1a1 1 0 0 0 1 1h3a1 1 0 0 1 1 1v3a1 1 0 0 0 1 1h1a2 2 0 0 1 0 4h-1a1 1 0 0 0 -1 1v3a1 1 0 0 1 -1 1h-3a1 1 0 0 1 -1 -1v-1a2 2 0 0 0 -4 0v1a1 1 0 0 1 -1 1h-3a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1h1a2 2 0 0 0 0 -4h-1a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1" />
                                 </svg>
                               </div>
-                              <p className="text-indigo-700 xl:text-base text-base ml-3">
-                                Dashboard
+                              <p className=" xl:text-base text-base ml-3">
+                                Users
                               </p>
                             </div>
-                          </li>
-                        </Link>
-                      </a>
-                      <Link to="/users">
-                        <a className="cursor-pointer">
-                          <li className="text-gray-800 pt-8">
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center">
-                                <div className="w-6 h-6 md:w-8 md:h-8 text-gray-800">
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className="icon icon-tabler icon-tabler-puzzle"
-                                    viewBox="0 0 24 24"
-                                    strokeWidth="1.5"
-                                    stroke="currentColor"
-                                    fill="none"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                  >
-                                    <path stroke="none" d="M0 0h24v24H0z" />
-                                    <path d="M4 7h3a1 1 0 0 0 1 -1v-1a2 2 0 0 1 4 0v1a1 1 0 0 0 1 1h3a1 1 0 0 1 1 1v3a1 1 0 0 0 1 1h1a2 2 0 0 1 0 4h-1a1 1 0 0 0 -1 1v3a1 1 0 0 1 -1 1h-3a1 1 0 0 1 -1 -1v-1a2 2 0 0 0 -4 0v1a1 1 0 0 1 -1 1h-3a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1h1a2 2 0 0 0 0 -4h-1a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1" />
-                                  </svg>
-                                </div>
-                                <p className="text-gray-800 xl:text-base md:text-2xl text-base ml-3">
-                                  Users
-                                </p>
-                              </div>
-                            </div>
-                          </li>
-                        </a>
+                          </div>
+                        </li>
                       </Link>
                       <Link to="/artists">
-                        <a className="cursor-pointer">
-                          <li className="text-gray-800 pt-8">
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center">
-                                <div className="w-6 h-6 md:w-8 md:h-8 text-gray-800">
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className="icon icon-tabler icon-tabler-puzzle"
-                                    viewBox="0 0 24 24"
-                                    strokeWidth="1.5"
-                                    stroke="currentColor"
-                                    fill="none"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                  >
-                                    <path stroke="none" d="M0 0h24v24H0z" />
-                                    <path d="M4 7h3a1 1 0 0 0 1 -1v-1a2 2 0 0 1 4 0v1a1 1 0 0 0 1 1h3a1 1 0 0 1 1 1v3a1 1 0 0 0 1 1h1a2 2 0 0 1 0 4h-1a1 1 0 0 0 -1 1v3a1 1 0 0 1 -1 1h-3a1 1 0 0 1 -1 -1v-1a2 2 0 0 0 -4 0v1a1 1 0 0 1 -1 1h-3a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1h1a2 2 0 0 0 0 -4h-1a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1" />
-                                  </svg>
-                                </div>
-                                <p className="text-gray-800 xl:text-base md:text-2xl text-base ml-3">
-                                  Artists
-                                </p>
-                              </div>
-                            </div>
-                          </li>
-                        </a>
-                      </Link>
-                      <Link to="/albums">
-                        <a className="cursor-pointer">
-                          <li className="text-gray-800 pt-8">
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center">
-                                <div className="w-6 h-6 md:w-8 md:h-8 text-gray-800">
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className="icon icon-tabler icon-tabler-puzzle"
-                                    viewBox="0 0 24 24"
-                                    strokeWidth="1.5"
-                                    stroke="currentColor"
-                                    fill="none"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                  >
-                                    <path stroke="none" d="M0 0h24v24H0z" />
-                                    <path d="M4 7h3a1 1 0 0 0 1 -1v-1a2 2 0 0 1 4 0v1a1 1 0 0 0 1 1h3a1 1 0 0 1 1 1v3a1 1 0 0 0 1 1h1a2 2 0 0 1 0 4h-1a1 1 0 0 0 -1 1v3a1 1 0 0 1 -1 1h-3a1 1 0 0 1 -1 -1v-1a2 2 0 0 0 -4 0v1a1 1 0 0 1 -1 1h-3a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1h1a2 2 0 0 0 0 -4h-1a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1" />
-                                  </svg>
-                                </div>
-                                <p className="text-gray-800 xl:text-base md:text-2xl text-base ml-3">
-                                  Albums
-                                </p>
-                              </div>
-                            </div>
-                          </li>
-                        </a>
-                      </Link>
-                      <Link to="/events">
-                        <a className="cursor-pointer">
-                          <li className="text-gray-800 pt-8">
+                        <li className="text-gray-800 hover:text-indigo-700 pt-8">
+                          <div className="flex items-center justify-between">
                             <div className="flex items-center">
-                              <div className="w-6 h-6 md:w-8 md:h-8 text-gray-800">
+                              <div className="w-5 h-5 md:w-5 md:h-5 text-gray-800 hover:text-indigo-700 hover:text-indigo-700">
                                 <svg
                                   xmlns="http://www.w3.org/2000/svg"
-                                  className="icon icon-tabler icon-tabler-compass"
+                                  className="icon icon-tabler icon-tabler-puzzle"
                                   viewBox="0 0 24 24"
                                   strokeWidth="1.5"
                                   stroke="currentColor"
@@ -443,23 +375,73 @@ export default function Navbar() {
                                   strokeLinejoin="round"
                                 >
                                   <path stroke="none" d="M0 0h24v24H0z" />
-                                  <polyline points="8 16 10 10 16 8 14 14 8 16" />
-                                  <circle cx={12} cy={12} r={9} />
+                                  <path d="M4 7h3a1 1 0 0 0 1 -1v-1a2 2 0 0 1 4 0v1a1 1 0 0 0 1 1h3a1 1 0 0 1 1 1v3a1 1 0 0 0 1 1h1a2 2 0 0 1 0 4h-1a1 1 0 0 0 -1 1v3a1 1 0 0 1 -1 1h-3a1 1 0 0 1 -1 -1v-1a2 2 0 0 0 -4 0v1a1 1 0 0 1 -1 1h-3a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1h1a2 2 0 0 0 0 -4h-1a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1" />
                                 </svg>
                               </div>
-                              <p className="text-gray-800 xl:text-base md:text-2xl text-base ml-3">
-                                Events
+                              <p className=" xl:text-base text-base ml-3">
+                                Artists
                               </p>
                             </div>
-                          </li>
-                        </a>
+                          </div>
+                        </li>
+                      </Link>
+                      <Link to="/albums">
+                        <li className="cursor-pointer text-gray-800 hover:text-indigo-700 pt-8">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center">
+                              <div className="w-5 h-5 md:w-5 md:h-5 text-gray-800 hover:text-indigo-700 hover:text-indigo-700">
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  className="icon icon-tabler icon-tabler-puzzle"
+                                  viewBox="0 0 24 24"
+                                  strokeWidth="1.5"
+                                  stroke="currentColor"
+                                  fill="none"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                >
+                                  <path stroke="none" d="M0 0h24v24H0z" />
+                                  <path d="M4 7h3a1 1 0 0 0 1 -1v-1a2 2 0 0 1 4 0v1a1 1 0 0 0 1 1h3a1 1 0 0 1 1 1v3a1 1 0 0 0 1 1h1a2 2 0 0 1 0 4h-1a1 1 0 0 0 -1 1v3a1 1 0 0 1 -1 1h-3a1 1 0 0 1 -1 -1v-1a2 2 0 0 0 -4 0v1a1 1 0 0 1 -1 1h-3a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1h1a2 2 0 0 0 0 -4h-1a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1" />
+                                </svg>
+                              </div>
+                              <p className="xl:text-base text-base ml-3">
+                                Albums
+                              </p>
+                            </div>
+                          </div>
+                        </li>
+                      </Link>
+                      <Link to="/events">
+                        <li className="text-gray-800 hover:text-indigo-700 pt-8">
+                          <div className="flex items-center">
+                            <div className="w-5 h-5 md:w-5 md:h-5 text-gray-800 hover:text-indigo-700 hover:text-indigo-700">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="icon icon-tabler icon-tabler-compass"
+                                viewBox="0 0 24 24"
+                                strokeWidth="1.5"
+                                stroke="currentColor"
+                                fill="none"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              >
+                                <path stroke="none" d="M0 0h24v24H0z" />
+                                <polyline points="8 16 10 10 16 8 14 14 8 16" />
+                                <circle cx={12} cy={12} r={9} />
+                              </svg>
+                            </div>
+                            <p className=" xl:text-base text-base ml-3">
+                              Events
+                            </p>
+                          </div>
+                        </li>
                       </Link>
 
                       <Link to="/subscriptions">
-                        <li className="text-gray-800 pt-8 cursor-pointer">
+                        <li className="text-gray-800 hover:text-indigo-700 pt-8 cursor-pointer">
                           <div className="flex items-center justify-between">
                             <div className="flex items-center">
-                              <div className="w-6 h-6 md:w-8 md:h-8 text-gray-800">
+                              <div className="w-5 h-5 md:w-5 md:h-5 text-gray-800 hover:text-indigo-700 hover:text-indigo-700">
                                 <svg
                                   xmlns="http://www.w3.org/2000/svg"
                                   className="icon icon-tabler icon-tabler-code"
@@ -476,7 +458,7 @@ export default function Navbar() {
                                   <line x1={14} y1={4} x2={10} y2={20} />
                                 </svg>
                               </div>
-                              <p className="text-gray-800 xl:text-base md:text-2xl text-base ml-3">
+                              <p className="xl:text-base text-base ml-3">
                                 Subscriptions
                               </p>
                             </div>
@@ -494,13 +476,13 @@ export default function Navbar() {
                             src="https://tuk-cdn.s3.amazonaws.com/assets/components/boxed_layout/bl_1.png"
                             className="w-8 h-8 rounded-md"
                           />
-                          <p className=" text-gray-800 text-base leading-4 ml-2">
+                          <p className=" text-gray-800 hover:text-indigo-700 text-base leading-4 ml-2">
                             Nathaniel Hussein
                           </p>
                         </div>
                         <ul className="flex">
-                          <li className="cursor-pointer text-gray-800 pt-5 pb-3 pl-3">
-                            <div className="w-6 h-6 md:w-8 md:h-8">
+                          <li className="cursor-pointer text-gray-800 hover:text-indigo-700 pt-5 pb-3 pl-3">
+                            <div className="w-5 h-5 md:w-5 md:h-5 text-gray-800 hover:text-indigo-700 hover:text-indigo-700">
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 className="icon icon-tabler icon-tabler-bell"

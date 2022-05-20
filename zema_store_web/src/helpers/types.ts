@@ -1,9 +1,14 @@
 import type { PropsWithChildren } from "react";
+import { Location } from "react-router-dom";
 
 export type WithChildren<T = {}> = T & PropsWithChildren<{}>;
 
 export type WithClassName<T = {}> = T & {
   className?: string;
+};
+
+export type LocationState = {
+  from: Location;
 };
 
 export type User = {
@@ -68,4 +73,21 @@ export type Subscription = {
   price: number;
   subType: string;
   createdAt: string;
+};
+
+export type Event = {
+  id: string;
+  title: string;
+  summary: string;
+  cover: string;
+  price: number;
+  subType: string;
+  createdAt: string;
+  venue: {
+    country: string;
+    city: string;
+    street: string;
+    zip: string;
+  };
+  startDate: string;
 };

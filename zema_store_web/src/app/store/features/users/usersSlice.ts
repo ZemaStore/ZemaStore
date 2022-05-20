@@ -96,7 +96,10 @@ export const usersSlice = createSlice({
       })
       .addCase(getUsersApi.fulfilled, (state, { payload }) => {
         state.isLoading = false;
-        state.users = payload;
+        state.meta.totalPage = payload.totalItems;
+        state.meta.currentPage = payload.currentPage;
+        state.meta.limit = payload.limit;
+        state.users = payload.users;
         state.searchUsersList = state.users;
       })
       .addCase(getUsersApi.rejected, (state, { payload }) => {

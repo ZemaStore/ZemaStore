@@ -1,11 +1,11 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../..";
-import { Album } from "../../../../helpers/types";
-import AlbumsService from "../../../services/albums.service";
+import { Event } from "../../../../helpers/types";
+import EventsService from "../../../services/events.service";
 
-export type AlbumsState = {
-  albums: Array<Album>;
-  searchAlbumsList: Array<Album>;
+export type EventsState = {
+  events: Array<Event>;
+  searchEventsList: Array<Event>;
   isLoading: boolean;
   error: boolean;
   meta: {
@@ -16,9 +16,9 @@ export type AlbumsState = {
 };
 
 // initial value
-const initialState: AlbumsState = {
-  albums: [],
-  searchAlbumsList: [],
+const initialState: EventsState = {
+  events: [],
+  searchEventsList: [],
   isLoading: false,
   error: false,
   meta: {
@@ -29,12 +29,12 @@ const initialState: AlbumsState = {
 };
 
 // This action is what we will call using the dispatch in order to trigger the API call.
-// is used to get albums
-export const getAlbumsApi = createAsyncThunk<any, any>(
-  "/albums",
+// is used to get events
+export const getEventsApi = createAsyncThunk<any, any>(
+  "/events",
   async (payload, { rejectWithValue, fulfillWithValue, dispatch }) => {
     try {
-      const { data } = await AlbumsService.getAlbums();
+      const { data } = await EventsService.getEvents();
       // return fulfillWithValue([
       //   {
       //     id: "23323455232",
@@ -81,41 +81,41 @@ export const getAlbumsApi = createAsyncThunk<any, any>(
   }
 );
 
-export const albumsSlice = createSlice({
-  name: "albums",
+export const eventsSlice = createSlice({
+  name: "events",
   initialState,
   reducers: {
-    addAlbum: (state, { payload }) => {
-      state.albums.push(payload);
+    addEvent: (state, { payload }) => {
+      state.events.push(payload);
       state.isLoading = false;
-      state.searchAlbumsList = state.albums;
+      state.searchEventsList = state.events;
     },
     //
-    updateAlbum: (state, { payload }) => {
-      state.albums =
-        state.albums &&
-        state.albums.map((album: Album) => {
+    updateEvent: (state, { payload }) => {
+      state.events =
+        state.events &&
+        state.events.map((album: Event) => {
           if (album.id === payload.id) {
             return payload;
           }
           return album;
         });
-      state.searchAlbumsList = state.albums;
+      state.searchEventsList = state.events;
     },
-    // can be called when we want to remove Album
-    removeAlbum: (state, { payload: id }) => {
-      state.albums =
-        state.albums && state.albums.filter((album: Album) => album.id !== id);
+    // can be called when we want to remove Event
+    removeEvent: (state, { payload: id }) => {
+      state.events =
+        state.events && state.events.filter((album: Event) => album.id !== id);
       state.isLoading = false;
-      state.searchAlbumsList = state.albums;
+      state.searchEventsList = state.events;
     },
-    searchAlbums: (
+    searchEvents: (
       state,
       { payload }: { payload: { name: string; tag: string } }
     ) => {
-      state.searchAlbumsList =
-        state.albums &&
-        state.albums.filter((album: Album) => {
+      state.searchEventsList =
+        state.events &&
+        state.events.filter((album: Event) => {
           if (payload.name && album.title) {
             return album.title.toLowerCase().includes(payload.name);
           } else {
@@ -130,15 +130,15 @@ export const albumsSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(getAlbumsApi.pending, (state) => {
+      .addCase(getEventsApi.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(getAlbumsApi.fulfilled, (state, { payload }) => {
+      .addCase(getEventsApi.fulfilled, (state, { payload }) => {
         state.isLoading = false;
-        state.albums = payload;
-        state.searchAlbumsList = state.albums;
+        state.events = payload;
+        state.searchEventsList = state.events;
       })
-      .addCase(getAlbumsApi.rejected, (state, { payload }) => {
+      .addCase(getEventsApi.rejected, (state, { payload }) => {
         state.isLoading = false;
         state.error = true;
       });
@@ -147,13 +147,13 @@ export const albumsSlice = createSlice({
 
 // Action creators are generated for each case reducer function
 export const {
-  addAlbum,
-  searchAlbums,
-  removeAlbum,
+  addEvent,
+  searchEvents,
+  removeEvent,
   handlePaginate,
-  updateAlbum,
-} = albumsSlice.actions;
+  updateEvent,
+} = eventsSlice.actions;
 
-export const albumsSelector = (state: RootState) => state.albums;
+export const eventsSelector = (state: RootState) => state.events;
 
-export default albumsSlice.reducer;
+export default eventsSlice.reducer;

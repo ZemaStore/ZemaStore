@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import BaseLayout from "../../common/Layout";
+import React, { useCallback, useEffect, useState } from "react";
+import { useAppDispatch } from "../../app/hooks/redux_hooks";
+import { getAlbumsApi } from "../../app/store/features/albums/albumsSlice";
 import Pagination from "../../common/Paginations";
 import AlbumsTable from "../../components/AlbumsTable";
 import AddAlbumModal from "../../components/Modals/AddAlbum";
@@ -7,6 +8,8 @@ import AddAlbumModal from "../../components/Modals/AddAlbum";
 type Props = {};
 
 const AlbumsPage = (props: Props) => {
+  const dispatch = useAppDispatch();
+
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const onCloseModal = () => {
     console.log("closing modal");
@@ -16,6 +19,15 @@ const AlbumsPage = (props: Props) => {
   const handleModalOpen = () => {
     setIsModalOpen(true);
   };
+
+  const fetchAlbums = useCallback(async () => {
+    await dispatch(getAlbumsApi({}));
+  }, [dispatch]);
+
+  useEffect(() => {
+    fetchAlbums();
+  }, [fetchAlbums]);
+
   return (
     <main>
       <div className="min-h-[600px] my-10">

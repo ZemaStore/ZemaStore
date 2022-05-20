@@ -8,6 +8,7 @@ import UsersTable from "../../components/UsersTable";
 type Props = {};
 
 const UsersPage = (props: Props) => {
+  console.log("hllo broth")
   const dispatch = useAppDispatch();
 
   const fetchUsers = useCallback(async () => {

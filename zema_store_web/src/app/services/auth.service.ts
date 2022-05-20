@@ -1,46 +1,69 @@
-import { baseUrl } from ".";
 import encryption from "../../utils/encryption";
+import { baseUrl } from ".";
 import jwt_decode from "jwt-decode";
 import Request from "../api/request";
-export const ACCESS_TOKEN_KEY = "token";
-export const PROFILE_KEY = "profile";
+import configs from "../../helpers/configs";
 
-const AuthService: any = {
-  async login(user: any) {
-    const { email, password } = user;
-    const { data } = await Request.post(`${baseUrl}/auth/signin`, {
+const login = async (user: any) => {
+  const { email, password } = user;
+
+  try {
+    const { data } = await Request.post(`${baseUrl}/auth/sign-in`, {
       email,
       password,
     });
-    if (data.token) {
-      localStorage.setItem(ACCESS_TOKEN_KEY, data.token);
+    console.log("data is ", data);
+    if (data.accessToken) {
+      // localStorage.setItem(configs.ACCESS_TOKEN_KEY, data.accessToken);
+      updateToken(data.accessToken);
     }
 
-    try {
-      let decoded = jwt_decode(data.token);
-      localStorage.setItem(PROFILE_KEY, encryption.encrypt(decoded));
-      return Promise.resolve(true);
-    } catch (error) {
-      return Promise.reject(new Error("Unauthorized"));
-    }
-    //
-  },
-  logoutClientOnly() {
-    localStorage.clear();
-  },
-  updateToken(token: any) {
-    localStorage.setItem(ACCESS_TOKEN_KEY, encryption.encrypt(token));
-  },
-  getAccessToken: () =>
-    encryption.decrypt(localStorage.getItem(ACCESS_TOKEN_KEY)),
-  getProfile: () => encryption.decrypt(localStorage.getItem(PROFILE_KEY)),
-  getRole() {
-    return this.getProfile() && this.getProfile().role;
-  },
-  isAuthenticated: () => {
-    const token = localStorage.getItem(ACCESS_TOKEN_KEY);
-    return token !== null && token !== "undefined";
-  },
+    let decoded = jwt_decode(data.accessToken);
+    localStorage.setItem(
+      configs.PROFILE_KEY,
+      encryption.encrypt(decoded).toString()
+    );
+    return { data: decoded };
+  } catch (error) {
+    throw new Error("INVALID EMAIL OR PASSWORD!");
+  }
+};
+const logoutClientOnly = async () => {
+  localStorage.clear();
+};
+
+const updateToken = (accessToken: any) => {
+  localStorage.setItem(
+    configs.ACCESS_TOKEN_KEY,
+    encryption.encrypt(accessToken).toString()
+  );
+};
+const getAccessToken = () => {
+  return encryption.decrypt(localStorage.getItem(configs.ACCESS_TOKEN_KEY));
+};
+
+const getProfile = () => {
+  return encryption.decrypt(localStorage.getItem(configs.PROFILE_KEY));
+};
+
+const getRole = () => {
+  return getProfile() && getProfile().role;
+};
+
+const isAuthenticated = () => {
+  // const accessToken = localStorage.getItem(configs.ACCESS_TOKEN_KEY);
+  // return accessToken !== null && accessToken !== "undefined";
+  return getAccessToken() !== null && getAccessToken() !== "undefined";
+};
+
+const AuthService = {
+  login,
+  logoutClientOnly,
+  updateToken,
+  getAccessToken,
+  getProfile,
+  getRole,
+  isAuthenticated,
 };
 
 export default AuthService;

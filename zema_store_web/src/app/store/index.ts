@@ -4,6 +4,8 @@ import artistsReducer from "./features/artists/artistsSlice";
 import albumsReducer from "./features/albums/albumsSlice";
 import songsReducer from "./features/songs/songsSlice";
 import subscriptionsReducer from "./features/subscriptions/subscriptionsSlice";
+import eventsReducer from "./features/subscriptions/subscriptionsSlice";
+import authReducer from "./features/auth/authSlice";
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof store.getState>;
@@ -19,6 +21,8 @@ export const createStore = () =>
       albums: albumsReducer,
       songs: songsReducer,
       subscriptions: subscriptionsReducer,
+      auth: authReducer,
+      events: eventsReducer,
     },
   });
 
