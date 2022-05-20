@@ -1,17 +1,17 @@
 import React from "react";
+import { Outlet } from "react-router-dom";
 import BaseLayout from "../../common/Layout";
+import Pagination from "../../common/Paginations";
 import AlbumsTable from "../../components/AlbumsTable";
 
 type Props = {};
 
-const AlbumsPage = (props: Props) => {
+const AlbumsIndexPage = (props: Props) => {
   return (
     <BaseLayout>
-      <main>
-        <AlbumsTable />
-      </main>
+      <Outlet />
     </BaseLayout>
   );
 };
 
-export default AlbumsPage;
+export default AlbumsIndexPage;

@@ -1,5 +1,6 @@
 import React from "react";
 import BaseLayout from "../../common/Layout";
+import Pagination from "../../common/Paginations";
 import DashboardComponent from "../../components/Dashboard";
 
 type Props = {};

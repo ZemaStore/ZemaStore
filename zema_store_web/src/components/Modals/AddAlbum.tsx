@@ -76,35 +76,19 @@ const AddAlbumModal = (props: Props) => {
               className="mb-5 mt-2 text-gray-600 focus:outline-none focus:border focus:border-indigo-700 font-normal w-full h-10 flex items-center pl-3 text-sm border-gray-300 rounded border"
               placeholder="Year"
             />
-            <div className="border overflow-hidden relative mt-4 mb-4">
-              <button
-                onClick={() => {
-                  fileUploadFileRef.current?.click();
-                }}
-                className="bg-blue hover:bg-blue-light text-white font-bold py-2 px-4 w-full inline-flex items-center"
-              >
-                <svg
-                  fill="#FFF"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  width="18"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path d="M0 0h24v24H0z" fill="none" />
-                  <path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z" />
-                </svg>
-                <span className="ml-2 text-black">Upload Cover</span>
-              </button>
-              <input
-                className="cursor-pointer absolute block py-2 px-4 w-full opacity-0 pin-r pin-t"
-                type="file"
-                name="cover"
-                accept="image/*"
-                ref={fileUploadFileRef}
-                onInput={(e) => {
-                  handleFileInput(e);
-                }}
-              />
+            <div className="overflow-hidden relative mt-4 mb-4">
+              <label className="block">
+                <span className="sr-only">Choose profile photo</span>
+                <input
+                  type="file"
+                  name="cover"
+                  accept="image/*"
+                  onInput={(e) => {
+                    handleFileInput(e);
+                  }}
+                  className="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold  file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100 hover:file:text-violet-800"
+                />
+              </label>
             </div>
             <div className="flex items-center justify-start w-full">
               <button
