@@ -107,14 +107,17 @@ const addArtist = async (req: Request, res: Response) => {
         .send({ success: false, message: "Role doesn't exist" });
     }
 
-    const { path = "", filename = "" } = req.file;
-    const upload = await cloudinaryUploader(
-      path,
-      "auto",
-      "UserPhotos",
-      filename,
-      res
-    );
+    let upload;
+    if (req.file) {
+      const { path = "", filename = "" } = req.file;
+      upload = await cloudinaryUploader(
+        path,
+        "auto",
+        "UserPhotos",
+        filename,
+        res
+      );
+    }
 
     const profileModel = "ArtistProfile";
     const artistProfile = await ArtistProfie.create({

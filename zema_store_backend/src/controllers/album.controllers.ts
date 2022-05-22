@@ -3,6 +3,7 @@ import { isNil } from "lodash";
 import { cloudinaryUploader } from "../middlewares/cloudinary.middlewares";
 
 import Album from "../models/mongoose/album";
+import Song from "../models/mongoose/song";
 
 import ErrorResponse from "../models/responses/error-response.model";
 import OkResponse from "../models/responses/ok-response.model";
@@ -28,9 +29,12 @@ const getAlbum = async (req: Request, res: Response) => {
         .send(new ErrorResponse(validate.error.message, null));
     }
 
-    const album = await Album.findById(req.params.id);
+    const album = await Album.findById(req.params.id).populate("artistId");
+    const songs = await Song.count({ albumId: album._id });
 
-    res.status(200).send(new OkResponse(album, "Album successfully fetched!"));
+    res
+      .status(200)
+      .send(new OkResponse({ album, songs }, "Album successfully fetched!"));
   } catch (e) {
     Utils.instance.handleResponseException(res, e);
   }
@@ -53,13 +57,19 @@ const getAlbums = async (req: Request, res: Response) => {
     const albums = await Album.find({})
       .limit(fetchItemCount)
       .skip(page * fetchItemCount)
-      .sort(sort);
+      .sort(sort)
+      .populate("artistId");
+
+    const albumList = albums.map(async (album) => {
+      const songs = await Song.count({ albumId: album._id });
+      return { album, songs };
+    });
 
     res
       .status(200)
       .send(
         new OkResponse(
-          { albums, totalPages, totalItems: count, pageNumber: page },
+          { albumList, totalPages, totalItems: count, pageNumber: page },
           null
         )
       );
@@ -95,13 +105,19 @@ const getAlbumsByArtist = async (req: Request, res: Response) => {
     })
       .limit(fetchItemCount)
       .skip(page * fetchItemCount)
-      .sort(sort);
+      .sort(sort)
+      .populate("artistId");
+
+    const albumList = albums.map(async (album) => {
+      const songs = await Song.count({ albumId: album._id });
+      return { album, songs };
+    });
 
     res
       .status(200)
       .send(
         new OkResponse(
-          { albums, totalPages, totalItems: count, pageNumber: page },
+          { albumList, totalPages, totalItems: count, pageNumber: page },
           "Albums successfully fetched!"
         )
       );
@@ -120,26 +136,32 @@ const addAlbum = async (req: Request, res: Response) => {
     }
 
     const { artistId, title, releaseDate } = req.body;
-    const { path = "", filename = "" } = req.file;
 
-    const upload = await cloudinaryUploader(
-      path,
-      "auto",
-      albumImagesPath,
-      filename,
-      res
-    );
+    let upload;
+    if (req.file) {
+      const { path = "", filename = "" } = req.file;
+      upload = await cloudinaryUploader(
+        path,
+        "auto",
+        albumImagesPath,
+        filename,
+        res
+      );
+    }
 
     const albumData = new Album({
       artistId,
       title,
-      imageUrl: upload.secure_url,
+      imageUrl: upload.secure_url || "",
       releaseDate,
     });
 
-    const album = await albumData.save();
+    const album = await (await albumData.save()).populate("artistId");
+    const songs = await Song.count({ albumId: album._id });
 
-    res.status(200).send(new OkResponse(album, "Album successfully created!"));
+    res
+      .status(200)
+      .send(new OkResponse({ album, songs }, "Album successfully created!"));
   } catch (e) {
     Utils.instance.handleResponseException(res, e);
   }
@@ -184,9 +206,12 @@ const updateAlbum = async (req: Request, res: Response) => {
       ? upload.secure_url
       : albumData.imageUrl;
 
-    const album = await albumData.save();
+    const album = await (await albumData.save()).populate("artistId");
+    const songs = await Song.count({ albumId: album._id });
 
-    res.status(200).send(new OkResponse(album, "Album successfully updated!"));
+    res
+      .status(200)
+      .send(new OkResponse({ album, songs }, "Album successfully updated!"));
   } catch (e) {
     Utils.instance.handleResponseException(res, e);
   }

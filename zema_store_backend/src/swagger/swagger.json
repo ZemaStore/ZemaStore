@@ -1873,7 +1873,7 @@
                 ],
                 "requestBody": {
                     "content": {
-                        "application/json": {
+                        "multipart/form-data": {
                             "schema": {
                                 "$ref": "#/components/schemas/Event"
                             }
@@ -2007,7 +2007,7 @@
                 ],
                 "requestBody": {
                     "content": {
-                        "application/json": {
+                        "multipart/form-data": {
                             "schema": {
                                 "$ref": "#/components/schemas/Event"
                             }
@@ -2336,6 +2336,15 @@
                     "title": {
                         "type": "string",
                         "description": "Event title"
+                    },
+                    "summary": {
+                        "type": "string",
+                        "description": "Event summary"
+                    },
+                    "cover": {
+                        "type": "string",
+                        "format": "binary",
+                        "description": "Event cover photo"
                     },
                     "venue": {
                         "type": "object"

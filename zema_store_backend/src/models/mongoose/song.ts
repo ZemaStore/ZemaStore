@@ -29,7 +29,7 @@ const songSchema: Schema<ISongDocument> = new Schema(
     artistId: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
-      ref: "User",
+      ref: "ArtistProfile",
     },
     title: {
       type: String,

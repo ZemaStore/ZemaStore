@@ -13,6 +13,7 @@ const playlistSchema: Schema<IPlaylistDocument> = new Schema(
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
+      ref: "CustomerProfile",
     },
     title: {
       type: String,

@@ -1,4 +1,6 @@
 import { Request, Response } from "express";
+import { isNil } from "lodash";
+import { cloudinaryUploader } from "../middlewares/cloudinary.middlewares";
 import Event from "../models/mongoose/event";
 
 import ErrorResponse from "../models/responses/error-response.model";
@@ -14,6 +16,7 @@ import {
 } from "../validation-schemas/event.schemas";
 
 const fetchItemCount = 10;
+const eventImagesPath = "Event/Images";
 
 const getEvent = async (req: Request, res: Response) => {
   try {
@@ -72,8 +75,27 @@ const createEvent = async (req: Request, res: Response) => {
         .status(400)
         .send(new ErrorResponse(validate.error.message, null));
     }
+    const { title, summary, venue, date } = req.body;
+    const { path = "", filename = "" } = req.file;
 
-    const event = await Event.create(req.body);
+    let upload;
+    if (req.file) {
+      upload = await cloudinaryUploader(
+        path,
+        "auto",
+        eventImagesPath,
+        filename,
+        res
+      );
+    }
+
+    const event = await Event.create({
+      title,
+      summary,
+      imageUrl: upload.secure_url || "",
+      venue,
+      date,
+    });
 
     res.status(200).send(new OkResponse(event, "Event successfully created!"));
   } catch (e) {
@@ -95,9 +117,35 @@ const updateEvent = async (req: Request, res: Response) => {
         .send(new ErrorResponse(validate.error.message, null));
     }
 
-    const event = await Event.findOneAndUpdate({ _id: params.id }, body, {
-      new: true,
-    });
+    let upload;
+    if (req.file) {
+      const { path, filename } = req.file;
+      upload = await cloudinaryUploader(
+        path,
+        "auto",
+        eventImagesPath,
+        filename,
+        res
+      );
+    }
+
+    // const event = await Event.findOneAndUpdate({ _id: params.id }, body, {
+    //   new: true,
+    // });
+
+    const { title, summary, venue, date } = body;
+
+    const eventData = await Event.findById(params.id);
+
+    eventData.title = !isNil(title) ? title : eventData.title;
+    eventData.summary = !isNil(summary) ? summary : eventData.summary;
+    eventData.venue = !isNil(venue) ? venue : eventData.venue;
+    eventData.date = !isNil(date) ? date : eventData.venue;
+    eventData.imageUrl = !isNil(upload.secure_url)
+      ? upload.secure_url
+      : eventData.imageUrl;
+
+    const event = await eventData.save();
 
     res.status(200).send(new OkResponse(event, "Event updated successfully!"));
   } catch (e) {

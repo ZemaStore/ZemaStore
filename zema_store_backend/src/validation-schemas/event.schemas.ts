@@ -11,6 +11,7 @@ const getEventsSchema = Joi.object({
 
 const createEventSchema = Joi.object({
   title: Joi.string().required(),
+  summary: Joi.string().required(),
   venue: Joi.object().required(),
   date: Joi.date().required(),
 });
@@ -21,6 +22,7 @@ const updateEventSchema = Joi.object({
   },
   body: {
     title: Joi.string().optional(),
+    summary: Joi.string().optional(),
     venue: Joi.object().optional(),
     date: Joi.date().optional(),
   },
