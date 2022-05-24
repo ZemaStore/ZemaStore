@@ -35,18 +35,6 @@ function App() {
         pauseOnHover
       />
       <Routes>
-        <Route path="/" element={<Navigate to={"/dashboard"} />} />
-
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute
-              redirectPath="/dashboard"
-              children={<DashboardPage />}
-            />
-          }
-        />
-
         <Route
           path="/users"
           element={
@@ -54,7 +42,7 @@ function App() {
           }
         />
         <Route
-          path="/artists"
+          path="artists"
           element={
             <ProtectedRoute
               redirectPath="/artists"
@@ -92,7 +80,6 @@ function App() {
             ></ProtectedRoute>
           }
         />
-        <Route path="signin" element={<SigninPage />} />
         <Route
           path="/settings"
           element={
@@ -108,6 +95,21 @@ function App() {
             <ProtectedRoute redirectPath="/me" children={<UserProfilePage />} />
           }
         />
+
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute
+              redirectPath="/dashboard"
+              children={<DashboardPage />}
+            />
+          }
+        />
+
+        <Route path="/signin" element={<SigninPage />} />
+
+        <Route path="/" element={<Navigate to={"dashboard"} />} />
+
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </div>

@@ -8,7 +8,9 @@ export type AlbumsState = {
   searchAlbumsList: Array<Album>;
   isLoading: boolean;
   error: boolean;
+  errorMessage: string;
   meta: {
+    total: number;
     totalPage: number;
     currentPage: number;
     limit: number;
@@ -21,7 +23,9 @@ const initialState: AlbumsState = {
   searchAlbumsList: [],
   isLoading: false,
   error: false,
+  errorMessage: "",
   meta: {
+    total: 0,
     totalPage: 1,
     currentPage: 1,
     limit: 10,
@@ -35,46 +39,43 @@ export const getAlbumsApi = createAsyncThunk<any, any>(
   async (payload, { rejectWithValue, fulfillWithValue, dispatch }) => {
     try {
       const { data } = await AlbumsService.getAlbums();
-      // return fulfillWithValue([
-      //   {
-      //     id: "23323455232",
-      //     title: "Single",
-      //     cover: "https://cdn.tuk.dev/assets/templates/olympus/projects(3).png",
-      //     artist: "sfasasfda",
-      //     releaseDate: "2020-02-01",
-      //     songs: 21,
-      //     createdAt: "2020-01-01",
-      //   },
-      //   {
-      //     id: "3234234234",
-      //     title: "John Doe",
-      //     cover: "https://cdn.tuk.dev/assets/templates/olympus/projects(3).png",
-      //     artist: "sfasasfda",
-      //     releaseDate: "2020-02-01",
-      //     songs: 21,
-      //     createdAt: "2020-01-01",
-      //   },
-      //   {
-      //     id: "1232322323234",
-      //     title: "Thomas Doe",
-      //     cover: "https://cdn.tuk.dev/assets/templates/olympus/projects(1).png",
-      //     artist: "sfasasfda",
-      //     releaseDate: "2020-01-01",
-      //     songs: 21,
-      //     createdAt: "2020-01-02",
-      //   },
-      //   {
-      //     id: "1wef3232423423423",
-      //     title: "Thomas Doe",
-
-      //     cover: "https://cdn.tuk.dev/assets/templates/olympus/projects(2).png",
-      //     artist: "asdfasdfwerwe",
-      //     releaseDate: "2020-05-01",
-      //     songs: 21,
-      //     createdAt: "2020-01-01",
-      //   },
-      // ]);
+      console.log("data is ", data);
       return fulfillWithValue(data);
+    } catch (err: any) {
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
+export const addArtistsApi = createAsyncThunk<any, any>(
+  "/addArtist",
+  async (payload, { rejectWithValue, fulfillWithValue, dispatch }) => {
+    try {
+      const { data } = await AlbumsService.addAlbum(payload);
+      return fulfillWithValue(data);
+    } catch (err: any) {
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
+export const updateArtistsApi = createAsyncThunk<any, any>(
+  "/updateArtist",
+  async (payload, { rejectWithValue, fulfillWithValue, dispatch }) => {
+    try {
+      const { data } = await AlbumsService.updateAlbum(payload);
+      return fulfillWithValue(data);
+    } catch (err: any) {
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
+export const deleteArtistsApi = createAsyncThunk<any, any>(
+  "/deleteArtist",
+  async (payload, { rejectWithValue, fulfillWithValue, dispatch }) => {
+    try {
+      const { data } = await AlbumsService.updateAlbum(payload);
     } catch (err: any) {
       return rejectWithValue(err.response.data);
     }
@@ -85,6 +86,11 @@ export const albumsSlice = createSlice({
   name: "albums",
   initialState,
   reducers: {
+    clearMessage: (state) => {
+      state.isLoading = false;
+      state.error = false;
+      state.errorMessage = "";
+    },
     addAlbum: (state, { payload }) => {
       state.albums.push(payload);
       state.isLoading = false;
@@ -135,8 +141,12 @@ export const albumsSlice = createSlice({
       })
       .addCase(getAlbumsApi.fulfilled, (state, { payload }) => {
         state.isLoading = false;
-        state.albums = payload;
+        state.albums = payload !== null ? payload.albumList : [];
         state.searchAlbumsList = state.albums;
+        state.meta.total = payload.totalItems;
+        state.meta.totalPage = payload.totalPages;
+        state.meta.currentPage = payload.pageNumber + 1;
+        state.meta.limit = 10;
       })
       .addCase(getAlbumsApi.rejected, (state, { payload }) => {
         state.isLoading = false;

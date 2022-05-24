@@ -1,6 +1,11 @@
 {
   "compilerOptions": {
     "target": "es5",
+    "types": [
+      "cypress",
+      "cypress-react-selector",
+      "node"
+    ],
     "lib": [
       "dom",
       "dom.iterable",

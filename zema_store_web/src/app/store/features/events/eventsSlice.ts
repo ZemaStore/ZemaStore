@@ -8,6 +8,7 @@ export type EventsState = {
   searchEventsList: Array<Event>;
   isLoading: boolean;
   error: boolean;
+  errorMessage: string;
   meta: {
     totalPage: number;
     currentPage: number;
@@ -21,6 +22,7 @@ const initialState: EventsState = {
   searchEventsList: [],
   isLoading: false,
   error: false,
+  errorMessage: "",
   meta: {
     totalPage: 1,
     currentPage: 1,
@@ -35,45 +37,7 @@ export const getEventsApi = createAsyncThunk<any, any>(
   async (payload, { rejectWithValue, fulfillWithValue, dispatch }) => {
     try {
       const { data } = await EventsService.getEvents();
-      // return fulfillWithValue([
-      //   {
-      //     id: "23323455232",
-      //     title: "Single",
-      //     cover: "https://cdn.tuk.dev/assets/templates/olympus/projects(3).png",
-      //     artist: "sfasasfda",
-      //     releaseDate: "2020-02-01",
-      //     songs: 21,
-      //     createdAt: "2020-01-01",
-      //   },
-      //   {
-      //     id: "3234234234",
-      //     title: "John Doe",
-      //     cover: "https://cdn.tuk.dev/assets/templates/olympus/projects(3).png",
-      //     artist: "sfasasfda",
-      //     releaseDate: "2020-02-01",
-      //     songs: 21,
-      //     createdAt: "2020-01-01",
-      //   },
-      //   {
-      //     id: "1232322323234",
-      //     title: "Thomas Doe",
-      //     cover: "https://cdn.tuk.dev/assets/templates/olympus/projects(1).png",
-      //     artist: "sfasasfda",
-      //     releaseDate: "2020-01-01",
-      //     songs: 21,
-      //     createdAt: "2020-01-02",
-      //   },
-      //   {
-      //     id: "1wef3232423423423",
-      //     title: "Thomas Doe",
-
-      //     cover: "https://cdn.tuk.dev/assets/templates/olympus/projects(2).png",
-      //     artist: "asdfasdfwerwe",
-      //     releaseDate: "2020-05-01",
-      //     songs: 21,
-      //     createdAt: "2020-01-01",
-      //   },
-      // ]);
+     
       return fulfillWithValue(data);
     } catch (err: any) {
       return rejectWithValue(err.response.data);
@@ -85,6 +49,11 @@ export const eventsSlice = createSlice({
   name: "events",
   initialState,
   reducers: {
+    clearMessage: (state) => {
+      state.isLoading = false;
+      state.error = false;
+      state.errorMessage = "";
+    },
     addEvent: (state, { payload }) => {
       state.events.push(payload);
       state.isLoading = false;
@@ -147,6 +116,7 @@ export const eventsSlice = createSlice({
 
 // Action creators are generated for each case reducer function
 export const {
+  clearMessage,
   addEvent,
   searchEvents,
   removeEvent,
