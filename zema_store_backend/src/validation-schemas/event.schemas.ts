@@ -5,6 +5,7 @@ const getEventSchema = Joi.object({
 });
 
 const getEventsSchema = Joi.object({
+  search: Joi.string().optional(),
   page: Joi.number(),
   sortBy: Joi.string(),
 });

@@ -5,8 +5,9 @@ const getSongSchema = Joi.object({
 });
 
 const getSongsSchema = Joi.object({
-  page: Joi.number(),
-  sortBy: Joi.string(),
+  search: Joi.string().optional(),
+  page: Joi.number().optional(),
+  sortBy: Joi.string().optional(),
 });
 
 const getSongsByArtistSchema = Joi.object({

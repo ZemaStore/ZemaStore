@@ -25,4 +25,12 @@ const CustomerProfile = mongoose.model<ICustomerProfileDocument>(
   profileSchema
 );
 
+profileSchema.virtual("id").get(function (this: ICustomerProfileDocument) {
+  return this._id.toHexString();
+});
+
+profileSchema.set("toObject", { virtuals: true });
+
+profileSchema.set("toJSON", { virtuals: true });
+
 export default CustomerProfile;

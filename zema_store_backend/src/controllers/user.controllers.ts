@@ -50,16 +50,34 @@ const getusers = async (req: Request, res: Response) => {
     });
 
     const { page, sort } = Utils.instance.getPaginationData(req);
-    const count = await User.count({ roleId: role._id });
+
+    const search = req.query.search;
+
+    const count = isNil(search)
+      ? await User.count({ roleId: role._id })
+      : await CustomerProfile.count({
+          fullName: {
+            $regex: search,
+          },
+        });
     const totalPages = Utils.instance.getNumberOfPages(count, fetchItemCount);
 
-    const users = await User.find({
-      roleId: role._id,
-    })
-      .limit(fetchItemCount)
-      .skip(page * fetchItemCount)
-      .sort(sort)
-      .populate("profileId");
+    const users = isNil(search)
+      ? await User.find({
+          roleId: role._id,
+        })
+          .limit(fetchItemCount)
+          .skip(page * fetchItemCount)
+          .sort(sort)
+          .populate("profileId")
+      : await CustomerProfile.find({
+          fullName: {
+            $regex: search,
+          },
+        })
+          .limit(fetchItemCount)
+          .skip(page * fetchItemCount)
+          .sort(sort);
 
     res
       .status(200)

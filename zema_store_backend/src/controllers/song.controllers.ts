@@ -51,13 +51,31 @@ const getSongs = async (req: Request, res: Response) => {
     }
 
     const { page, sort } = Utils.instance.getPaginationData(req);
-    const count = await Song.count({});
+
+    const search = req.query.search;
+
+    const count = isNil(search)
+      ? await Song.count({})
+      : await Song.count({
+          title: {
+            $regex: search,
+          },
+        });
     const totalPages = Utils.instance.getNumberOfPages(count, fetchItemCount);
 
-    const songs = await Song.find({})
-      .limit(fetchItemCount)
-      .skip(page * fetchItemCount)
-      .sort(sort);
+    const songs = isNil(search)
+      ? await Song.find({})
+          .limit(fetchItemCount)
+          .skip(page * fetchItemCount)
+          .sort(sort)
+      : await Song.find({
+          title: {
+            $regex: search,
+          },
+        })
+          .limit(fetchItemCount)
+          .skip(page * fetchItemCount)
+          .sort(sort);
 
     res
       .status(200)

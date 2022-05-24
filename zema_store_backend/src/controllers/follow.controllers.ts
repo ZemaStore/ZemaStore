@@ -54,7 +54,9 @@ const getFollowers = async (req: Request, res: Response) => {
     const followers = await Follow.find({})
       .limit(fetchItemCount)
       .skip(page * fetchItemCount)
-      .sort(sort);
+      .sort(sort)
+      .populate("artistId")
+      .populate("customerId");
 
     res
       .status(200)

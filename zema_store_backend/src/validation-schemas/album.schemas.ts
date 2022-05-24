@@ -15,8 +15,9 @@ const getAlbumsByArtistSchema = Joi.object({
     artistId: Joi.string().hex().required(),
   },
   query: {
-    page: Joi.number(),
-    sortBy: Joi.string(),
+    search: Joi.string().optional(),
+    page: Joi.number().optional(),
+    sortBy: Joi.string().optional(),
   },
 });
 
@@ -37,10 +38,6 @@ const updateAlbumSchema = Joi.object({
   },
 });
 
-const searchAlbumSchema = Joi.object({
-  title: Joi.string().required(),
-});
-
 const deleteAlbumSchema = Joi.object({
   id: Joi.string().hex().required(),
 });
@@ -51,6 +48,5 @@ export {
   getAlbumsByArtistSchema,
   addAlbumSchema,
   updateAlbumSchema,
-  searchAlbumSchema,
   deleteAlbumSchema,
 };

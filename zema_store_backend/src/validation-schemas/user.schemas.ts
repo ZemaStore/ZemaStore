@@ -5,9 +5,9 @@ const getUserSchema = Joi.object({
 });
 
 const getUsersSchema = Joi.object({
-  limit: Joi.string(),
-  skip: Joi.string(),
-  sortBy: Joi.string(),
+  search: Joi.string().optional(),
+  page: Joi.number().optional(),
+  sortBy: Joi.string().optional(),
 });
 
 const udpateUserSchema = Joi.object({
@@ -28,8 +28,4 @@ const udpateUserSchema = Joi.object({
   },
 });
 
-export {
-    getUserSchema,
-    getUsersSchema,
-    udpateUserSchema
-}
+export { getUserSchema, getUsersSchema, udpateUserSchema };

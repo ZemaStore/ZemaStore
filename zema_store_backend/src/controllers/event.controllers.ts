@@ -46,13 +46,30 @@ const getEvents = async (req: Request, res: Response) => {
 
     const { page, sort } = Utils.instance.getPaginationData(req);
 
-    const count = await Event.count();
+    const search = req.query.search;
+
+    const count = isNil(search)
+      ? await Event.count()
+      : await Event.count({
+          title: {
+            $regex: search,
+          },
+        });
     const totalPages = Utils.instance.getNumberOfPages(count, fetchItemCount);
 
-    const events = await Event.find({})
-      .limit(fetchItemCount)
-      .skip(page * fetchItemCount)
-      .sort(sort);
+    const events = isNil(search)
+      ? await Event.find({})
+          .limit(fetchItemCount)
+          .skip(page * fetchItemCount)
+          .sort(sort)
+      : await Event.find({
+          title: {
+            $regex: search,
+          },
+        })
+          .limit(fetchItemCount)
+          .skip(page * fetchItemCount)
+          .sort(sort);
 
     res
       .status(200)

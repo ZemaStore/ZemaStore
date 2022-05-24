@@ -18,7 +18,7 @@ import {
   updateArtistSchema,
 } from "../validation-schemas/artist.schemas";
 
-const limit = 10;
+const fetchItemCount = 10;
 
 const getArtist = async (req: Request, res: Response) => {
   try {
@@ -54,16 +54,33 @@ const getArtists = async (req: Request, res: Response) => {
       name: "ARTIST",
     });
 
-    const count = await User.count({ roleId: role._id });
-    const totalPages = Utils.instance.getNumberOfPages(count, limit);
+    const search = req.query.search;
 
-    const artists = await User.find({
-      roleId: role._id,
-    })
-      .limit(limit)
-      .skip(page * limit)
-      .sort(sort)
-      .populate("profileId");
+    const count = isNil(search)
+      ? await User.count({ roleId: role._id })
+      : await ArtistProfie.count({
+          fullName: {
+            $regex: search,
+          },
+        });
+    const totalPages = Utils.instance.getNumberOfPages(count, fetchItemCount);
+
+    const artists = isNil(search)
+      ? await User.find({
+          roleId: role._id,
+        })
+          .limit(fetchItemCount)
+          .skip(page * fetchItemCount)
+          .sort(sort)
+          .populate("profileId")
+      : await ArtistProfie.find({
+          fullName: {
+            $regex: search,
+          },
+        })
+          .limit(fetchItemCount)
+          .skip(page * fetchItemCount)
+          .sort(sort);
 
     res
       .status(200)
@@ -128,7 +145,7 @@ const addArtist = async (req: Request, res: Response) => {
       email,
       password,
       phone,
-      photoUrl: upload.secure_url || "",
+      photoUrl: !isNil(upload) ? upload.secure_url : "",
       roleId: role._id,
       profileId: artistProfile._id,
       onModel: profileModel,
@@ -191,7 +208,7 @@ const updateArtist = async (req: Request, res: Response) => {
     user.email = email || user.email;
     user.password = password || user.password;
     user.phone = phone || user.phone;
-    user.photoUrl = upload.secure_url || user.photoUrl;
+    user.photoUrl = !isNil(upload) ? upload.secure_url : user.photoUrl;
 
     artistProfile.fullName = fullName || artistProfile.fullName;
 

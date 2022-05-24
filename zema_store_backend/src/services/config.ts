@@ -29,9 +29,9 @@ const getServerUrlForSwagger = () => {
     case environments.LOCAL:
       return "http://localhost:3000/api";
     case environments.DEV:
-      return "http://zema-store.herokuapp.com/api";
+      return "https://zema-store.herokuapp.com/api";
     case environments.STAGE:
-      return "http://zema-store.herokuapp.com/api";
+      return "https://zema-store.herokuapp.com/api";
   }
 };
 

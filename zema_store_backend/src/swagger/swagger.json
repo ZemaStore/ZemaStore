@@ -266,6 +266,12 @@
                 "parameters": [
                     {
                         "in": "query",
+                        "name": "search",
+                        "type": "string",
+                        "description": "Key word to be searched"
+                    },
+                    {
+                        "in": "query",
                         "name": "page",
                         "type": "integer",
                         "description": "The page number of user items to return"
@@ -398,6 +404,12 @@
                     }
                 ],
                 "parameters": [
+                    {
+                        "in": "query",
+                        "name": "search",
+                        "type": "string",
+                        "description": "Key word to be searched"
+                    },
                     {
                         "in": "query",
                         "name": "page",
@@ -744,6 +756,12 @@
                     }
                 ],
                 "parameters": [
+                    {
+                        "in": "query",
+                        "name": "search",
+                        "type": "string",
+                        "description": "Key word to be searched"
+                    },
                     {
                         "in": "query",
                         "name": "page",
@@ -1199,6 +1217,12 @@
                     }
                 ],
                 "parameters": [
+                    {
+                        "in": "query",
+                        "name": "search",
+                        "type": "string",
+                        "description": "Key word to be searched"
+                    },
                     {
                         "in": "path",
                         "name": "artistId",
@@ -2004,6 +2028,12 @@
                     }
                 ],
                 "parameters": [
+                    {
+                        "in": "query",
+                        "name": "search",
+                        "type": "string",
+                        "description": "Key word to be searched"
+                    },
                     {
                         "in": "query",
                         "name": "page",

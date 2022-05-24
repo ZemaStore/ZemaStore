@@ -14,7 +14,6 @@ import {
   getAlbumsByArtistSchema,
   getAlbumSchema,
   getAlbumsSchema,
-  searchAlbumSchema,
   updateAlbumSchema,
 } from "../validation-schemas/album.schemas";
 
@@ -47,7 +46,9 @@ const getAlbums = async (req: Request, res: Response) => {
     const count = isNil(search)
       ? await Album.count()
       : await Album.count({
-          title: search,
+          title: {
+            $regex: search,
+          },
         });
     const totalPages = Utils.instance.getNumberOfPages(count, fetchItemCount);
 
@@ -60,11 +61,21 @@ const getAlbums = async (req: Request, res: Response) => {
 
     const { page, sort } = Utils.instance.getPaginationData(req);
 
-    const albums = await Album.find({})
-      .limit(fetchItemCount)
-      .skip(page * fetchItemCount)
-      .sort(sort)
-      .populate("artistId");
+    const albums = isNil(search)
+      ? await Album.find({})
+          .limit(fetchItemCount)
+          .skip(page * fetchItemCount)
+          .sort(sort)
+          .populate("artistId")
+      : await Album.find({
+          title: {
+            $regex: search,
+          },
+        })
+          .limit(fetchItemCount)
+          .skip(page * fetchItemCount)
+          .sort(sort)
+          .populate("artistId");
 
     const albumList = await Promise.all(
       albums.map(async (album) => {
@@ -101,25 +112,38 @@ const getAlbumsByArtist = async (req: Request, res: Response) => {
     }
 
     const artistId: string = req.params.artistId;
+    const search = req.query.search;
     const { page, sort } = Utils.instance.getPaginationData(req);
 
-    const count = await Album.count({
-      artistId,
-    });
+    const count = isNil(search)
+      ? await Album.count({
+          artistId,
+        })
+      : await Album.count({ artistId }).populate({
+          path: "artistId",
+          match: { fullName: { $regex: search } },
+        });
     const totalPages = Utils.instance.getNumberOfPages(count, fetchItemCount);
 
-    const albums = await Album.find({
-      artistId,
-    })
-      .limit(fetchItemCount)
-      .skip(page * fetchItemCount)
-      .sort(sort)
-      .populate("artistId");
+    const albums = isNil(search)
+      ? await Album.find({
+          artistId,
+        })
+          .limit(fetchItemCount)
+          .skip(page * fetchItemCount)
+          .sort(sort)
+          .populate("artistId")
+      : await Album.find({}).populate({
+          path: "artistId",
+          match: { fullName: { $regex: search } },
+        });
 
-    const albumList = albums.map(async (album) => {
-      const songs = await Song.count({ albumId: album._id });
-      return { album, songs };
-    });
+    const albumList = await Promise.all(
+      albums.map(async (album) => {
+        const songs = await Song.count({ albumId: album._id });
+        return { album, songs };
+      })
+    );
 
     res
       .status(200)
@@ -160,7 +184,7 @@ const addAlbum = async (req: Request, res: Response) => {
     const albumData = new Album({
       artistId,
       title,
-      imageUrl: upload.secure_url || "",
+      imageUrl: !isNil(upload) ? upload.secure_url : "",
       releaseDate,
     });
 
@@ -210,7 +234,7 @@ const updateAlbum = async (req: Request, res: Response) => {
     albumData.releaseDate = !isNil(releaseDate)
       ? releaseDate
       : albumData.releaseDate;
-    albumData.imageUrl = !isNil(upload.secure_url)
+    albumData.imageUrl = !isNil(upload)
       ? upload.secure_url
       : albumData.imageUrl;
 
@@ -220,28 +244,6 @@ const updateAlbum = async (req: Request, res: Response) => {
     res
       .status(200)
       .send(new OkResponse({ album, songs }, "Album successfully updated!"));
-  } catch (e) {
-    Utils.instance.handleResponseException(res, e);
-  }
-};
-
-const searchAlbum = async (req: Request, res: Response) => {
-  console.log("here");
-  try {
-    const validate = searchAlbumSchema.validate(req.query);
-    if (validate.error && validate.error !== null) {
-      return res
-        .status(400)
-        .send(new ErrorResponse(validate.error.message, null));
-    }
-
-    let data = await Album.find({
-      title: { $regex: req.query.title },
-    });
-
-    res
-      .status(200)
-      .send(new OkResponse(data, "Search successfully completed!"));
   } catch (e) {
     Utils.instance.handleResponseException(res, e);
   }
@@ -270,6 +272,5 @@ export {
   getAlbumsByArtist,
   addAlbum,
   updateAlbum,
-  searchAlbum,
   deleteAlbum,
 };

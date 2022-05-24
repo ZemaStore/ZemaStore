@@ -34,4 +34,12 @@ const ArtistProfie = mongoose.model<IArtistProfileDocument>(
   profileSchema
 );
 
+profileSchema.virtual("id").get(function (this: IArtistProfileDocument) {
+  return this._id.toHexString();
+});
+
+profileSchema.set("toObject", { virtuals: true });
+
+profileSchema.set("toJSON", { virtuals: true });
+
 export default ArtistProfie;
