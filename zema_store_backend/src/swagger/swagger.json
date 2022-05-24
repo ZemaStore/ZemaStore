@@ -1101,6 +1101,12 @@
                 "parameters": [
                     {
                         "in": "query",
+                        "name": "search",
+                        "type": "string",
+                        "description": "Key word to be searched"
+                    },
+                    {
+                        "in": "query",
                         "name": "page",
                         "type": "integer",
                         "description": "The page number of album items to return"
@@ -1215,6 +1221,49 @@
                             "createdAt"
                         ],
                         "example": "title:asc"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OkResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/albums/search": {
+            "get": {
+                "tags": [
+                    "Albums"
+                ],
+                "summary": "Returns list of albums",
+                "description": "Returns listof albums that match the search key",
+                "security": [
+                    {
+                        "bearerAuthorization": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "title",
+                        "required": true,
+                        "type": "string",
+                        "description": "Album title"
                     }
                 ],
                 "responses": {

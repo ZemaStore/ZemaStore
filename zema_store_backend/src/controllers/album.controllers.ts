@@ -14,6 +14,7 @@ import {
   getAlbumsByArtistSchema,
   getAlbumSchema,
   getAlbumsSchema,
+  searchAlbumSchema,
   updateAlbumSchema,
 } from "../validation-schemas/album.schemas";
 
@@ -42,7 +43,12 @@ const getAlbum = async (req: Request, res: Response) => {
 
 const getAlbums = async (req: Request, res: Response) => {
   try {
-    const count = await Album.count();
+    const search = req.query.search;
+    const count = isNil(search)
+      ? await Album.count()
+      : await Album.count({
+          title: search,
+        });
     const totalPages = Utils.instance.getNumberOfPages(count, fetchItemCount);
 
     const validate = getAlbumsSchema.validate(req.query);
@@ -60,10 +66,12 @@ const getAlbums = async (req: Request, res: Response) => {
       .sort(sort)
       .populate("artistId");
 
-    const albumList = albums.map(async (album) => {
-      const songs = await Song.count({ albumId: album._id });
-      return { album, songs };
-    });
+    const albumList = await Promise.all(
+      albums.map(async (album) => {
+        const songs = await Song.count({ albumId: album._id });
+        return { album, songs };
+      })
+    );
 
     res
       .status(200)
@@ -217,6 +225,28 @@ const updateAlbum = async (req: Request, res: Response) => {
   }
 };
 
+const searchAlbum = async (req: Request, res: Response) => {
+  console.log("here");
+  try {
+    const validate = searchAlbumSchema.validate(req.query);
+    if (validate.error && validate.error !== null) {
+      return res
+        .status(400)
+        .send(new ErrorResponse(validate.error.message, null));
+    }
+
+    let data = await Album.find({
+      title: { $regex: req.query.title },
+    });
+
+    res
+      .status(200)
+      .send(new OkResponse(data, "Search successfully completed!"));
+  } catch (e) {
+    Utils.instance.handleResponseException(res, e);
+  }
+};
+
 const deleteAlbum = async (req: Request, res: Response) => {
   try {
     const validate = deleteAlbumSchema.validate(req.params);
@@ -240,5 +270,6 @@ export {
   getAlbumsByArtist,
   addAlbum,
   updateAlbum,
+  searchAlbum,
   deleteAlbum,
 };
