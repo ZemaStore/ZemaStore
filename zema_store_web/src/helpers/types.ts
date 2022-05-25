@@ -38,7 +38,7 @@ export type Artist = {
   fullName: string;
   email: string;
   phone: string;
-  password: string;
+  password?: string | null;
   avatar: string;
   followers: number;
   listenedHours: number;
