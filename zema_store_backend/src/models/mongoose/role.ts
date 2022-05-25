@@ -20,4 +20,8 @@ const roleSchema: Schema<IRoleDocument> = new Schema(
 
 const Role = mongoose.model<IRoleDocument>("Role", roleSchema);
 
+roleSchema.virtual("id").get(function (this: IRoleDocument) {
+  return this._id.toHexString();
+})
+
 export default Role;

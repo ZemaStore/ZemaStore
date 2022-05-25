@@ -25,4 +25,8 @@ const followerSchema: Schema<IFollowerDocument> = new Schema(
 
 const Follow = mongoose.model<IFollowerDocument>("Follow", followerSchema);
 
+followerSchema.virtual("id").get(function (this: IFollowerDocument) {
+  return this._id.toHexString();
+});
+
 export default Follow;

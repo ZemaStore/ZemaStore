@@ -28,12 +28,16 @@ const subscriptionSchema: Schema<ISubscriptionDocument> = new Schema(
       required: true,
     },
   },
-  { timestamps: true }
+  { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
 
 const Subscription = mongoose.model<ISubscriptionDocument>(
   "Subscription",
   subscriptionSchema
 );
+
+subscriptionSchema.virtual("id").get(function (this: ISubscriptionDocument) {
+  return this._id.toHexString();
+});
 
 export default Subscription;

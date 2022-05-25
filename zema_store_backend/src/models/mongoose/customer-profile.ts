@@ -17,7 +17,7 @@ const profileSchema: Schema<ICustomerProfileDocument> = new Schema(
       type: mongoose.Schema.Types.ObjectId,
     },
   },
-  { timestamps: true }
+  { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
 
 const CustomerProfile = mongoose.model<ICustomerProfileDocument>(
@@ -28,9 +28,5 @@ const CustomerProfile = mongoose.model<ICustomerProfileDocument>(
 profileSchema.virtual("id").get(function (this: ICustomerProfileDocument) {
   return this._id.toHexString();
 });
-
-profileSchema.set("toObject", { virtuals: true });
-
-profileSchema.set("toJSON", { virtuals: true });
 
 export default CustomerProfile;

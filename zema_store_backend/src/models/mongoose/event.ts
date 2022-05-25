@@ -33,9 +33,13 @@ const eventSchema: Schema<IEventDocument> = new Schema(
       required: true,
     },
   },
-  { timestamps: true }
+  { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
 
 const Event = mongoose.model<IEventDocument>("Event", eventSchema);
+
+eventSchema.virtual("id").get(function (this: IEventDocument) {
+  return this._id.toHexString();
+});
 
 export default Event;

@@ -28,8 +28,12 @@ const albumSchema: Schema<IAlbumDocument> = new Schema(
       required: true,
     },
   },
-  { timestamps: true }
+  { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
+
+albumSchema.virtual("id").get(function (this: IAlbumDocument) {
+  return this._id.toHexString();
+});
 
 const Album = mongoose.model<IAlbumDocument>("Album", albumSchema);
 

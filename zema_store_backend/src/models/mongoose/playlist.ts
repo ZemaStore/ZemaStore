@@ -26,9 +26,13 @@ const playlistSchema: Schema<IPlaylistDocument> = new Schema(
       required: true,
     },
   },
-  { timestamps: true }
+  { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
 
 const Playlist = mongoose.model<IPlaylistDocument>("Playlist", playlistSchema);
+
+playlistSchema.virtual("id").get(function (this: IPlaylistDocument) {
+  return this._id.toHexString();
+});
 
 export default Playlist;

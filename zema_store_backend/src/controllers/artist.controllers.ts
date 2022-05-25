@@ -55,12 +55,13 @@ const getArtists = async (req: Request, res: Response) => {
     });
 
     const search = req.query.search;
+    const searchExp = search?.toString().trim() || "";
 
     const count = isNil(search)
       ? await User.count({ roleId: role._id })
       : await ArtistProfie.count({
           fullName: {
-            $regex: search,
+            $regex: new RegExp(searchExp, "ig"),
           },
         });
     const totalPages = Utils.instance.getNumberOfPages(count, fetchItemCount);
@@ -75,12 +76,13 @@ const getArtists = async (req: Request, res: Response) => {
           .populate("profileId")
       : await ArtistProfie.find({
           fullName: {
-            $regex: search,
+            $regex: new RegExp(searchExp, "ig"),
           },
         })
           .limit(fetchItemCount)
           .skip(page * fetchItemCount)
-          .sort(sort);
+          .sort(sort)
+          .exec();
 
     res
       .status(200)

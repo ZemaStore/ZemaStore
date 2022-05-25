@@ -68,6 +68,8 @@ const userSchema: Schema<IUserDocument> = new Schema(
   },
   {
     timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
   }
 );
 
@@ -77,9 +79,9 @@ userSchema.pre<IUserDocument>("save", async function (next: Function) {
   }
 });
 
-// userSchema.virtual('id').get(function() {
-//   return this._id.toHexString()
-// })
+userSchema.virtual("id").get(function (this: IUserDocument) {
+  return this._id.toHexString();
+});
 
 userSchema.methods.toJSON = function () {
   const user = this;
@@ -95,13 +97,5 @@ userSchema.methods.toJSON = function () {
 };
 
 const User = mongoose.model<IUserDocument>("User", userSchema);
-
-userSchema.virtual("id").get(function (this: IUserDocument) {
-  return this._id.toHexString();
-});
-
-userSchema.set("toObject", { virtuals: true });
-
-userSchema.set("toJSON", { virtuals: true });
 
 export default User;

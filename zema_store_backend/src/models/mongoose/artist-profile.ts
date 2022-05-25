@@ -26,7 +26,7 @@ const profileSchema: Schema<IArtistProfileDocument> = new Schema(
       default: 0,
     },
   },
-  { timestamps: true }
+  { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
 
 const ArtistProfie = mongoose.model<IArtistProfileDocument>(
@@ -37,9 +37,5 @@ const ArtistProfie = mongoose.model<IArtistProfileDocument>(
 profileSchema.virtual("id").get(function (this: IArtistProfileDocument) {
   return this._id.toHexString();
 });
-
-profileSchema.set("toObject", { virtuals: true });
-
-profileSchema.set("toJSON", { virtuals: true });
 
 export default ArtistProfie;

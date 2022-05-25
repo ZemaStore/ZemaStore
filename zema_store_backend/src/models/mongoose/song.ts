@@ -57,9 +57,13 @@ const songSchema: Schema<ISongDocument> = new Schema(
       required: true,
     },
   },
-  { timestamps: true }
+  { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
 
 const Song = mongoose.model<ISongDocument>("Song", songSchema);
+
+songSchema.virtual("id").get(function (this: ISongDocument) {
+  return this._id.toHexString();
+})
 
 export default Song;
