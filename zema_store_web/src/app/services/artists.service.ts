@@ -27,9 +27,10 @@ const addArtist = async (formData: any) => {
 
 const updateArtist = async (formData: any) => {
   try {
-    const { data } = await Request.patch(`${baseUrl}/artists`, formData);
-    // const data = formData;
-    await setTimeout(() => {}, 1000);
+    const { data } = await Request.patch(
+      `${baseUrl}/artists/${formData.id}`,
+      formData
+    );
     return { data };
   } catch (error) {
     return { data: null, error };

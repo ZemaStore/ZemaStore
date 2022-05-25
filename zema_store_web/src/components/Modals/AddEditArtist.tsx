@@ -33,28 +33,6 @@ Yup.addMethod(
 const rePhoneNumber =
   /^(\+?\d{0,4})?\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{4}\)?)?$/;
 
-const DisplayingErrorMessagesSchema = Yup.object().shape({
-  fullName: Yup.string()
-    .min(2, "Too Short!")
-    .max(50, "Too Long!")
-    .required("Please Enter fullname")
-
-    .required("Required!"),
-  email: Yup.string().email("Invalid Email").required("Required!"),
-
-  phone: Yup.string()
-    .required("required")
-    .matches(rePhoneNumber, "Phone number is not valid")
-    .min(10, "to short")
-    .max(14, "to long"),
-  password: Yup.string()
-    .required("Please Enter the password")
-    .matches(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
-      "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character"
-    ),
-});
-
 type Props = {
   isEditing: boolean;
   artistData?: Artist | null;
@@ -68,6 +46,30 @@ const AddEditArtistModal = (props: Props) => {
   const [showPassword, setShowPassword] = useState(false);
   const { isLoading } = useAppSelector(artistsSelector);
   const dispatch = useAppDispatch();
+
+  const DisplayingErrorMessagesSchema = Yup.object().shape({
+    fullName: Yup.string()
+      .min(2, "Too Short!")
+      .max(50, "Too Long!")
+      .required("Please Enter fullname"),
+    email: Yup.string().email("Invalid Email").required("Required!"),
+
+    phone: Yup.string()
+      .required("required")
+      .matches(rePhoneNumber, "Phone number is not valid")
+      .min(10, "to short")
+      .max(14, "to long"),
+    password: props.isEditing
+      ? Yup.string()
+      : Yup.string()
+          .required("Required!")
+          .min(6, "Too Short!")
+          .required("Please Enter the password")
+          .matches(
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
+            "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character"
+          ),
+  });
 
   useEffect(() => {
     dispatch(clearMessage());
@@ -125,11 +127,15 @@ const AddEditArtistModal = (props: Props) => {
             onSubmit={async (values) => {
               try {
                 if (props.isEditing) {
-                  const updatedData = {
-                    ...props.artistData,
-                    ...values,
-                  };
-                  console.log(values, updatedData, " is up");
+                  console.log(props.artistData, "")
+                  let updatedData: any = {};
+                  updatedData.id = props.artistData?.id;
+                  updatedData.phone = values.phone;
+                  updatedData.email = values.email;
+                  updatedData.fullName = values.fullName;
+                  if (values.password !== "") {
+                    updatedData.password = values.password;
+                  }
                   await dispatch(updateArtistsApi(updatedData));
                   props.onClose();
                   notify.success("Artist Updated Successufully!");

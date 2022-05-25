@@ -101,7 +101,18 @@ export const addArtistsApi = createAsyncThunk<any, any>(
   async (payload, { rejectWithValue, fulfillWithValue, dispatch }) => {
     try {
       const { data } = await ArtistsService.addArtist(payload);
-      return fulfillWithValue(data);
+
+      return fulfillWithValue({
+        ...data,
+        id: data,
+        fullName: data.profileId.fullName,
+        avatar: data.photoUrl,
+        followers: data.profileId.followerNumber,
+        listenedHours: data.profileId.listenedHour,
+        albumsCount: 0,
+        songsCount: 0,
+        createdAt: "2020-01-01",
+      });
     } catch (err: any) {
       return rejectWithValue(err.response.data);
     }
