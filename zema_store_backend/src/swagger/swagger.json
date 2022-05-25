@@ -1269,49 +1269,6 @@
                 }
             }
         },
-        "/albums/search": {
-            "get": {
-                "tags": [
-                    "Albums"
-                ],
-                "summary": "Returns list of albums",
-                "description": "Returns listof albums that match the search key",
-                "security": [
-                    {
-                        "bearerAuthorization": []
-                    }
-                ],
-                "parameters": [
-                    {
-                        "in": "query",
-                        "name": "title",
-                        "required": true,
-                        "type": "string",
-                        "description": "Album title"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/OkResponse"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
         "/playlists/{id}": {
             "get": {
                 "tags": [
