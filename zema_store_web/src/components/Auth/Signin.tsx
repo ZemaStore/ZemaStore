@@ -16,6 +16,7 @@ type Props = {};
 
 const DisplayingErrorMessagesSchema = Yup.object().shape({
   email: Yup.string().email("Invalid Email").required("Required"),
+
   password: Yup.string().required("Required"),
 });
 
@@ -33,7 +34,7 @@ const SigninComponent = (props: Props) => {
   }, [dispatch]);
 
   if (isAuthenticated) {
-    return <Navigate to="/" replace />;
+    return <Navigate to={from} replace />;
   }
 
   const handleLogin = (email: string, password: string) => {
@@ -72,13 +73,13 @@ const SigninComponent = (props: Props) => {
                 onSubmit={async (values) => {
                   try {
                     handleLogin(values.email, values.password);
-                  } catch (error: any) {
-                    notify.error(error.toString());
+                  } catch (err: any) {
+                    notify.error(err.toString());
                   }
                 }}
               >
-                {({ errors, touched, isValidating }) => (
-                  <Form>
+                {({ errors, touched, isValidating, values }) => (
+                  <Form data-test-id="login-form">
                     <div className="mb-6">
                       <label
                         htmlFor="email"
@@ -87,10 +88,11 @@ const SigninComponent = (props: Props) => {
                         Email Address
                       </label>
                       <Field
-                        type="email"
+                        // type="email"
                         name="email"
                         autoComplete="on"
                         id="email"
+                        data-test-id="email"
                         placeholder="you@company.com"
                         className={clsx(
                           "w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 dark:border-gray-600 dark:focus:ring-gray-900 dark:focus:border-gray-500",
@@ -123,6 +125,7 @@ const SigninComponent = (props: Props) => {
                       <Field
                         type="password"
                         name="password"
+                        data-test-id="password"
                         id="password"
                         placeholder="Your Password"
                         className={clsx(
@@ -141,6 +144,7 @@ const SigninComponent = (props: Props) => {
                     <div className="mb-6">
                       <button
                         disabled={loading}
+                        data-test-id="submit"
                         type="submit"
                         className="flex cursor-not-allowed justify-center items-center w-full px-3 py-4 text-white bg-indigo-500 disabled:bg-indigo-300 rounded-md focus:bg-indigo-600 focus:outline-none"
                       >
@@ -174,7 +178,7 @@ const SigninComponent = (props: Props) => {
                       </button>
                     </div>
                     {error && (
-                      <div className="form-group">
+                      <div data-test-id="error-message" className=" form-group">
                         <div
                           className="p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800"
                           role="alert"

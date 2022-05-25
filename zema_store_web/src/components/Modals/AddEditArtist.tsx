@@ -1,4 +1,4 @@
-import React, { useLayoutEffect } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import clsx from "clsx";
@@ -7,17 +7,52 @@ import {
   addArtist,
   addArtistsApi,
   artistsSelector,
-  getArtistsApi,
+  clearMessage,
   updateArtistsApi,
 } from "../../app/store/features/artists/artistsSlice";
 import notify from "../../utils/notify";
 import { Artist } from "../../helpers/types";
 
+import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
+
+Yup.addMethod(
+  Yup.string,
+  "phone",
+  function (messageError = "Phone number is not valid") {
+    const phoneRegExp =
+      /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
+    return this.test("phone", messageError, (value) => {
+      if (value && value.length > 0) {
+        return phoneRegExp.test(value);
+      }
+      return true;
+    });
+  }
+);
+
+const rePhoneNumber =
+  /^(\+?\d{0,4})?\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{4}\)?)?$/;
+
 const DisplayingErrorMessagesSchema = Yup.object().shape({
   fullName: Yup.string()
     .min(2, "Too Short!")
     .max(50, "Too Long!")
-    .required("Required"),
+    .required("Please Enter fullname")
+
+    .required("Required!"),
+  email: Yup.string().email("Invalid Email").required("Required!"),
+
+  phone: Yup.string()
+    .required("required")
+    .matches(rePhoneNumber, "Phone number is not valid")
+    .min(10, "to short")
+    .max(14, "to long"),
+  password: Yup.string()
+    .required("Please Enter the password")
+    .matches(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
+      "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character"
+    ),
 });
 
 type Props = {
@@ -30,8 +65,13 @@ type Props = {
 const AddEditArtistModal = (props: Props) => {
   const { onClose, onSubmit } = props;
   let modal = document.getElementById("add_artist_modal");
+  const [showPassword, setShowPassword] = useState(false);
   const { isLoading } = useAppSelector(artistsSelector);
   const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(clearMessage());
+  }, []);
 
   useLayoutEffect(() => {
     modal = document.getElementById("add_artist_modal");
@@ -67,7 +107,7 @@ const AddEditArtistModal = (props: Props) => {
   return (
     <div>
       <div
-        className="py-12 bg-gray-700 transition duration-150 ease-in-out z-10 absolute top-0 right-0 bottom-0 left-0"
+        className="py-24 bg-gray-700 transition duration-150 ease-in-out z-10 absolute top-0 right-0 bottom-0 left-0"
         id="add_artist_modal"
       >
         <div
@@ -77,6 +117,9 @@ const AddEditArtistModal = (props: Props) => {
           <Formik
             initialValues={{
               fullName: props.isEditing ? props.artistData?.fullName : "",
+              email: props.isEditing ? props.artistData?.email : "",
+              phone: props.isEditing ? props.artistData?.phone : "",
+              password: "",
             }}
             validationSchema={DisplayingErrorMessagesSchema}
             onSubmit={async (values) => {
@@ -126,6 +169,98 @@ const AddEditArtistModal = (props: Props) => {
                     />
                     {touched.fullName && errors.fullName && (
                       <div className="text-red-600">{errors.fullName}</div>
+                    )}
+                  </div>
+
+                  <div className="my-5">
+                    <label
+                      htmlFor="email"
+                      className="text-gray-800 text-sm font-bold leading-tight tracking-normal"
+                    >
+                      Email
+                    </label>
+                    <Field
+                      id="email"
+                      name="email"
+                      className={clsx(
+                        "mb-5 mt-2 text-gray-600 focus:outline-none focus:border focus:border-indigo-700 font-normal w-full h-10 flex items-center pl-3 text-sm border-gray-300 rounded border",
+                        touched.email && errors.email ? "border-red-500" : ""
+                      )}
+                      placeholder="Artist Email"
+                    />
+                    {touched.email && errors.email && (
+                      <div className="text-red-600">{errors.email}</div>
+                    )}
+                  </div>
+
+                  <div className="my-5">
+                    <label
+                      htmlFor="phone"
+                      className="text-gray-800 text-sm font-bold leading-tight tracking-normal"
+                    >
+                      Phone
+                    </label>
+                    <Field
+                      id="phone"
+                      name="phone"
+                      type="tel"
+                      className={clsx(
+                        "mb-5 mt-2 text-gray-600 focus:outline-none focus:border focus:border-indigo-700 font-normal w-full h-10 flex items-center pl-3 text-sm border-gray-300 rounded border",
+                        touched.phone && errors.phone ? "border-red-500" : ""
+                      )}
+                      placeholder="Artist Phone"
+                    />
+                    {touched.phone && errors.phone && (
+                      <div className="text-red-600">{errors.phone}</div>
+                    )}
+                  </div>
+
+                  <div className="my-5">
+                    <label
+                      htmlFor="password"
+                      className="text-gray-800 text-sm font-bold leading-tight tracking-normal"
+                    >
+                      Password
+                    </label>
+                    <div className="flex flex-col relative items-center py-2">
+                      <Field
+                        id="password"
+                        type={showPassword ? "text" : "password"}
+                        name="password"
+                        className={clsx(
+                          " text-gray-600 focus:outline-none focus:border focus:border-indigo-700 font-normal w-full h-10 flex items-center pl-3 text-sm border-gray-300 rounded border",
+                          touched.password && errors.password
+                            ? "border-red-500"
+                            : ""
+                        )}
+                        placeholder="Artist Password"
+                      />
+                      <div className="absolute right-5 flex items-center h-full top-0 ">
+                        {showPassword ? (
+                          <button
+                            onClick={(e) => {
+                              e.preventDefault();
+                              setShowPassword(false);
+                            }}
+                            className="h-5 w-5 appearance-none border-none outline-none"
+                          >
+                            <AiFillEyeInvisible className="h-full w-full text-gray-500" />
+                          </button>
+                        ) : (
+                          <button
+                            onClick={(e) => {
+                              e.preventDefault();
+                              setShowPassword(true);
+                            }}
+                            className="h-5 w-5  appearance-none border-none outline-none"
+                          >
+                            <AiFillEye className="h-full w-full text-gray-500" />
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                    {touched.password && errors.password && (
+                      <div className="text-red-600">{errors.password}</div>
                     )}
                   </div>
 

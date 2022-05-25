@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect } from "react";
-import { useAppDispatch } from "../../app/hooks/redux_hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks/redux_hooks";
 import { getUsersApi } from "../../app/store/features/users/usersSlice";
 import BaseLayout from "../../common/Layout";
 import Pagination from "../../common/Paginations";
@@ -8,9 +8,8 @@ import UsersTable from "../../components/UsersTable";
 type Props = {};
 
 const UsersPage = (props: Props) => {
-  console.log("hllo broth")
   const dispatch = useAppDispatch();
-
+  const { meta } = useAppSelector((state) => state.users);
   const fetchUsers = useCallback(async () => {
     await dispatch(getUsersApi({}));
   }, [dispatch]);
@@ -31,7 +30,11 @@ const UsersPage = (props: Props) => {
         </div>
         <UsersTable />
       </div>
-      <Pagination />
+      <Pagination
+        currentPage={meta.currentPage}
+        pageSize={meta.limit}
+        totalItems={meta.total}
+      />
     </BaseLayout>
   );
 };

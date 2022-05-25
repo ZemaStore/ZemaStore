@@ -1,23 +1,36 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { useAppDispatch } from "../../app/hooks/redux_hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks/redux_hooks";
 import { getAlbumsApi } from "../../app/store/features/albums/albumsSlice";
 import Pagination from "../../common/Paginations";
 import AlbumsTable from "../../components/AlbumsTable";
-import AddAlbumModal from "../../components/Modals/AddAlbum";
+import AddEditAlbumModal from "../../components/Modals/AddEditAlbum";
+import DeleteModal from "../../components/Modals/DeleteModal";
+import { Album } from "../../helpers/types";
 
 type Props = {};
 
 const AlbumsPage = (props: Props) => {
   const dispatch = useAppDispatch();
+  const [isAddModalOpen, setIsAddModalOpen] = useState<boolean>(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
+  const [selectedAlbum, setSelectedAlbum] = useState<Album | null>(null);
+  const { meta } = useAppSelector((state) => state.albums);
 
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const onCloseModal = () => {
-    console.log("closing modal");
-    setIsModalOpen(false);
+    setIsAddModalOpen(false);
+    setIsEditModalOpen(false);
+    setIsDeleteModalOpen(false);
   };
 
-  const handleModalOpen = () => {
-    setIsModalOpen(true);
+  const handleModalOpen = (modalType = "add") => {
+    if (modalType === "add") {
+      setIsAddModalOpen(true);
+    } else if (modalType === "edit") {
+      setIsEditModalOpen(true);
+    } else {
+      setIsDeleteModalOpen(true);
+    }
   };
 
   const fetchAlbums = useCallback(async () => {
@@ -31,8 +44,29 @@ const AlbumsPage = (props: Props) => {
   return (
     <main>
       <div className="min-h-[600px] my-10">
-        {isModalOpen && (
-          <AddAlbumModal onClose={onCloseModal} onSubmit={() => {}} />
+        {isAddModalOpen && (
+          <AddEditAlbumModal
+            onClose={onCloseModal}
+            onSubmit={() => {}}
+            isEditing={false}
+          />
+        )}{" "}
+        {isEditModalOpen && (
+          <AddEditAlbumModal
+            onClose={onCloseModal}
+            albumData={selectedAlbum}
+            onSubmit={() => {}}
+            isEditing={true}
+          />
+        )}
+        {isDeleteModalOpen && (
+          <DeleteModal
+            deleteMessage="Delete Album"
+            deleteDescription="Are you sure you want to delete?"
+            buttonText="Delete"
+            onDelete={onCloseModal}
+            onClose={onCloseModal}
+          />
         )}
         <div className="px-4 md:px-10 py-4 md:py-7 bg-gray-100 rounded-tl-lg rounded-tr-lg">
           <div className="sm:flex items-center justify-between">
@@ -41,7 +75,7 @@ const AlbumsPage = (props: Props) => {
             </p>
             <div>
               <button
-                onClick={handleModalOpen}
+                onClick={() => handleModalOpen()}
                 className="inline-flex sm:ml-3 mt-4 sm:mt-0 items-start justify-start px-6 py-3 bg-indigo-700 hover:bg-indigo-600 focus:outline-none rounded"
               >
                 <p className="text-sm font-medium leading-none text-white">
@@ -51,9 +85,16 @@ const AlbumsPage = (props: Props) => {
             </div>
           </div>
         </div>
-        <AlbumsTable />
+        <AlbumsTable
+          handleModalOpen={handleModalOpen}
+          setSelectedAlbum={setSelectedAlbum}
+        />
       </div>
-      <Pagination />
+      <Pagination
+        currentPage={meta.currentPage}
+        pageSize={meta.limit}
+        totalItems={meta.total}
+      />{" "}
     </main>
   );
 };

@@ -1,9 +1,16 @@
 const ACCESS_TOKEN_KEY = "token";
 const PROFILE_KEY = "profile";
+const REACT_APP_PUBLIC_GOOGLE_MAPS_API_KEY =
+  process.env.REACT_APP_PUBLIC_GOOGLE_MAPS_API_KEY || "";
+
+const REACT_APP_GOOGLE_MAP_API_KEY =
+  process.env.REACT_APP_GOOGLE_MAP_API_KEY || "";
 
 const configs = {
   ACCESS_TOKEN_KEY,
   PROFILE_KEY,
+  REACT_APP_PUBLIC_GOOGLE_MAPS_API_KEY,
+  REACT_APP_GOOGLE_MAP_API_KEY,
 };
 
 export default configs;

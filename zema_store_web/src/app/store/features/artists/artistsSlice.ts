@@ -8,7 +8,9 @@ export type artistsState = {
   searchArtistsList: Array<Artist>;
   isLoading: boolean;
   error: boolean;
+  errorMessage: string;
   meta: {
+    total: number;
     totalPage: number;
     currentPage: number;
     limit: number;
@@ -21,7 +23,9 @@ const initialState: artistsState = {
   searchArtistsList: [],
   isLoading: false,
   error: false,
+  errorMessage: "",
   meta: {
+    total: 0,
     totalPage: 1,
     currentPage: 1,
     limit: 10,
@@ -35,7 +39,22 @@ export const getArtistsApi = createAsyncThunk<any, any>(
   async (payload, { rejectWithValue, fulfillWithValue, dispatch }) => {
     try {
       const { data } = await ArtistsService.getArtists();
-      return fulfillWithValue(data);
+      console.log(data, " is th data");
+      const res = data.artists.map((artist: any) => {
+        return {
+          ...artist,
+          id: artist,
+          fullName: artist.profileId.fullName,
+          avatar: artist.photoUrl,
+          followers: artist.profileId.followerNumber,
+          listenedHours: artist.profileId.listenedHour,
+          albumsCount: 21,
+          songsCount: 21,
+          createdAt: "2020-01-01",
+        };
+      });
+
+      return fulfillWithValue({ ...data, artists: res });
       // return fulfillWithValue([
       //   {
       //     id: "23243234234234",
@@ -81,7 +100,6 @@ export const addArtistsApi = createAsyncThunk<any, any>(
   "/addArtist",
   async (payload, { rejectWithValue, fulfillWithValue, dispatch }) => {
     try {
-      console.log(payload, " is payload");
       const { data } = await ArtistsService.addArtist(payload);
       return fulfillWithValue(data);
     } catch (err: any) {
@@ -118,6 +136,11 @@ export const artistsSlice = createSlice({
   name: "artists",
   initialState,
   reducers: {
+    clearMessage: (state) => {
+      state.isLoading = false;
+      state.error = false;
+      state.errorMessage = "";
+    },
     addArtist: (state, { payload }) => {
       state.artists.push(payload);
       state.isLoading = false;
@@ -169,7 +192,11 @@ export const artistsSlice = createSlice({
       })
       .addCase(getArtistsApi.fulfilled, (state, { payload }) => {
         state.isLoading = false;
-        state.artists = payload;
+        state.meta.total = payload.totalItems;
+        state.meta.totalPage = payload.totalPages;
+        state.meta.currentPage = payload.pageNumber + 1;
+        state.meta.limit = 10;
+        state.artists = payload.artists;
         state.searchArtistsList = state.artists;
       })
       .addCase(getArtistsApi.rejected, (state, { payload }) => {
@@ -187,6 +214,7 @@ export const artistsSlice = createSlice({
       .addCase(addArtistsApi.rejected, (state, { payload }) => {
         state.isLoading = false;
         state.error = true;
+        state.errorMessage = (payload as string).toString();
       })
       .addCase(updateArtistsApi.pending, (state) => {
         state.isLoading = true;
@@ -214,6 +242,7 @@ export const artistsSlice = createSlice({
 
 // Action creators are generated for each case reducer function
 export const {
+  clearMessage,
   addArtist,
   searchArtists,
   removeArtist,

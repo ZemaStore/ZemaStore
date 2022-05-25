@@ -9,6 +9,7 @@ export type usersState = {
   isLoading: boolean;
   error: boolean;
   meta: {
+    total: number;
     totalPage: number;
     currentPage: number;
     limit: number;
@@ -22,8 +23,9 @@ const initialState: usersState = {
   isLoading: false,
   error: false,
   meta: {
-    totalPage: 1,
-    currentPage: 1,
+    total: 0,
+    totalPage: 0,
+    currentPage: 0,
     limit: 10,
   },
 };
@@ -35,6 +37,7 @@ export const getUsersApi = createAsyncThunk<any, any>(
   async (payload, { rejectWithValue, fulfillWithValue, dispatch }) => {
     try {
       const { data } = await UsersService.getUsers();
+      console.log("data is ", data);
       return fulfillWithValue(data);
     } catch (err: any) {
       return rejectWithValue(err.response.data);
@@ -96,9 +99,10 @@ export const usersSlice = createSlice({
       })
       .addCase(getUsersApi.fulfilled, (state, { payload }) => {
         state.isLoading = false;
-        state.meta.totalPage = payload.totalItems;
-        state.meta.currentPage = payload.currentPage;
-        state.meta.limit = payload.limit;
+        state.meta.total = payload.totalItems;
+        state.meta.totalPage = payload.totalPages;
+        state.meta.currentPage = payload.pageNumber + 1;
+        state.meta.limit = 10;
         state.users = payload.users;
         state.searchUsersList = state.users;
       })

@@ -1,21 +1,21 @@
 import { useCallback, useEffect, useState } from "react";
-import { useAppDispatch } from "../../app/hooks/redux_hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks/redux_hooks";
 import { getArtistsApi } from "../../app/store/features/artists/artistsSlice";
 import Pagination from "../../common/Paginations";
 import ArtistsTable from "../../components/ArtistsTable";
 import AddEditArtistModal from "../../components/Modals/AddEditArtist";
 import DeleteModal from "../../components/Modals/DeleteModal";
 import { Artist } from "../../helpers/types";
-
+ 
 function ArtistsPage() {
   const dispatch = useAppDispatch();
   const [isAddModalOpen, setIsAddModalOpen] = useState<boolean>(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
   const [selectedArtist, setSelectedArtist] = useState<Artist | null>(null);
+  const { meta } = useAppSelector((state) => state.artists);
 
   const onCloseModal = () => {
-    console.log("closing modal");
     setIsAddModalOpen(false);
     setIsEditModalOpen(false);
     setIsDeleteModalOpen(false);
@@ -90,7 +90,11 @@ function ArtistsPage() {
           />
         </div>
       </div>
-      <Pagination />
+      <Pagination
+        currentPage={meta.currentPage}
+        pageSize={meta.limit}
+        totalItems={meta.total}
+      />
     </main>
   );
 }

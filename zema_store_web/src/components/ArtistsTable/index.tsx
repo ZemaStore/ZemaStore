@@ -59,6 +59,8 @@ const ArtistsTable = (props: Props) => {
           <thead>
             <tr className="h-16 w-full text-sm leading-none text-gray-800">
               <th className="font-normal text-left pl-4">Full Name</th>
+              <th className="font-normal text-left pl-12">Email</th>
+              <th className="font-normal text-left pl-12">Phone</th>
               <th className="font-normal text-left pl-12">Followers</th>
               <th className="font-normal text-left pl-12">Listened Hour</th>
               <th className="font-normal text-left pl-20">Albums Count</th>
@@ -67,11 +69,11 @@ const ArtistsTable = (props: Props) => {
           </thead>
           <tbody className="w-full">
             {searchArtistsList.length > 0 &&
-              searchArtistsList.map((artist) => {
+              searchArtistsList.map((artist, index) => {
                 return (
                   <tr
                     onClick={handleArtistsDetails(artist.id)}
-                    key={artist.id}
+                    key={artist.id + index}
                     className="h-20 handleArtistsDetails text-sm leading-none text-gray-800 bg-white hover:bg-gray-100 border-b border-t border-gray-100"
                   >
                     <td className="pl-4 cursor-pointer">
@@ -86,6 +88,12 @@ const ArtistsTable = (props: Props) => {
                           <p className="font-medium">{artist.fullName}</p>
                         </div>
                       </div>
+                    </td>
+                    <td className="pl-12">
+                      <p className="font-medium">{artist.email}</p>
+                    </td>
+                    <td className="pl-12">
+                      <p className="font-medium">{artist.phone}</p>
                     </td>
                     <td className="pl-12">
                       <p className="text-sm font-medium leading-none text-gray-800">
