@@ -1,0 +1,17 @@
+{
+  "viewportWidth": 1600,
+  "viewportHeight": 660,
+  "env": {
+    "cypress-react-selector": {
+      "root": "#root"
+    }
+  },
+  "testFiles": "**/*.spec.{js,ts,jsx,tsx}",
+  "integrationFolder": "cypress/integration",
+  "component": {
+    "testFiles": "**/*.spec.{js,jsx,ts,tsx}",
+    "componentFolder": "src"
+  },
+  "experimentalStudio": true,
+  "screenshotOnRunFailure": false
+}

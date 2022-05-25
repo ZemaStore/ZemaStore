@@ -36,6 +36,9 @@ export type User = {
 export type Artist = {
   id: string;
   fullName: string;
+  email: string;
+  phone: string;
+  password: string;
   avatar: string;
   followers: number;
   listenedHours: number;
@@ -48,7 +51,7 @@ export type Album = {
   id: string;
   title: string;
   cover: string;
-  artist: string;
+  artist: Artist;
   releaseDate: string;
   songs: number;
   createdAt: string;
@@ -58,8 +61,8 @@ export type Song = {
   id: string;
   title: string;
   cover: string;
-  song?: BinaryData;
-  album: string;
+  song?: string;
+  album: Album;
   genre: string;
   length: number;
   releaseDate: string;
@@ -80,14 +83,21 @@ export type Event = {
   title: string;
   summary: string;
   cover: string;
-  price: number;
-  subType: string;
-  createdAt: string;
   venue: {
+    lat: number;
+    lng: number;
     country: string;
     city: string;
     street: string;
     zip: string;
   };
+  createdAt: string;
   startDate: string;
+};
+
+export type Follow = {
+  id: string;
+  follower: User;
+  followee: Artist;
+  createdAt: string;
 };

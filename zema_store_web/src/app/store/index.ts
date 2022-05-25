@@ -4,7 +4,7 @@ import artistsReducer from "./features/artists/artistsSlice";
 import albumsReducer from "./features/albums/albumsSlice";
 import songsReducer from "./features/songs/songsSlice";
 import subscriptionsReducer from "./features/subscriptions/subscriptionsSlice";
-import eventsReducer from "./features/subscriptions/subscriptionsSlice";
+import eventsReducer from "./features/events/eventsSlice";
 import authReducer from "./features/auth/authSlice";
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

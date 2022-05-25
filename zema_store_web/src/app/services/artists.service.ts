@@ -8,17 +8,17 @@ const getArtists = async () => {
 
 const addArtist = async (formData: any) => {
   try {
-    // const { data } = await Request.post(`${baseUrl}/artists`, formData);
-    const data = {
-      id: "23243234234234",
-      fullName: "John Doe",
-      avatar: "https://cdn.tuk.dev/assets/templates/olympus/projects(3).png",
-      followers: 12,
-      listenedHours: 4239,
-      albumsCount: 21,
-      songsCount: 21,
-      createdAt: "2020-01-01",
-    };
+    const { data } = await Request.post(`${baseUrl}/artists`, formData);
+    // const data = {
+    //   id: "23243234234234",
+    //   fullName: "John Doe",
+    //   avatar: "https://cdn.tuk.dev/assets/templates/olympus/projects(3).png",
+    //   followers: 12,
+    //   listenedHours: 4239,
+    //   albumsCount: 21,
+    //   songsCount: 21,
+    //   createdAt: "2020-01-01",
+    // };
     return { data };
   } catch (error) {
     return { data: null, error };
@@ -27,8 +27,8 @@ const addArtist = async (formData: any) => {
 
 const updateArtist = async (formData: any) => {
   try {
-    // const { data } = await Request.patch(`${baseUrl}/artists`, formData);
-    const data = formData;
+    const { data } = await Request.patch(`${baseUrl}/artists`, formData);
+    // const data = formData;
     await setTimeout(() => {}, 1000);
     return { data };
   } catch (error) {

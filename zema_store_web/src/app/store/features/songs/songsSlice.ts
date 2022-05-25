@@ -76,6 +76,7 @@ export const songsSlice = createSlice({
   name: "songs",
   initialState,
   reducers: {
+    
     addSong: (state, { payload }) => {
       state.songs.push(payload);
       state.isLoading = false;

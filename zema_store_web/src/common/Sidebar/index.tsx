@@ -217,6 +217,7 @@ const Sidebar = (props: Props) => {
         <div className="bg-indigo-400 text-white">
           <ul className="w-full flex items-center justify-between ">
             <li
+              data-test-id="logout-button"
               className={clsx(
                 "flex w-full gap-x-5 text-white-600 hover:text-gray-100  hover:bg-indigo-400  cursor-pointer items-center px-8 py-3"
               )}

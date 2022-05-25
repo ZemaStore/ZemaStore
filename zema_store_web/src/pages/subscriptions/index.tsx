@@ -4,6 +4,7 @@ import { useAppDispatch } from "../../app/hooks/redux_hooks";
 import { getSubscriptionsApi } from "../../app/store/features/subscriptions/subscriptionsSlice";
 import BaseLayout from "../../common/Layout";
 import Pagination from "../../common/Paginations";
+import AddEditSubscriptionModal from "../../components/Modals/AddEditSubcription";
 import AddSongModal from "../../components/Modals/AddSong";
 import SubscriptionsTable from "../../components/SubscriptionsTable";
 
@@ -33,7 +34,11 @@ function SubscriptionsPage() {
       <main>
         <div className="min-h-[600px] my-10">
           {isModalOpen && (
-            <AddSongModal onClose={onCloseModal} onSubmit={() => {}} />
+            <AddEditSubscriptionModal
+              onClose={onCloseModal}
+              onSubmit={() => {}}
+              isEditing={false}
+            />
           )}
           <div className="px-4 md:px-10 py-4 md:py-7 bg-gray-100 rounded-tl-lg rounded-tr-lg">
             <div className="sm:flex items-center justify-between">

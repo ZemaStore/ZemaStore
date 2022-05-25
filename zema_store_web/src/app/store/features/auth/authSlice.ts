@@ -17,11 +17,6 @@ export type authState = {
   isLoading: boolean;
   error: boolean;
   errorMessage: string;
-  meta: {
-    totalPage: number;
-    currentPage: number;
-    limit: number;
-  };
 };
 
 // initial value
@@ -35,11 +30,6 @@ const initialState: authState = {
   isLoading: false,
   error: false,
   errorMessage: "",
-  meta: {
-    totalPage: 1,
-    currentPage: 1,
-    limit: 10,
-  },
 };
 
 // This action is what we will call using the dispatch in order to trigger the API call.
