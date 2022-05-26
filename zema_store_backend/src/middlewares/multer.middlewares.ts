@@ -1,10 +1,12 @@
+import fs from "fs";
 import path from "path";
 import { Request } from "express";
 import multer from "multer";
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, path.join(__dirname, "..", "..", "/uploads/"));
+    const dir = path.join(__dirname, "..", "..", "/uploads/");
+    fs.mkdir(dir, (err) => cb(null, dir));
   },
   filename: function (_req: Request, file, cb) {
     cb(null, new Date().toISOString().replace(/:/g, "-") + file.originalname);

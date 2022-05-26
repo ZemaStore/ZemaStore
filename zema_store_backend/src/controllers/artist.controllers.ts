@@ -157,10 +157,11 @@ const addArtist = async (req: Request, res: Response) => {
 
     const savedUser = await User.findById(user._id).populate("profileId");
 
-    sendWelcomeEmail(email, fullName);
+    // sendWelcomeEmail(email, fullName);
 
     return res.status(201).send({ success: true, data: savedUser });
   } catch (e) {
+    console.log(e)
     Utils.instance.handleResponseException(res, e);
   }
 };
