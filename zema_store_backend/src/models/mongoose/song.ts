@@ -64,6 +64,6 @@ const Song = mongoose.model<ISongDocument>("Song", songSchema);
 
 songSchema.virtual("id").get(function (this: ISongDocument) {
   return this._id.toHexString();
-})
+});
 
 export default Song;

@@ -2238,13 +2238,7 @@
                         "type": "string",
                         "description": "Full Name"
                     }
-                },
-                "required": [
-                    "email",
-                    "password",
-                    "fullName",
-                    "address"
-                ]
+                }
             },
             "Album": {
                 "type": "object",
