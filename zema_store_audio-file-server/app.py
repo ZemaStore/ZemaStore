@@ -43,7 +43,7 @@ def uploadFile():
 
             original_file_path = file_handler.getFilePath()
             encrypted_file_path = file_handler.getEncryptedFilePath()
-            if aes_key != None and aes_iv != None:
+            if aes_key is not None and aes_iv is not None:
                 aes_key = aes_key.encode("utf-8")
                 aes_iv = aes_iv.encode("utf-8")
                 audio_encrypt = AE.AudioEncrypt(
@@ -111,4 +111,4 @@ def get_audio(audio_id):
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', threaded=True, debug=True)
+    app.run(host='0.0.0.0')
