@@ -1,9 +1,7 @@
 import os
 from posixpath import dirname, realpath
-from flask import Flask, send_from_directory, abort, request, url_for
+from flask import Flask, send_from_directory, abort, request
 # from werkzeug.utils import secure_filename
-import requests
-import AudioWorks as aw
 import AudioEncrypt as AE
 import FileHandler as fh
 from flask_cors import cross_origin, CORS
@@ -113,4 +111,4 @@ def get_audio(audio_id):
 
 
 if __name__ == "__main__":
-    app.run(port=5000, threaded=True, debug=True)
+    app.run(host='0.0.0.0', threaded=True, debug=True)
