@@ -1,7 +1,9 @@
-import { FormEvent, useRef } from "react";
-import { useAppDispatch } from "../../app/hooks/redux_hooks";
+import { FormEvent, useRef, useState } from "react";
+import { useAppDispatch, useAppSelector } from "../../app/hooks/redux_hooks";
 import {
   addAlbum,
+  addAlbumsApi,
+  albumsSelector,
   updateAlbum,
 } from "../../app/store/features/albums/albumsSlice";
 import { Album } from "../../helpers/types";
@@ -9,6 +11,7 @@ import notify from "../../utils/notify";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import AutoCompleteSearch from "../../widgets/AutocompleteSearch";
+import clsx from "clsx";
 
 type Props = {
   isEditing: boolean;
@@ -22,6 +25,8 @@ const AddEditAlbumModal = (props: Props) => {
   let modal = document.getElementById("modal");
   const fileUploadFileRef = useRef<HTMLInputElement>(null);
   const dispatch = useAppDispatch();
+  const [selectedArtist, setSelectedArtist] = useState(null);
+  const { isLoading } = useAppSelector(albumsSelector);
 
   const AddEditAlbumSchema = Yup.object().shape({
     title: Yup.string()
@@ -70,6 +75,13 @@ const AddEditAlbumModal = (props: Props) => {
     console.log(e.target.files[0], " is the file");
   };
 
+  const DisplayingErrorMessagesSchema = Yup.object().shape({
+    title: Yup.string()
+      .min(2, "Too Short!")
+      .max(50, "Too Long!")
+      .required("Please Enter fullname"),
+  });
+
   return (
     <div>
       <div
@@ -98,7 +110,12 @@ const AddEditAlbumModal = (props: Props) => {
                   props.onClose();
                   notify.success("Artist Updated Successufully!");
                 } else {
-                  await dispatch(addAlbum(values));
+                  await dispatch(
+                    addAlbumsApi({
+                      ...values,
+                      artistId: (selectedArtist as any).id,
+                    })
+                  );
                   props.onClose();
                   notify.success("Artist Added Successufully!");
                 }
@@ -128,6 +145,8 @@ const AddEditAlbumModal = (props: Props) => {
 
                   <AutoCompleteSearch
                     label="Artist"
+                    selectedItem={selectedArtist}
+                    setSelectedItem={setSelectedArtist}
                     inputProps={{
                       id: "artistId",
                       name: "artistId",
@@ -135,7 +154,7 @@ const AddEditAlbumModal = (props: Props) => {
                       className:
                         "w-full py-2 bg-transparent border-none rounded-md outline-none text-ivory-800 font-cal focus:outline-none focus:ring-0 focus:border-transparent",
                     }}
-                    url="/api/artists/search?&query="
+                    url={`${process.env.REACT_APP_BACKEND_URL}/artists?search=`}
                   />
 
                   <label
@@ -165,12 +184,39 @@ const AddEditAlbumModal = (props: Props) => {
                   </div>
                   <div className="flex items-center justify-start w-full">
                     <button
-                      onClick={() => {
-                        props.onSubmit();
-                      }}
-                      className="focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-700 transition duration-150 ease-in-out hover:bg-indigo-600 bg-indigo-700 rounded text-white px-8 py-2 text-sm"
+                      type="submit"
+                      disabled={isLoading}
+                      className={clsx(
+                        "focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-700 transition duration-150 ease-in-out hover:bg-indigo-600 bg-indigo-700 disabled:bg-indigo-400  disabled:cursor-not-allowed rounded text-white px-8 py-2 text-sm flex"
+                      )}
                     >
-                      Submit
+                      {isLoading ? (
+                        <>
+                          <svg
+                            className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                          >
+                            <circle
+                              className="opacity-25"
+                              cx="12"
+                              cy="12"
+                              r="10"
+                              stroke="currentColor"
+                              strokeWidth="4"
+                            ></circle>
+                            <path
+                              className="opacity-75"
+                              fill="currentColor"
+                              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                            ></path>
+                          </svg>
+                          Loading...
+                        </>
+                      ) : (
+                        <>{props.isEditing ? "Update" : "Submit"}</>
+                      )}
                     </button>
                     <button
                       className="focus:outline-none focus:ring-2 focus:ring-offset-2  focus:ring-gray-400 ml-3 bg-gray-100 transition duration-150 text-gray-600 ease-in-out hover:border-gray-400 hover:bg-gray-300 border rounded px-8 py-2 text-sm"
@@ -191,11 +237,11 @@ const AddEditAlbumModal = (props: Props) => {
                       width="20"
                       height="20"
                       viewBox="0 0 24 24"
-                      stroke-width="2.5"
+                      strokeWidth="2.5"
                       stroke="currentColor"
                       fill="none"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                     >
                       <path stroke="none" d="M0 0h24v24H0z" />
                       <line x1="18" y1="6" x2="6" y2="18" />

@@ -6,6 +6,15 @@ const getArtists = async () => {
   return { data };
 };
 
+const searchArtistByName = async (query: string) => {
+  try {
+    const { data } = await Request.get(
+      `${baseUrl}/artists?search=${query.trim()}`
+    );
+    return data;
+  } catch (error) {}
+};
+
 const addArtist = async (formData: any) => {
   try {
     const { data } = await Request.post(`${baseUrl}/artists`, formData);
@@ -25,12 +34,9 @@ const addArtist = async (formData: any) => {
   }
 };
 
-const updateArtist = async (formData: any) => {
+const updateArtist = async (id: string, formData: any) => {
   try {
-    const { data } = await Request.patch(
-      `${baseUrl}/artists/${formData.id}`,
-      formData
-    );
+    const { data } = await Request.patch(`${baseUrl}/artists/${id}`, formData);
     return { data };
   } catch (error) {
     return { data: null, error };
@@ -49,6 +55,7 @@ const deleteArtist = async (id: any) => {
 };
 
 const ArtistsService = {
+  searchArtistByName,
   getArtists,
   addArtist,
   updateArtist,

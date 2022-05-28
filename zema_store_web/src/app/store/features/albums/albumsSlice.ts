@@ -47,8 +47,8 @@ export const getAlbumsApi = createAsyncThunk<any, any>(
   }
 );
 
-export const addArtistsApi = createAsyncThunk<any, any>(
-  "/addArtist",
+export const addAlbumsApi = createAsyncThunk<any, any>(
+  "/addAlbum",
   async (payload, { rejectWithValue, fulfillWithValue, dispatch }) => {
     try {
       const { data } = await AlbumsService.addAlbum(payload);
@@ -59,8 +59,8 @@ export const addArtistsApi = createAsyncThunk<any, any>(
   }
 );
 
-export const updateArtistsApi = createAsyncThunk<any, any>(
-  "/updateArtist",
+export const updateAlbumsApi = createAsyncThunk<any, any>(
+  "/updateAlbum",
   async (payload, { rejectWithValue, fulfillWithValue, dispatch }) => {
     try {
       const { data } = await AlbumsService.updateAlbum(payload);
@@ -71,8 +71,8 @@ export const updateArtistsApi = createAsyncThunk<any, any>(
   }
 );
 
-export const deleteArtistsApi = createAsyncThunk<any, any>(
-  "/deleteArtist",
+export const deleteAlbumsApi = createAsyncThunk<any, any>(
+  "/deleteAlbum",
   async (payload, { rejectWithValue, fulfillWithValue, dispatch }) => {
     try {
       const { data } = await AlbumsService.updateAlbum(payload);
