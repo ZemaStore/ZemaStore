@@ -1,2 +1,5 @@
 venv/
 .git
+.venv/
+.venv/lib/python3.8/site-packages/
+.env
