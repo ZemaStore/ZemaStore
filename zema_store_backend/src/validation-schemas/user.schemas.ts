@@ -28,4 +28,8 @@ const udpateUserSchema = Joi.object({
   },
 });
 
-export { getUserSchema, getUsersSchema, udpateUserSchema };
+const changeUserStatusSchema = Joi.object({
+  id: Joi.string().hex(),
+});
+
+export { getUserSchema, getUsersSchema, udpateUserSchema, changeUserStatusSchema };

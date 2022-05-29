@@ -369,6 +369,57 @@
                         "description": "id of the specified user"
                     }
                 ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/User"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OkResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/status": {
+            "patch": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Changes user status",
+                "description": "Changes user status",
+                "security": [
+                    {
+                        "bearerAuthorization": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "description": "id of the specified user"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "content": {

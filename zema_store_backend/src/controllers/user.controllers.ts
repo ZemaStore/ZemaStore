@@ -9,6 +9,7 @@ import ErrorResponse from "../models/responses/error-response.model";
 import OkResponse from "../models/responses/ok-response.model";
 import Utils from "../utils/utils";
 import {
+  changeUserStatusSchema,
   getUserSchema,
   getUsersSchema,
   udpateUserSchema,
@@ -141,4 +142,32 @@ const updateUser = async (req: Request, res: Response) => {
   }
 };
 
-export { getUser, getusers, updateUser };
+const changeUserStatus = async (req: Request, res: Response) => {
+  try {
+    const validate = changeUserStatusSchema.validate(req.params);
+    if (validate.error && validate.error !== null) {
+      console.log(validate.error.message);
+      return res
+        .status(400)
+        .send(new ErrorResponse(validate.error.message, null));
+    }
+
+    const id = req.params.id;
+    
+    const user = await User.findById(id);
+    if (isNil(user)) {
+      return res.status(400).send(new ErrorResponse("User not found!", null));
+    }
+
+    user.isActive = !user.isActive;
+    await user.save();
+
+    res
+      .status(200)
+      .send(new OkResponse(null, "User status successfully updated!"));
+  } catch (e) {
+    Utils.instance.handleResponseException(res, e);
+  }
+};
+
+export { getUser, getusers, updateUser, changeUserStatus };

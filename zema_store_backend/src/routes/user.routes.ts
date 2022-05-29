@@ -1,11 +1,18 @@
 import { Router } from "express";
 
-import { getUser, getusers, updateUser } from "../controllers/user.controllers";
+import {
+  changeUserStatus,
+  getUser,
+  getusers,
+  updateUser,
+} from "../controllers/user.controllers";
 import { imageUploader } from "../middlewares/multer.middlewares";
 
 const router = Router();
 
 router.route("/").get(getusers);
+
+router.route("/status").patch(changeUserStatus);
 
 router
   .route("/:id")
