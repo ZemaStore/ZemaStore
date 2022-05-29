@@ -93,6 +93,14 @@ def downloadFile(filename):
     except FileNotFoundError:
         abort(404)
 
+@app.route('/download-normal/<filename>')
+def downloadNormalFile(filename):
+    try:
+        return send_from_directory(os.path.join(
+    dirname(realpath(__file__)), 'uploads'), filename, as_attachment=True)
+    except FileNotFoundError:
+        abort(404)
+
 
 @app.route("/", methods=["GET", "POST"])
 def home():
