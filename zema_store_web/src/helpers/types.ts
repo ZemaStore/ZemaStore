@@ -65,6 +65,7 @@ export type Song = {
   album: Album;
   genre: string;
   length: number;
+  listenersCount: number;
   releaseDate: string;
   createdAt: string;
 };

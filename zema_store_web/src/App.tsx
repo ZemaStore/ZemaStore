@@ -12,11 +12,13 @@ import DashboardPage from "./pages/dashboard";
 import EventsPage from "./pages/events";
 import UserProfilePage from "./pages/profile";
 import SettingsPage from "./pages/settings";
-import SongsPage from "./pages/songs";
 import SubscriptionsPage from "./pages/subscriptions";
 import UsersPage from "./pages/users";
 import "react-toastify/dist/ReactToastify.css";
 import ProtectedRoute from "./common/Route/ProtectedRoute";
+import SongsIndexPage from "./pages/songs";
+import SongsPage from "./pages/songs/songs";
+import SongDetail from "./pages/songs/song_detail";
 
 function App() {
   return (
@@ -51,7 +53,11 @@ function App() {
           }
         >
           <Route index element={<ArtistsPage />} />
-          <Route path=":id" element={<SongsPage from="artists" />} />
+          <Route path=":id" element={<SongsIndexPage />}>
+            <Route index element={<AlbumsPage from="artists" />} />
+            <Route path="songs" element={<SongsPage from="artists" />} />
+            <Route path="songs/:id" element={<SongDetail from="artists" />} />
+          </Route>
         </Route>
         <Route
           path="albums"
@@ -63,8 +69,13 @@ function App() {
           }
         >
           <Route index element={<AlbumsPage />} />
-          <Route path=":id" element={<SongsPage from="albums" />} />
+
+          <Route path=":id" element={<SongsIndexPage />}>
+            <Route index element={<SongsPage from="albums" />} />
+            <Route path=":id" element={<SongDetail from="albums" />} />
+          </Route>
         </Route>
+
         <Route
           path="/events"
           element={

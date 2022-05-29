@@ -6,6 +6,11 @@ const getArtists = async () => {
   return { data };
 };
 
+const getArtistById = async (artistId: any) => {
+  const { data } = await Request.get(`${baseUrl}/artists/${artistId}`);
+  return { data };
+};
+
 const searchArtistByName = async (query: string) => {
   try {
     const { data } = await Request.get(
@@ -56,6 +61,7 @@ const deleteArtist = async (id: any) => {
 
 const ArtistsService = {
   searchArtistByName,
+  getArtistById,
   getArtists,
   addArtist,
   updateArtist,

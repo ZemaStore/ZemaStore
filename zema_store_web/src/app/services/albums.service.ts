@@ -1,14 +1,33 @@
 import { baseUrl } from ".";
 import Request from "../api/request";
 
-const getAlbums = async () => {
-  const { data } = await Request.get(`${baseUrl}/albums`);
+const getAlbums = async ({
+  name = "all",
+  id = null,
+}: {
+  name: string;
+  id: string | null;
+}) => {
+  let url = `${baseUrl}/albums`;
+  switch (name) {
+    case "artists": {
+      url = `${baseUrl}/albums/artist/${id}`;
+      break;
+    }
+    default: {
+      url = `${baseUrl}/albums`;
+      break;
+    }
+  }
+  const { data } = await Request.get(url);
   return { data };
 };
 
 const addAlbum = async (formData: any) => {
   try {
-    const { data } = await Request.post(`${baseUrl}/albums`, formData);
+    const { data } = await Request.post(`${baseUrl}/albums`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
     return { data };
   } catch (error) {
     return { data: null, error };

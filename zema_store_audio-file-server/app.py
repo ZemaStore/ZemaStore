@@ -64,12 +64,40 @@ def uploadFile():
         else:
             print("there was an error")
             return abort(400)
+        
+@app.route('/upload-normal', methods=['POST'])
+@cross_origin()
+def uploadFileNormalFile():
+    if request.method == 'POST':
+        request_data = request.get_json()
+
+        audio_url = request_data['audio_url']
+        random_file_name = request_data['random_file_name']
+        aes_key = request_data['aes_key']
+        aes_iv = request_data['aes_iv']
+
+        file_handler = fh.FileHandler(random_file_name, '.mp3')
+        if file_handler.downloadAndSave(audio_url):
+
+            original_file_path = file_handler.getFilePath()
+            return {"file_path": original_file_path, "aes_key": aes_key, "aes_iv": aes_iv}, 201
+        else:
+            print("there was an error")
+            return abort(400)
 
 
 @app.route('/download/<filename>')
 def downloadFile(filename):
     try:
         return send_from_directory(app.config['UPLOAD_FOLDER'], filename, as_attachment=True)
+    except FileNotFoundError:
+        abort(404)
+
+@app.route('/download-normal/<filename>')
+def downloadNormalFile(filename):
+    try:
+        return send_from_directory(os.path.join(
+    dirname(realpath(__file__)), 'uploads'), filename, as_attachment=True)
     except FileNotFoundError:
         abort(404)
 

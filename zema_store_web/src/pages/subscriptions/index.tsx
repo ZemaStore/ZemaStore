@@ -5,7 +5,7 @@ import { getSubscriptionsApi } from "../../app/store/features/subscriptions/subs
 import BaseLayout from "../../common/Layout";
 import Pagination from "../../common/Paginations";
 import AddEditSubscriptionModal from "../../components/Modals/AddEditSubcription";
-import AddSongModal from "../../components/Modals/AddSong";
+import AddSongModal from "../../components/Modals/AddEditSong";
 import SubscriptionsTable from "../../components/SubscriptionsTable";
 
 function SubscriptionsPage() {

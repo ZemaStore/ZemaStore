@@ -4,6 +4,7 @@ import { useAppSelector } from "../../app/hooks/redux_hooks";
 import { albumsSelector } from "../../app/store/features/albums/albumsSlice";
 import Loader from "../../common/Widgets/Loader";
 import { Album } from "../../helpers/types";
+import formatter from "../../utils/formatter";
 
 type Props = {
   setSelectedAlbum: React.Dispatch<React.SetStateAction<Album | null>>;
@@ -17,7 +18,12 @@ const AlbumsTable = (props: Props) => {
   const { searchAlbumsList, isLoading } = useAppSelector(albumsSelector);
 
   const handleAlbumDetails = (id: string) => (e: any) => {
-    navigate(`/albums/${id}`);
+    navigate(`/albums/${id}`, {
+      state: {
+        from: "albums",
+        id,
+      },
+    });
   };
 
   const handleClickMore = (id: string) => (e: any) => {
@@ -57,19 +63,19 @@ const AlbumsTable = (props: Props) => {
             <thead>
               <tr className="h-16 w-full text-sm leading-none text-gray-800">
                 <th className="font-normal text-left pl-4">Title</th>
-                <th className="font-normal text-left pl-12">Album</th>
-                <th className="font-normal text-left pl-12">Released Date</th>
+                <th className="font-normal text-left pl-12">Artist</th>
                 <th className="font-normal text-left pl-20">Songs</th>
+                <th className="font-normal text-left pl-20">Released Date</th>
                 <th className="font-normal text-left pl-20">Created Date</th>
               </tr>
             </thead>
             <tbody className="w-full">
               {searchAlbumsList.length > 0 ? (
-                searchAlbumsList.map((album, index) => {
+                searchAlbumsList.map((album: any, index) => {
                   return (
                     <tr
-                      onClick={handleAlbumDetails(album.id)}
-                      key={`${album.id}-${index}`}
+                      onClick={handleAlbumDetails(album.album.id)}
+                      key={`${album.album.id}-${index}`}
                       className="h-20 handleAlbumsDetails text-sm leading-none text-gray-800 bg-white hover:bg-gray-100 border-b border-t border-gray-100"
                     >
                       <td className="pl-4 cursor-pointer">
@@ -78,24 +84,24 @@ const AlbumsTable = (props: Props) => {
                             <img
                               className="w-full h-full"
                               src={
-                                album.cover
-                                  ? album.cover
+                                album.album.imageUrl
+                                  ? album.album.imageUrl
                                   : "/images/user-avatars.svg"
                               }
                             />
                           </div>
                           <div className="pl-4">
-                            <p className="font-medium">{album.title}</p>
+                            <p className="font-medium">{album.album.title}</p>
                           </div>
                         </div>
                       </td>
                       <td className="pl-12">
-                        <p className="font-medium">{album.title}</p>
+                        <p className="font-medium">
+                          {album.album.artistId.fullName}
+                        </p>
                       </td>
-                      <td className="pl-12">
-                        <p className="font-medium">{album.releaseDate}</p>
-                      </td>
-                      <td className="pl-12">
+
+                      <td className="pl-20">
                         <p className="text-sm font-medium leading-none text-gray-800">
                           {album.songs}
                         </p>
@@ -103,20 +109,22 @@ const AlbumsTable = (props: Props) => {
                           <div className="w-20 h-3 bg-green-progress rounded-full" />
                         </div>
                       </td>
-                      <td className="pl-12">
-                        <p className="font-medium">{album.createdAt}</p>
+                      <td className="pl-20">
+                        <p className="font-medium">
+                          {formatter.getYear(album.album.releaseDate)}
+                        </p>
                       </td>
 
                       <td className="pl-20">
-                        <p className="font-medium">{album.createdAt}</p>
+                        <p className="font-medium">{formatter.getYear(album.album.createdAt)}</p>
                       </td>
 
                       <td
                         className="px-7 2xl:px-0 cursor-pointer"
-                        onClick={handleClickMore(album.id)}
+                        onClick={handleClickMore(album.album.id)}
                       >
                         <button
-                          onClick={handleClickMore(album.id)}
+                          onClick={handleClickMore(album.album.id)}
                           className="focus:outline-none pl-7"
                         >
                           <svg
@@ -149,16 +157,16 @@ const AlbumsTable = (props: Props) => {
                             />
                           </svg>
                         </button>
-                        {selectedAlbumId === album.id && (
+                        {selectedAlbumId === album.album.id && (
                           <div className="dropdown-content bg-white shadow-lg shadow-blue-100 w-24 absolute z-50 right-0 mr-16">
                             <div
-                              onClick={() => handleEditAlbum(album)}
+                              onClick={() => handleEditAlbum(album.album)}
                               className="text-xs w-full hover:bg-indigo-700 py-4 px-4 cursor-pointer hover:text-white"
                             >
                               <p>Edit</p>
                             </div>
                             <div
-                              onClick={() => handleDeleteAlbum(album)}
+                              onClick={() => handleDeleteAlbum(album.album)}
                               className="text-xs w-full hover:bg-indigo-700 py-4 px-4 cursor-pointer hover:text-white"
                             >
                               <p className="text-red-500">Delete</p>

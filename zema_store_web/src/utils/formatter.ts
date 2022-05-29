@@ -1,4 +1,9 @@
+import { format } from "date-fns";
+
 const formatter = {
+  getYear(date: string) {
+    return format(new Date(date), "MM/dd/yyyy");
+  },
   tin(v: string) {
     if (!v || v === undefined) return v;
     else {

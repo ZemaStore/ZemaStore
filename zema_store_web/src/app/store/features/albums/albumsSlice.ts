@@ -38,7 +38,7 @@ export const getAlbumsApi = createAsyncThunk<any, any>(
   "/albums",
   async (payload, { rejectWithValue, fulfillWithValue, dispatch }) => {
     try {
-      const { data } = await AlbumsService.getAlbums();
+      const { data } = await AlbumsService.getAlbums(payload);
       console.log("data is ", data);
       return fulfillWithValue(data);
     } catch (err: any) {
