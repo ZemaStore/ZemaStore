@@ -8,21 +8,8 @@ class UserRepository {
 
   UserRepository({required this.userDataProvider});
 
-
-  Future<User> createUser(User user) async{
-    return userDataProvider.createUser(user);
-  }
-
-
   Future<List<User>> getUsers() async {
     return await userDataProvider.getUsers();
   }
 
-  Future<void> updateUser(User user) async {
-    await userDataProvider.updateUser(user);
-  }
-
-  Future<void> deleteUser(String id) async {
-    await userDataProvider.deleteUser(id);
-  }
 }
