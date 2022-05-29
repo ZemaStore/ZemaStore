@@ -39,7 +39,6 @@ export const getArtistsApi = createAsyncThunk<any, any>(
   async (payload, { rejectWithValue, fulfillWithValue, dispatch }) => {
     try {
       const { data } = await ArtistsService.getArtists();
-      console.log(data, " is th data");
       const res = data.artists.map((artist: any) => {
         return {
           ...artist,

@@ -4,6 +4,7 @@ import { useAppSelector } from "../../app/hooks/redux_hooks";
 import { albumsSelector } from "../../app/store/features/albums/albumsSlice";
 import Loader from "../../common/Widgets/Loader";
 import { Album } from "../../helpers/types";
+import formatter from "../../utils/formatter";
 
 type Props = {
   setSelectedAlbum: React.Dispatch<React.SetStateAction<Album | null>>;
@@ -109,11 +110,13 @@ const AlbumsTable = (props: Props) => {
                         </div>
                       </td>
                       <td className="pl-20">
-                        <p className="font-medium">{album.album.createdAt}</p>
+                        <p className="font-medium">
+                          {formatter.getYear(album.album.releaseDate)}
+                        </p>
                       </td>
 
                       <td className="pl-20">
-                        <p className="font-medium">{album.album.createdAt}</p>
+                        <p className="font-medium">{formatter.getYear(album.album.createdAt)}</p>
                       </td>
 
                       <td

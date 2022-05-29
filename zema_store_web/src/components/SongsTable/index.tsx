@@ -1,23 +1,22 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../app/hooks/redux_hooks";
 import { songsSelector } from "../../app/store/features/songs/songsSlice";
 import Loader from "../../common/Widgets/Loader";
 import { Song } from "../../helpers/types";
+import formatter from "../../utils/formatter";
 
 type Props = {
   setSelectedSong: React.Dispatch<React.SetStateAction<Song | null>>;
   handleModalOpen: (modalType?: string) => void;
 };
 const SongsTable = (props: Props) => {
-  const [show, setShow] = useState<number | null>(0);
-
   const [selectedSongId, setSelectedSongId] = useState<string | null>(null);
-
 
   const { searchSongsList, isLoading } = useAppSelector(songsSelector);
   const navigate = useNavigate();
-  
+  const location = useLocation();
+
   const handleClickMore = (id: string) => (e: any) => {
     e.stopPropagation();
     if (selectedSongId === id) {
@@ -44,11 +43,8 @@ const SongsTable = (props: Props) => {
   };
 
   const handleSongsDetails = (id: string) => (e: any) => {
-    console.log("hello world");
-    navigate(`/songs/${id}`);
+    navigate(`${id}`);
   };
-
-
 
   return (
     <div className="bg-white shadow px-4 md:px-10 pt-4 md:pt-7 pb-5 overflow-y-auto">
@@ -63,7 +59,9 @@ const SongsTable = (props: Props) => {
               <th className="font-normal text-left pl-4">Title</th>
               <th className="font-normal text-left pl-12">Song</th>
               <th className="font-normal text-left pl-12">Released Date</th>
-              <th className="font-normal text-left pl-20">Songs</th>
+              <th className="font-normal text-left pl-20">Genre</th>
+              <th className="font-normal text-left pl-20">Listner Count</th>
+              <th className="font-normal text-left pl-20">Length</th>
               <th className="font-normal text-left pl-20">Created Date</th>
             </tr>
           </thead>
@@ -89,30 +87,37 @@ const SongsTable = (props: Props) => {
                         </div>
                       </div>
                     </td>
-                    <td className="pl-12">
-                      <p className="font-medium">{song.song}</p>
-                    </td>
-                    <td className="pl-12">
-                      <p className="font-medium">{song.releaseDate}</p>
-                    </td>
-                    <td className="pl-12">
-                      <p className="text-sm font-medium leading-none text-gray-800">
-                        {song.album}
+                    <td className="pl-20">
+                      <p className="font-medium">
+                        <a
+                          href={song.song}
+                          target="_blank"
+                          referrerPolicy="no-referrer"
+                          className="text-blue-900"
+                        >
+                          link
+                        </a>
                       </p>
-                      <div className="w-24 h-3 bg-gray-100 rounded-full mt-2">
-                        <div className="w-20 h-3 bg-green-progress rounded-full" />
-                      </div>
                     </td>
-                    <td className="pl-12">
+                    <td className="pl-20">
+                      <p className="font-medium">
+                        {formatter.getYear(song.releaseDate)}
+                      </p>
+                    </td>
+                    <td className="pl-20">
+                      <p className="text-sm font-medium leading-none text-gray-800">
+                        {song.genre}
+                      </p>
+                    </td>
+                    <td className="pl-20">
+                      <p className="font-medium">{song.listenersCount}</p>
+                    </td>
+                    <td className="pl-20">
                       <p className="font-medium">{song.length}</p>
                     </td>
                     <td className="pl-20">
-                      <p className="font-medium">{song.genre}</p>
-                    </td>
-                    <td className="pl-20">
-                      <p className="font-medium">{song.createdAt}</p>
-                      <p className="text-xs leading-3 text-gray-600 mt-2">
-                        Single: 10
+                      <p className="font-medium">
+                        {formatter.getYear(song.createdAt)}
                       </p>
                     </td>
 

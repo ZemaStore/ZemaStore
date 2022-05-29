@@ -8,7 +8,6 @@ type Props = {
   onSubmit: () => void;
 };
 
-
 const AddEditSongModal = (props: Props) => {
   const { onClose, onSubmit } = props;
   let modal = document.getElementById("modal");
@@ -58,53 +57,56 @@ const AddEditSongModal = (props: Props) => {
               Enter Song Details
             </h1>
             <label
-              htmlFor="name"
+              htmlFor="title"
               className="text-gray-800 text-sm font-bold leading-tight tracking-normal"
             >
               Song Title
             </label>
             <input
-              id="name"
+              id="title"
               className="mb-5 mt-2 text-gray-600 focus:outline-none focus:border focus:border-indigo-700 font-normal w-full h-10 flex items-center pl-3 text-sm border-gray-300 rounded border"
-              placeholder="Album Title"
+              placeholder="Song Title"
             />
             <label
-              htmlFor="name"
+              htmlFor="length"
               className="text-gray-800 text-sm font-bold leading-tight tracking-normal"
             >
               Length
             </label>
             <input
-              id="name"
+              id="length"
+              type="number"
+              min={0}
               className="mb-5 mt-2 text-gray-600 focus:outline-none focus:border focus:border-indigo-700 font-normal w-full h-10 flex items-center pl-3 text-sm border-gray-300 rounded border"
-              placeholder="Album Title"
+              placeholder="Song Length in Second"
             />
 
             <label
-              htmlFor="name"
+              htmlFor="releaseDate"
               className="text-gray-800 text-sm font-bold leading-tight tracking-normal"
             >
               Release Date
             </label>
             <input
-              id="name"
+              id="releaseDate"
               className="mb-5 mt-2 text-gray-600 focus:outline-none focus:border focus:border-indigo-700 font-normal w-full h-10 flex items-center pl-3 text-sm border-gray-300 rounded border"
-              placeholder="Year"
+              placeholder="YYYY-MM-DD"
             />
             <label
-              htmlFor="name"
+              htmlFor="genre"
               className="text-gray-800 text-sm font-bold leading-tight tracking-normal"
             >
               Genre
             </label>
             <select
+              id="genre"
               className="mb-5 form-select appearance-none block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
-              aria-label="Default select example"
+              aria-label="Genre"
             >
               <option selected>Open this select menu</option>
-              <option value="1">One</option>
-              <option value="2">Two</option>
-              <option value="3">Three</option>
+              <option value="reggae">Reggea</option>
+              <option value="pop">Pop</option>
+              <option value="classical">Classical</option>
             </select>
 
             <div className="overflow-hidden relative mt-4 mb-4">
@@ -150,11 +152,11 @@ const AddEditSongModal = (props: Props) => {
                 width="20"
                 height="20"
                 viewBox="0 0 24 24"
-                stroke-width="2.5"
+                strokeWidth="2.5"
                 stroke="currentColor"
                 fill="none"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               >
                 <path stroke="none" d="M0 0h24v24H0z" />
                 <line x1="18" y1="6" x2="6" y2="18" />

@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/hooks/redux_hooks";
 import { getAlbumsApi } from "../../app/store/features/albums/albumsSlice";
 import Pagination from "../../common/Paginations";
@@ -7,7 +8,10 @@ import AddEditAlbumModal from "../../components/Modals/AddEditAlbum";
 import DeleteModal from "../../components/Modals/DeleteModal";
 import { Album } from "../../helpers/types";
 
-type Props = {};
+type Props = {
+  from?: string;
+  id?: string;
+};
 
 const AlbumsPage = (props: Props) => {
   const dispatch = useAppDispatch();
@@ -15,8 +19,10 @@ const AlbumsPage = (props: Props) => {
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
   const [selectedAlbum, setSelectedAlbum] = useState<Album | null>(null);
+  const [setArtistDetail, setSetArtistDetail] = useState(null);
   const { meta } = useAppSelector((state) => state.albums);
-
+  const location = useLocation();
+  console.log(props, " propspppppppppppppppp");
   const onCloseModal = () => {
     setIsAddModalOpen(false);
     setIsEditModalOpen(false);
@@ -34,7 +40,21 @@ const AlbumsPage = (props: Props) => {
   };
 
   const fetchAlbums = useCallback(async () => {
-    await dispatch(getAlbumsApi({}));
+    const pathId = location.pathname.split("/").slice().pop();
+    let from: {
+      name: string;
+      id: string | number | null;
+    } = {
+      name: "all",
+      id: null,
+    };
+    if (location.pathname.includes("artists")) {
+      from = {
+        name: "artists",
+        id: pathId || null,
+      };
+    }
+    await dispatch(getAlbumsApi({ from }));
   }, [dispatch]);
 
   useEffect(() => {
@@ -94,7 +114,7 @@ const AlbumsPage = (props: Props) => {
         currentPage={meta.currentPage}
         pageSize={meta.limit}
         totalItems={meta.total}
-      />{" "}
+      />
     </main>
   );
 };

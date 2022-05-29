@@ -10,6 +10,7 @@ export type songsState = {
   isLoading: boolean;
   error: boolean;
   meta: {
+    total: number;
     totalPage: number;
     currentPage: number;
     limit: number;
@@ -23,6 +24,7 @@ const initialState: songsState = {
   isLoading: false,
   error: false,
   meta: {
+    total: 0,
     totalPage: 1,
     currentPage: 1,
     limit: 10,
@@ -35,7 +37,7 @@ export const getSongsApi = createAsyncThunk<any, any>(
   "/songs",
   async (payload, { rejectWithValue, fulfillWithValue, dispatch }) => {
     try {
-      console.log("payload is ", payload)
+      console.log("payload is ", payload);
       const { data } = await SongsService.getSongs(payload);
       return fulfillWithValue(data);
     } catch (err: any) {
@@ -100,6 +102,13 @@ export const songsSlice = createSlice({
         state.isLoading = false;
         state.songs = payload;
         state.searchSongsList = state.songs;
+
+        state.songs = payload !== null ? payload.songs : [];
+        state.searchSongsList = state.songs;
+        state.meta.total = payload.totalItems;
+        state.meta.totalPage = payload.totalPages;
+        state.meta.currentPage = payload.pageNumber + 1;
+        state.meta.limit = 10;
       })
       .addCase(getSongsApi.rejected, (state, { payload }) => {
         state.isLoading = false;

@@ -1,8 +1,25 @@
 import { baseUrl } from ".";
 import Request from "../api/request";
 
-const getAlbums = async () => {
-  const { data } = await Request.get(`${baseUrl}/albums`);
+const getAlbums = async ({
+  name = "all",
+  id = null,
+}: {
+  name: string;
+  id: string | null;
+}) => {
+  let url = `${baseUrl}/albums`;
+  switch (name) {
+    case "artists": {
+      url = `${baseUrl}/albums/artist/${id}`;
+      break;
+    }
+    default: {
+      url = `${baseUrl}/albums`;
+      break;
+    }
+  }
+  const { data } = await Request.get(url);
   return { data };
 };
 
