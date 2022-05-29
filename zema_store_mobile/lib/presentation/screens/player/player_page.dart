@@ -1,10 +1,7 @@
-import 'package:audio_manager/audio_manager.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../../setup.dart';
-
-
 
 class PlayerPage extends StatefulWidget{
   _PlayerState createState()=> _PlayerState();
@@ -13,16 +10,59 @@ class _PlayerState extends State<PlayerPage>{
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(''),
-      ),
-      backgroundColor: Colors.black54,
-      body: Container(
-        child: Column(children: <Widget>[
 
-          SizedBox(height: 4,),
-          Expanded(child: Image(image: AssetImage('assets/song.png'),)),
+    return Scaffold(
+      body:Container(
+        child: Column(children: <Widget>[
+          Column(
+            children: [
+              Container(
+                height: MediaQuery.of(context).size.height * 0.80,
+                width: MediaQuery.of(context).size.width,
+                child: Card(
+                  color: Colors.transparent,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+
+                    children: [
+                      Container(
+                        width: 130,
+                        height: 130,
+                        padding: EdgeInsets.all(4),
+                        child: Image.asset('assets/images/art.jpg'),
+                      ),
+                      SizedBox(
+                        height: 16,
+                      ),
+                    ],
+                  ),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+
+          /*  child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: 130,
+                  height: 130,
+                  padding: EdgeInsets.all(4),
+                  child: Image.asset(artist.photoUrl),
+                ),
+                SizedBox(
+                  height: 16,
+                ),
+                Text(
+                  artist.fullName,
+                  style: TextStyle(fontSize: 18),
+                )
+              ],
+            ));*/
+                ),
+              ),
+              SizedBox(height: 20,),
+            ],
+          ),
           Padding(
             padding: EdgeInsets.symmetric(vertical: 5,horizontal: 16),
             child: songProgress(context),
@@ -73,8 +113,9 @@ class _PlayerState extends State<PlayerPage>{
             ),
           ),
         ]),
-      ),
+      ) ,
     );
+
 
 
   }
