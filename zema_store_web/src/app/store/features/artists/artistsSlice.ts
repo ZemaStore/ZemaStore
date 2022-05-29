@@ -43,7 +43,6 @@ export const getArtistsApi = createAsyncThunk<any, any>(
       const res = data.artists.map((artist: any) => {
         return {
           ...artist,
-          id: artist,
           fullName: artist.profileId.fullName,
           avatar: artist.photoUrl,
           followers: artist.profileId.followerNumber,
@@ -104,7 +103,6 @@ export const addArtistsApi = createAsyncThunk<any, any>(
 
       return fulfillWithValue({
         ...data,
-        id: data,
         fullName: data.profileId.fullName,
         avatar: data.photoUrl,
         followers: data.profileId.followerNumber,
@@ -123,7 +121,11 @@ export const updateArtistsApi = createAsyncThunk<any, any>(
   "/updateArtist",
   async (payload, { rejectWithValue, fulfillWithValue, dispatch }) => {
     try {
-      const { data } = await ArtistsService.updateArtist(payload);
+      console.log(payload, " is the payload");
+      const { data } = await ArtistsService.updateArtist(
+        payload.id,
+        payload.formData
+      );
       return fulfillWithValue(data);
     } catch (err: any) {
       return rejectWithValue(err.response.data);
@@ -135,7 +137,7 @@ export const deleteArtistsApi = createAsyncThunk<any, any>(
   "/deleteArtist",
   async (payload, { rejectWithValue, fulfillWithValue, dispatch }) => {
     try {
-      const { data } = await ArtistsService.updateArtist(payload);
+      const { data } = await ArtistsService.deleteArtist(payload);
       dispatch(removeArtist(payload));
     } catch (err: any) {
       return rejectWithValue(err.response.data);
@@ -237,7 +239,16 @@ export const artistsSlice = createSlice({
           state.artists &&
           state.artists.map((artist: Artist) => {
             if (artist.id === payload.id) {
-              return payload;
+              return {
+                ...payload,
+                fullName: payload.profileId.fullName,
+                avatar: payload.photoUrl,
+                followers: payload.profileId.followerNumber,
+                listenedHours: payload.profileId.listenedHour,
+                albumsCount: 0,
+                songsCount: 0,
+                createdAt: "2020-01-01",
+              };
             }
             return artist;
           });

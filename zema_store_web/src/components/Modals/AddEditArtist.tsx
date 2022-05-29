@@ -127,7 +127,7 @@ const AddEditArtistModal = (props: Props) => {
             onSubmit={async (values) => {
               try {
                 if (props.isEditing) {
-                  console.log(props.artistData, "")
+                  console.log(props.artistData, "arthis data")
                   let updatedData: any = {};
                   updatedData.id = props.artistData?.id;
                   updatedData.phone = values.phone;
