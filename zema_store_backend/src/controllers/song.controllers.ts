@@ -1,4 +1,3 @@
-import { count } from "console";
 import { Request, Response } from "express";
 import { isNil } from "lodash";
 
@@ -106,7 +105,9 @@ const getSongsByAlbum = async (req: Request, res: Response) => {
 
     const albumId = req.params.albumId;
     const { page, sort } = Utils.instance.getPaginationData(req);
-    const count = await Song.count({});
+    const count = await Song.count({
+      albumId
+    });
     const totalPages = Utils.instance.getNumberOfPages(count, fetchItemCount);
 
     const songs = await Song.find({
@@ -145,7 +146,9 @@ const getSongsByArtist = async (req: Request, res: Response) => {
 
     const artistId = req.params.artistId;
     const { page, sort } = Utils.instance.getPaginationData(req);
-    const count = await Song.count({});
+    const count = await Song.count({
+      artistId
+    });
     const totalPages = Utils.instance.getNumberOfPages(count, fetchItemCount);
 
     const songs = await Song.find({
