@@ -1,63 +1,65 @@
+import 'dart:convert';
+
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:zema_store_mobile/models/album.dart';
 import 'package:zema_store_mobile/models/artist.dart';
 
+import 'models.dart';
+
 class Song {
   Song({
-    //required this.resource_id,
-    required this.url,
+    required this.id,
+    required this.song,
     required this.title,
     required this.genre,
-    required this.isSingle,
+    //required this.isSingle,
     required this.album_id,
-    required this.tags,
     required this.artist_id,
     required this.listenersCount,
     required this.length,
-    required this.releasedDate,
+    required this.releaseDate,
 });
-  //final String resource_id;
-  final String url;
+  final String id;
+  final String song;
   final String title;
-  final Genre genre;
-  final bool isSingle;
+  final String genre;
+  //final bool isSingle;
   final String  album_id;
-  final List<String> tags;
+
   final String artist_id;
   final int listenersCount;
-  final Duration length;
-  final DateTime releasedDate;
+  final String length;
+  final String releaseDate;
 
-  factory Song.fromJson(Map<String,dynamic> json){
-    return Song(
-        //resource_id: json['resource_id'],
-        url: json['url'],
-        title: json['title'],
-        genre: json['genre'],
-        isSingle: json['isSingle'],
-        album_id: json['album_id'],
-        tags: json['tags'],
-        artist_id: json['artist_id'],
-        listenersCount: json['listenersCount'],
-        length: json['length'],
-        releasedDate:json['releasedDate']
-    );
+  factory Song.fromJson(String source){
+   return Song.fromMap(json.decode(source));
   }
+  Map<String, dynamic> toMap() {
+    return {
+       '_id':id,
+      'song':song,
+      'title': title,
+      'genre': genre,
+      'albumId':album_id,
+      'artistId': artist_id,
+      'listenersCount': listenersCount,
+      'length': length,
+      'releaseDate': releaseDate,
+    };
+  }
+  String toJson() => json.encode(toMap());
   factory Song.fromMap(Map<String,dynamic> map){
     return Song(
-      //resource_id: map['resource_id'],
-        url: map['url'],
+       id:  map['_id'],
+        song: map['song'],
         title: map['title'],
         genre: map['genre'],
-        isSingle: map['isSingle'],
-        album_id: map['album_id'],
-        tags: map['tags'],
-        artist_id: map['artist_id'],
+        //isSingle: map['isSingle'],
+        album_id: map['albumId'],
+        artist_id: map['artistId'],
         listenersCount: map['listenersCount'],
         length: map['length'],
-        releasedDate: map['releasedDate']);
+        releaseDate: map['releaseDate']);
   }
 
-}
-enum Genre {
-  rock,country, punk, hiphop, dance_music,pop
 }

@@ -13,8 +13,7 @@ class User {
     this.isActive = false,
     this.subscriptionId,
     this.onModel,
-    this.createdAt,
-    this.updatedAt,
+
   });
   final String? profile_id;
   final String email;
@@ -26,8 +25,6 @@ class User {
   final bool?  isActive;
   final String? subscriptionId;
   final String? onModel;
-  final DateTime? createdAt;
-  late final DateTime? updatedAt;
 
 
 
@@ -43,8 +40,7 @@ class User {
       isActive: json['isActive'],
       subscriptionId: json['subscriptionId'],
       onModel: json['onModel'],
-      createdAt: json['createdAt'],
-      updatedAt: json['updatedAt']
+
 
     );
   }
