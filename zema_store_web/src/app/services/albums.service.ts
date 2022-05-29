@@ -8,7 +8,9 @@ const getAlbums = async () => {
 
 const addAlbum = async (formData: any) => {
   try {
-    const { data } = await Request.post(`${baseUrl}/albums`, formData);
+    const { data } = await Request.post(`${baseUrl}/albums`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
     return { data };
   } catch (error) {
     return { data: null, error };

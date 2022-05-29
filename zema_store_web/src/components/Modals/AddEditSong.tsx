@@ -1,11 +1,15 @@
 import { FormEvent, useRef } from "react";
+import { Song } from "../../helpers/types";
 
 type Props = {
+  isEditing: boolean;
+  songData?: Song | null;
   onClose: () => void;
   onSubmit: () => void;
 };
 
-const AddSongModal = (props: Props) => {
+
+const AddEditSongModal = (props: Props) => {
   const { onClose, onSubmit } = props;
   let modal = document.getElementById("modal");
   const fileUploadFileRef = useRef<HTMLInputElement>(null);
@@ -164,4 +168,4 @@ const AddSongModal = (props: Props) => {
   );
 };
 
-export default AddSongModal;
+export default AddEditSongModal;

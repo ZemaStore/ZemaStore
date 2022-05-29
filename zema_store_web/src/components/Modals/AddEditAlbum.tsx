@@ -6,7 +6,7 @@ import {
   albumsSelector,
   updateAlbum,
 } from "../../app/store/features/albums/albumsSlice";
-import { Album } from "../../helpers/types";
+import { Album, Artist } from "../../helpers/types";
 import notify from "../../utils/notify";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
@@ -27,23 +27,6 @@ const AddEditAlbumModal = (props: Props) => {
   const dispatch = useAppDispatch();
   const [selectedArtist, setSelectedArtist] = useState(null);
   const { isLoading } = useAppSelector(albumsSelector);
-
-  const AddEditAlbumSchema = Yup.object().shape({
-    title: Yup.string()
-      .min(2, "Too Short!")
-      .max(50, "Too Long!")
-      .required("Please Enter Title")
-      .required("Required!"),
-    artistId: Yup.string().required("Required!"),
-    email: Yup.string().email("Invalid Email").required("Required!"),
-
-    password: Yup.string()
-      .required("Please Enter the password")
-      .matches(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
-        "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character"
-      ),
-  });
 
   function modalHandler(val = true) {
     // fadeOut(modal);
@@ -75,11 +58,13 @@ const AddEditAlbumModal = (props: Props) => {
     console.log(e.target.files[0], " is the file");
   };
 
-  const DisplayingErrorMessagesSchema = Yup.object().shape({
+  const AddEditAlbumSchema = Yup.object().shape({
     title: Yup.string()
       .min(2, "Too Short!")
       .max(50, "Too Long!")
       .required("Please Enter fullname"),
+    artistId: Yup.string().required("Please Select The Artist"),
+    releaseDate: Yup.string().required("Please Enter The Release Date"),
   });
 
   return (
@@ -96,9 +81,12 @@ const AddEditAlbumModal = (props: Props) => {
             initialValues={{
               title: props.isEditing ? props.albumData?.title : "",
               artistId: props.isEditing ? props.albumData?.artist : "",
+              photo: props.isEditing ? props.albumData?.cover : null,
+              releaseDate: props.isEditing ? props.albumData?.releaseDate : "",
             }}
             validationSchema={AddEditAlbumSchema}
             onSubmit={async (values) => {
+              console.log(values, "are values");
               try {
                 if (props.isEditing) {
                   const updatedData = {
@@ -113,7 +101,6 @@ const AddEditAlbumModal = (props: Props) => {
                   await dispatch(
                     addAlbumsApi({
                       ...values,
-                      artistId: (selectedArtist as any).id,
                     })
                   );
                   props.onClose();
@@ -124,7 +111,7 @@ const AddEditAlbumModal = (props: Props) => {
               }
             }}
           >
-            {({ errors, touched, isValidating }) => (
+            {({ errors, touched, isValidating, setFieldValue }) => (
               <Form>
                 <div className="relative py-8 px-5 md:px-10 bg-white shadow-md rounded border border-gray-400">
                   <h1 className="text-gray-800 font-lg font-bold tracking-normal leading-tight mb-4">
@@ -137,37 +124,58 @@ const AddEditAlbumModal = (props: Props) => {
                   >
                     Album Title
                   </label>
-                  <input
+                  <Field
                     id="name"
-                    className="mb-5 mt-2 text-gray-600 focus:outline-none focus:border focus:border-indigo-700 font-normal w-full h-10 flex items-center pl-3 text-sm border-gray-300 rounded border"
+                    name="title"
+                    className={clsx(
+                      "mb-5 mt-2 text-gray-600 focus:outline-none focus:border focus:border-indigo-700 font-normal w-full h-10 flex items-center pl-3 text-sm border-gray-300 rounded border",
+                      touched.title && errors.title ? "border-red-500" : ""
+                    )}
                     placeholder="Album Title"
                   />
+                   {touched.title && errors.title && (
+                      <div className="text-red-600">{errors.title}</div>
+                    )}
 
                   <AutoCompleteSearch
                     label="Artist"
                     selectedItem={selectedArtist}
-                    setSelectedItem={setSelectedArtist}
+                    setSelectedItem={(artist: any) => {
+                      setSelectedArtist(artist);
+                      setFieldValue("artistId", artist.id);
+                    }}
                     inputProps={{
                       id: "artistId",
                       name: "artistId",
                       placeholder: "Search artist",
-                      className:
+                      className: `${clsx(
                         "w-full py-2 bg-transparent border-none rounded-md outline-none text-ivory-800 font-cal focus:outline-none focus:ring-0 focus:border-transparent",
+                        touched.artistId && errors.artistId
+                          ? "border-red-500"
+                          : ""
+                      )}`,
                     }}
                     url={`${process.env.REACT_APP_BACKEND_URL}/artists?search=`}
                   />
+                   {touched.artistId && errors.artistId && (
+                      <div className="text-red-600">{errors.artistId}</div>
+                    )}
 
                   <label
-                    htmlFor="name"
+                    htmlFor="releaseDate"
                     className="text-gray-800 text-sm font-bold leading-tight tracking-normal"
                   >
                     Release Date
                   </label>
-                  <input
-                    id="name"
+                  <Field
+                    id="releaseDate"
+                    name="releaseDate"
                     className="mb-5 mt-2 text-gray-600 focus:outline-none focus:border focus:border-indigo-700 font-normal w-full h-10 flex items-center pl-3 text-sm border-gray-300 rounded border"
                     placeholder="Year"
                   />
+                   {touched.releaseDate && errors.releaseDate && (
+                      <div className="text-red-600">{errors.releaseDate}</div>
+                    )}
                   <div className="overflow-hidden relative mt-4 mb-4">
                     <label className="block">
                       <span className="sr-only">Choose profile photo</span>
@@ -175,8 +183,9 @@ const AddEditAlbumModal = (props: Props) => {
                         type="file"
                         name="cover"
                         accept="image/*"
-                        onInput={(e) => {
-                          handleFileInput(e);
+                        onChange={(event: any) => {
+                          setFieldValue("photo", event.currentTarget.files[0]);
+
                         }}
                         className="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold  file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100 hover:file:text-violet-800"
                       />

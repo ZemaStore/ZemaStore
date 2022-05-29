@@ -11,7 +11,7 @@ type Props = {
   inputProps: {};
   url: string;
   selectedItem?: any;
-  setSelectedItem: React.Dispatch<React.SetStateAction<any>>;
+  setSelectedItem: (val: any) => void;
 };
 
 function AutoCompleteSearch(props: Props) {
@@ -21,7 +21,6 @@ function AutoCompleteSearch(props: Props) {
   const fetchData = useCallback(async () => {
     try {
       const data = await ArtistsService.searchArtistByName(query);
-      console.log(data, data.albumList, " artitsts");
       if (data) {
         // const result = data.filter(
         //   (place: any) =>
@@ -43,7 +42,7 @@ function AutoCompleteSearch(props: Props) {
       setFilteredData([]);
       setQuery("");
     }
-  }, [fetchData]);
+  }, [fetchData, query]);
 
   const handleSelect = (value: any) => {
     props.setSelectedItem(value);

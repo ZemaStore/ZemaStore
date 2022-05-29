@@ -35,37 +35,9 @@ export const getSongsApi = createAsyncThunk<any, any>(
   "/songs",
   async (payload, { rejectWithValue, fulfillWithValue, dispatch }) => {
     try {
-      // const { data } = await SongsService.getSongs();
-      return fulfillWithValue([
-        {
-          id: "23323455232",
-          title: "Single",
-          cover: "https://cdn.tuk.dev/assets/templates/olympus/projects(3).png",
-          artist: "sfasasfda",
-          releaseDate: "2020-02-01",
-          songs: 21,
-          createdAt: "2020-01-01",
-        },
-
-        {
-          id: "1232322323234",
-          title: "Thomas Doe",
-          cover: "https://cdn.tuk.dev/assets/templates/olympus/projects(1).png",
-          artist: "sfasasfda",
-          releaseDate: "2020-01-01",
-          songs: 21,
-          createdAt: "2020-01-02",
-        },
-        {
-          id: "1wef3232423423423",
-          title: "Thomas Doe",
-          cover: "https://cdn.tuk.dev/assets/templates/olympus/projects(2).png",
-          artist: "asdfasdfwerwe",
-          releaseDate: "2020-05-01",
-          songs: 21,
-          createdAt: "2020-01-01",
-        },
-      ]);
+      console.log("payload is ", payload)
+      const { data } = await SongsService.getSongs(payload);
+      return fulfillWithValue(data);
     } catch (err: any) {
       return rejectWithValue(err.response.data);
     }
@@ -76,7 +48,6 @@ export const songsSlice = createSlice({
   name: "songs",
   initialState,
   reducers: {
-    
     addSong: (state, { payload }) => {
       state.songs.push(payload);
       state.isLoading = false;
