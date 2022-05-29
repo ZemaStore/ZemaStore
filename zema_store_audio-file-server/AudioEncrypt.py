@@ -8,7 +8,9 @@ from Crypto.Cipher import AES
 
 class AudioEncrypt:
     def pad(self, s):
-        return s + b"\0" * (AES.block_size - len(s) % AES.block_size)
+        pd =  b"\0" * (AES.block_size - len(s) % AES.block_size)
+        print(pd, "is padding")
+        return s + pd
 
     def __init__(self, file_path, encrypted_file_path, old_aes_key=None, old_aes_iv=None) -> None:
         self.file_path = file_path
@@ -17,7 +19,7 @@ class AudioEncrypt:
         AES_KEY = old_aes_key if old_aes_key is not None else ''.join(random.choice(
             string.ascii_uppercase + string.ascii_lowercase + string.digits) for x in range(32)).encode("utf-8")
 
-        AES_IV = old_aes_iv if old_aes_iv is not None else ''.join(random.choice(string.ascii_uppercase +  string.ascii_letters + string.digits) for x in range(16)).encode("utf-8")
+        AES_IV = old_aes_iv if old_aes_iv is not None else ''.join(random.choice(string.ascii_uppercase + string.ascii_letters + string.digits) for x in range(16)).encode("utf-8")
         self.aes_key = AES_KEY
         self.aes_iv = AES_IV
 
@@ -26,8 +28,8 @@ class AudioEncrypt:
             contents = fd.read()
             
         raw = self.pad(contents)
-        iv = Random.new().read(AES.block_size)
-        encryptor = AES.new(self.aes_key, AES.MODE_CBC, iv)
+        # print(raw, " is raw")
+        encryptor = AES.new(self.aes_key, AES.MODE_CBC, self.aes_iv)
         encrypted_audio = encryptor.encrypt(raw)
 
         with open(self.encrypted_file_path, 'wb') as fd:
