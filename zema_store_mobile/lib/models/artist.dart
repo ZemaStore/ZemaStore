@@ -6,21 +6,21 @@ class Artist{
   final String fullName;
   final String photoUrl;
   final int  followerNumber;
-  final double listenHour;
-
+  final double listenedHour;
   Artist({
     required this.fullName,
     required this.photoUrl,
     required this.followerNumber,
-    required this.listenHour
+    required this.listenedHour,
 });
 
   factory Artist.fromJson(Map<String,dynamic> json){
     return Artist(
-      fullName: json['fullName'],
+      fullName: json['profileId']['fullName'],
       photoUrl: json['photoUrl'],
       followerNumber: json['followerNumber'],
-      listenHour: json['listenHour']
+      listenedHour: json['listenedHour']
     );
   }
+
 }

@@ -7,33 +7,7 @@ class UserDataProvider {
   final _baseUrl = 'https://zema-store.herokuapp.com/api';
    late http.Client httpClient;
 
-  Future<User> createUser(User user) async{
-    final response  = await http.post('$_baseUrl/user',
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-        body: jsonEncode(<String,dynamic>{
-        'profile_id':user.profile_id,
-          'email':user.email,
-          'password':user.password,
-          'photoUrl':user.photoUrl,
-          'roleId':user.roleId,
-          'otp' : user.otp,
-          'phone':user.phone,
-          'isActive':user.isActive,
-          'subscriptionId':user.subscriptionId,
-          'onModel':user.onModel,
-          'createdAt':user.createdAt,
-          'updatedAt':user.updatedAt
-        })
-    );
-    if(response.statusCode == 200){
-      final user = User.fromJson(jsonDecode(response.body));
-      return user;
-    }else{
-      throw Exception('failed to create user');
-    }
-  }
+
   Future<List<User>> getUsers() async {
       final response = await http.get("$_baseUrl/users");
       if (response.statusCode == 200) {
@@ -47,44 +21,16 @@ class UserDataProvider {
         throw Exception('Failed to load users');
       }
   }
-  Future<void> updateUser(User user) async {
-    final http.Response response = await httpClient.patch(
-      '$_baseUrl/${user.profile_id}',
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, dynamic>{
-        'profile_id': user.profile_id,
-        'email': user.email,
-        'password': user.password,
-        'photoUrl':user.photoUrl,
-        'roleId':user.roleId,
-        'otp' : user.otp,
-        'phone':user.phone,
-        'isActive':user.isActive,
-        'subscriptionId':user.subscriptionId,
-        'onModel':user.onModel,
-        'createdAt':user.createdAt,
-        'updatedAt':user.updatedAt
-      }),
-    );
-
-    if (response.statusCode != 204) {
-      throw Exception('Failed to update user');
+  Future<User> getUser(String profileId) async {
+    final response = await http.get("$_baseUrl/users/$profileId");
+    if (response.statusCode == 200) {
+      final user = jsonDecode(response.body) ;
+      User result = User.fromJson(user);
+      return result;
+    } else {
+      throw Exception('Failed to load users');
     }
   }
 
-  Future<void> deleteUser(String id) async {
-    final http.Response response = await http.delete(
-      '$_baseUrl/$id',
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8'
-      },
-    );
-
-    if (response.statusCode != 201) {
-      throw Exception('Failed to delete user');
-    }
-  }
 
 }

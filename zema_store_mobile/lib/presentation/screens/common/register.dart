@@ -5,9 +5,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:zema_store_mobile/bloc/authentication/register/register.dart';
 import 'package:zema_store_mobile/constants/color.dart';
+import 'package:zema_store_mobile/presentation/screens/common/login_page.dart';
 import 'package:zema_store_mobile/presentation/widgets/dialogue.dart';
 
-import 'login.dart';
 
 class SignUpPage extends StatefulWidget {
   static const String routeName = "/register";
@@ -25,14 +25,17 @@ class _SignUpPage extends State<SignUpPage> {
   String _username = "";
   String _password = "";
   String _role_id = "";
+  String _phone  = "";
+
   bool _isLoading = false;
   final _usernameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _phoneController = TextEditingController();
   final _formKey = new GlobalKey<FormState>();
 
   bool _isArtist = false;
-  late AccountType selectedAccount;
+  AccountType? selectedAccount;
   List<AccountType> accountTypes = [
     const AccountType(
         accountIcon: Icon(Icons.person), accountName: 'Job Seeker'),
@@ -51,65 +54,68 @@ class _SignUpPage extends State<SignUpPage> {
       ));
     }
 
-    return BlocConsumer<RegisterBloc, RegisterState>(
-        listener: (context, state) {
-          if (state is RegisterFailure) {
-            _showError("There is an error on registering");
-          }
-          if (state is RegisterSuccess) {
-            Navigator.pushNamedAndRemoveUntil(context, "/", (route) => false);
-          }
-        }, builder: (context, state) {
-      return Scaffold(
-        resizeToAvoidBottomInset: false,
-        body: SingleChildScrollView(
-          child: Container(
-            height: height,
-            decoration: BoxDecoration(),
-            child: Column(children: [
-              //logo(isKeyboardShowing),
-              Align(
-                alignment: isKeyboardShowing
-                    ? Alignment.center
-                    : Alignment.bottomCenter,
-                child: Form(
-                    key: _formKey,
-                    child: SingleChildScrollView(
-                      child: Container(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 20.0, vertical: 20.0),
-                        height: height * 0.6,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            _buildUserNameTextField(),
-                            SizedBox(
-                              height: 20,
-                            ),
-                            _buildEmailTextField(),
-                            SizedBox(
-                              height: 20,
-                            ),
-                            _buildPasswordTextField(),
-                            SizedBox(
-                              height: 20,
-                            ),
-                            _buildChooseAccountType(),
-                            SizedBox(
-                              height: 20.0,
-                            ),
-                            _submitButton(),
-                            _createAccountLabel(),
-                          ],
+    return Scaffold(
+      body: BlocConsumer<RegisterBloc, RegisterState>(
+          listener: (context, state) {
+            if (state is RegisterFailure) {
+              _showError("There is an error on registering");
+            }
+            if (state is RegisterSuccess) {
+              Navigator.push(context, new MaterialPageRoute(builder: (context) => LoginPage1()));
+            }
+          }, builder: (context, state) {
+        return  SingleChildScrollView(
+            child: Container(
+              height: height,
+              decoration: BoxDecoration(),
+              child: Column(children: [
+                //logo(isKeyboardShowing),
+                Align(
+                  alignment: Alignment.topCenter,
+                  child: logo(isKeyboardShowing),
+                ),
+                Align(
+                  alignment: isKeyboardShowing
+                      ? Alignment.center
+                      : Alignment.bottomCenter,
+                  child: Form(
+                      key: _formKey,
+                      child: SingleChildScrollView(
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 20.0, vertical: 20.0),
+                          height: height * 0.6,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              _buildUserNameTextField(),
+                              SizedBox(
+                                height: 20,
+                              ),
+                              _buildEmailTextField(),
+                              SizedBox(
+                                height: 20,
+                              ),
+                              _buildPasswordTextField(),
+                              SizedBox(
+                                height: 20,
+                              ),
+                              _buildPhoneField(),
+                              SizedBox(
+                                height: 20.0,
+                              ),
+                              _submitButton(),
+                              _createAccountLabel(),
+                            ],
+                          ),
                         ),
-                      ),
-                    )),
-              ),
-            ]),
-          ),
-        ),
-      );
-    });
+                      )),
+                ),
+              ]),
+            ),
+          );
+      }),
+    );
   }
   Widget _buildUserNameTextField() {
     return TextFormField(
@@ -120,7 +126,7 @@ class _SignUpPage extends State<SignUpPage> {
       onChanged: (value) => _username = value,
       keyboardType: TextInputType.text,
       decoration: InputDecoration(
-        labelText: 'Username',
+        labelText: 'Full Name',
         focusColor: Color(0xff4064f3),
         labelStyle: TextStyle(
           color: Color(0xff4064f3),
@@ -137,7 +143,7 @@ class _SignUpPage extends State<SignUpPage> {
     return InkWell(
       onTap: () {
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => LoginPage()));
+            context, MaterialPageRoute(builder: (context) => LoginPage1()));
       },
       child: Container(
         margin: EdgeInsets.symmetric(vertical: 10),
@@ -186,6 +192,27 @@ class _SignUpPage extends State<SignUpPage> {
       ),
     );
   }
+  Widget _buildPhoneField() {
+    return TextFormField(
+      controller: _phoneController,
+      onChanged: (value) => _phone = value,
+      validator: (value) => value!.length < 10
+          ? "Sorry, we do not recognize this phone address"
+          : null,
+      keyboardType: TextInputType.emailAddress,
+      decoration: InputDecoration(
+        labelText: 'Phone Number',
+        floatingLabelBehavior: FloatingLabelBehavior.auto,
+        // alignLabelWithHint: true,
+        prefixIcon: Icon(Icons.phone),
+        // hintText: 'Enter your email',
+        border: InputBorder.none,
+        filled: true,
+        fillColor: Color(0xfff3f3f4),
+      ),
+    );
+  }
+
 
   Widget _buildPasswordTextField() {
     return TextFormField(
@@ -218,42 +245,43 @@ class _SignUpPage extends State<SignUpPage> {
     );
   }
 
-  Widget _buildChooseAccountType() {
-    return DropdownButton<AccountType>(
-      hint: Text('Select Account Type'),
-      value: selectedAccount,
-      onChanged: (AccountType? value) {
-        if (value!.accountName == 'Artist') {
-          _isArtist = true;
-          _role_id = "603ba9a11bd36aa35679ec4c";
 
-        } else {
-          _isArtist = false;
-          _role_id = "603ba9cf1bd36aa35679ec4d";
-
-          //603ba9cf1bd36aa35679ec4d
-        }
-        setState(() {
-          selectedAccount = value;
-        });
-      },
-      items: accountTypes.map((AccountType accountType) {
-        return DropdownMenuItem(
-          value: accountType,
-          child: Row(
-            children: <Widget>[
-              accountType.accountIcon,
+  Widget logo(isKeyboardShowing) {
+    return ClipPath(
+      clipper: BezierClipper(),
+      child: Container(
+          decoration: BoxDecoration(
+              color: Color(0xFF1f40b7),
+              gradient: LinearGradient(
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                  colors: [kBrown100, kBrown900])),
+          width: double.infinity,
+          height: isKeyboardShowing
+              ? MediaQuery.of(context).size.height * 0.3
+              : MediaQuery.of(context).size.height * 0.4,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
               SizedBox(
-                width: 20.0,
+                height: isKeyboardShowing ? 90 : 100,
+                width: 500,
+
               ),
-              Text(accountType.accountName)
+              SizedBox(
+                height: isKeyboardShowing ? 10 : 30.0,
+              ),
+              Text(
+                'Sign up',
+                style: TextStyle(
+                    fontSize: 30.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white),
+              ),
             ],
-          ),
-        );
-      }).toList(),
+          )),
     );
   }
-
   Widget _submitButton() {
     return InkWell(
       onTap: () {
@@ -263,9 +291,8 @@ class _SignUpPage extends State<SignUpPage> {
           BlocProvider.of<RegisterBloc>(context).add(RegisterUser(
               email: _email,
               password: _password,
-              role_id: _role_id,
-            status: '',
-            profile_id:'' ,
+              phone: _phone,
+              fullName: _username,
           ));
         }
       },

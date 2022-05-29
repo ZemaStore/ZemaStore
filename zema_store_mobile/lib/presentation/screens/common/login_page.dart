@@ -1,12 +1,20 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:zema_store_mobile/bloc/authentication/authentication.dart';
 import 'package:zema_store_mobile/bloc/authentication/login/login.dart';
 import 'package:zema_store_mobile/bloc/authentication/login/login_bloc.dart';
+import 'package:zema_store_mobile/bloc/song/song.dart';
 import 'package:zema_store_mobile/constants/color.dart';
+import 'package:zema_store_mobile/models/models.dart';
+import 'package:zema_store_mobile/presentation/screens/albums/albumPage.dart';
+import 'package:zema_store_mobile/presentation/screens/artists/ArtistPage.dart';
+import 'package:zema_store_mobile/presentation/screens/common/HomePage.dart';
 import 'package:zema_store_mobile/presentation/screens/common/register.dart';
+import 'package:zema_store_mobile/presentation/screens/songs/song_page.dart';
+
 
 
 
@@ -36,6 +44,7 @@ class _LoginPage extends State<LoginPage1> {
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     bool isKeyboardShowing = MediaQuery.of(context).viewInsets.vertical > 0;
+    Size size = MediaQuery.of(context).size;
 
     void _showError(String error, context) {
       Scaffold.of(context).showSnackBar(SnackBar(
@@ -52,8 +61,11 @@ class _LoginPage extends State<LoginPage1> {
                 _showError("something went wrong", context);
               }
               if (state is LoginSuccess) {
+                //BlocProvider.of<SongBloc>(context)..add(SongLoad());
+                Navigator.push(context, new MaterialPageRoute(builder: (context) => AlbumPage()));
 
               }
+
             }, builder: (context, state) {
           return Stack(children: [
             Container(
@@ -98,7 +110,6 @@ class _LoginPage extends State<LoginPage1> {
           ]);
         }));
   }
-
   Widget logo(isKeyboardShowing) {
     return ClipPath(
       clipper: BezierClipper(),
@@ -139,6 +150,7 @@ class _LoginPage extends State<LoginPage1> {
   Widget _createAccountLabel() {
     return InkWell(
       onTap: () {
+
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => SignUpPage()));
       },
@@ -263,12 +275,11 @@ class _LoginPage extends State<LoginPage1> {
       onTap: () {
         final form = _formKey.currentState;
         if (form!.validate()) {
-          print("validated $_email $_password");
           form.save();
-          //Navigator.push(context, new MaterialPageRoute(builder: (context) =>));
-         /* BlocProvider.of<LoginBloc>(context).add(LoginInWithEmailButtonPressed(
-              email: _email, password: _password));*/
+          BlocProvider.of<LoginBloc>(context).add(LoginInWithEmailButtonPressed(
+              email: _email, password: _password));
         }
+
       },
       child: Container(
         width: MediaQuery.of(context).size.width,

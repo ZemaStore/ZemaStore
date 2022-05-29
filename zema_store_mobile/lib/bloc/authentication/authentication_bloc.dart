@@ -16,6 +16,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent,AuthenticationState>{
     try {
       await Future.delayed(Duration(milliseconds: 500)); // a simulated delay
       final currentUser = await _authenticationRepository.getCurrentUser();
+      print('##########################################################################################################');
       if (currentUser != null) {
         yield AuthenticationAuthenticated(user: currentUser);
       } else {

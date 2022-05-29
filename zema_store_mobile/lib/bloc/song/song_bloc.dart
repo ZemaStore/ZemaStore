@@ -18,28 +18,23 @@ class SongBloc extends Bloc<SongEvent, SongState> {
       yield SongLoading();
       try {
         List<Song> songs = [];
-        if (event.user.roleId == "") {
-          songs  = await songRepository.getSongs();
-        } else {
-          songs = await songRepository.getSongsByArtistId(event.user.profile_id!);
-        }
 
+        songs  = await songRepository.getSongs();
+        print("?????????????????????????????????????????????????????????????????????????????????");
+        print('songs here from bloc are $songs');
         yield SongLoadedSucess(songs: songs);
       } catch (_) {
         yield SongOperationFailure();
       }
     }
-    if (event is SongCreate) {
+ /*   if (event is SongCreate) {
       yield SongLoading();
       try {
         await songRepository.createSong(event.song);
 
         var songs;
-        if (event.user.roleId== "") {
-          songs = await songRepository.getSongs();
-        } else {
-          songs = await songRepository.getSongsByArtistId(event.user.profile_id!);
-        }
+
+        songs = await songRepository.getSongs();
 
         yield SongLoadedSucess(songs: songs);
       } catch (_) {
@@ -52,11 +47,8 @@ class SongBloc extends Bloc<SongEvent, SongState> {
       try {
         final job = await songRepository.updateSong(event.id, event.song);
         var songs;
-        if (event.user.roleId == "") {
-          songs = songRepository.getSongs();
-        } else {
-          songs  = await songRepository.getSongsByArtistId(event.user.profile_id!);
-        }
+        songs = songRepository.getSongs();
+
         yield SongLoadedSucess(songs: songs);
       } catch (_) {
         yield SongOperationFailure();
@@ -73,6 +65,6 @@ class SongBloc extends Bloc<SongEvent, SongState> {
         print("there is an error on try catch");
         yield SongOperationFailure();
       }
-    }
+    }*/
   }
 }

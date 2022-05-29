@@ -1,16 +1,15 @@
-
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:zema_store_mobile/bloc/authentication/login/login.dart';
-import 'package:zema_store_mobile/data_provider/authentication_data.dart';
-import 'package:zema_store_mobile/repository/authentication_repository.dart';
+import 'package:zema_store_mobile/data_provider/data_provider.dart';
+import 'package:zema_store_mobile/repository/repository.dart';
 
 import '../authentication.dart';
+import 'login.dart';
 
-class LoginBloc extends Bloc<LoginEvent,LoginState>{
+class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final AuthenticationBloc authenticationBloc;
   final AuthenticationRepository authenticationRepository;
 
-  LoginBloc({required this.authenticationBloc,required this.authenticationRepository})
+  LoginBloc({required this.authenticationBloc, required this.authenticationRepository})
       : super(LoginInitial());
 
   @override
@@ -25,8 +24,8 @@ class LoginBloc extends Bloc<LoginEvent,LoginState>{
     yield LoginLoading();
 
     try {
-      final user = await authenticationRepository.login(
-          email: event.email, password: event.password);
+      print('############### here  ###########################################################3333');
+      final user = await authenticationRepository.login(email: event.email, password: event.password);
       if (user != null) {
         authenticationBloc.add(UserLoggedIn(user: user));
         yield LoginSuccess();
@@ -37,7 +36,8 @@ class LoginBloc extends Bloc<LoginEvent,LoginState>{
     } on AuthenticationException catch (e) {
       yield LoginFailure(error: e.message);
     } catch (err) {
-      yield LoginFailure(error:'An unknown error occured');
+      yield LoginFailure(error: 'An unknown error occured');
     }
   }
+
 }
