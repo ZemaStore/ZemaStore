@@ -1,9 +1,7 @@
 import os
 from posixpath import dirname, realpath
-from flask import Flask, send_from_directory, abort, request, url_for
+from flask import Flask, send_from_directory, abort, request
 # from werkzeug.utils import secure_filename
-import requests
-import AudioWorks as aw
 import AudioEncrypt as AE
 import FileHandler as fh
 from flask_cors import cross_origin, CORS
@@ -45,7 +43,7 @@ def uploadFile():
 
             original_file_path = file_handler.getFilePath()
             encrypted_file_path = file_handler.getEncryptedFilePath()
-            if aes_key != None and aes_iv != None:
+            if aes_key is not None and aes_iv is not None:
                 aes_key = aes_key.encode("utf-8")
                 aes_iv = aes_iv.encode("utf-8")
                 audio_encrypt = AE.AudioEncrypt(
@@ -113,4 +111,5 @@ def get_audio(audio_id):
 
 
 if __name__ == "__main__":
-    app.run(port=5000, threaded=True, debug=True)
+    # app.run(host='0.0.0.0')
+    app.run(debug=True, use_reloader=True)

@@ -1,4 +1,4 @@
-#!/media/nathaniel/shared1/Development/audio_encryption/zema_store_audio-file-server/.venv/bin/python
+#!/media/nathaniel/shared1/Development/audio_encryption/zema_store_audio-file-server/.venv/bin/python3
 # -*- coding: utf-8 -*-
 import re
 import sys
