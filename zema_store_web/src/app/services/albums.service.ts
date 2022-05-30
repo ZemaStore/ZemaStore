@@ -1,17 +1,11 @@
 import { baseUrl } from ".";
 import Request from "../api/request";
 
-const getAlbums = async ({
-  name = "all",
-  id = null,
-}: {
-  name: string;
-  id: string | null;
-}) => {
+const getAlbums = async (payload: { name: string; id: string | null }) => {
   let url = `${baseUrl}/albums`;
-  switch (name) {
+  switch (payload.name) {
     case "artists": {
-      url = `${baseUrl}/albums/artist/${id}`;
+      url = `${baseUrl}/albums/artist/${payload.id}`;
       break;
     }
     default: {
@@ -19,6 +13,7 @@ const getAlbums = async ({
       break;
     }
   }
+  console.log(payload.name, payload.id, " is name and id");
   const { data } = await Request.get(url);
   return { data };
 };

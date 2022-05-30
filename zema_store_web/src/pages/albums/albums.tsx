@@ -22,7 +22,6 @@ const AlbumsPage = (props: Props) => {
   const [setArtistDetail, setSetArtistDetail] = useState(null);
   const { meta } = useAppSelector((state) => state.albums);
   const location = useLocation();
-  console.log(props, " propspppppppppppppppp");
   const onCloseModal = () => {
     setIsAddModalOpen(false);
     setIsEditModalOpen(false);
@@ -54,7 +53,7 @@ const AlbumsPage = (props: Props) => {
         id: pathId || null,
       };
     }
-    await dispatch(getAlbumsApi({ from }));
+    await dispatch(getAlbumsApi(from));
   }, [dispatch]);
 
   useEffect(() => {
