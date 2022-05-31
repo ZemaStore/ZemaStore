@@ -1,0 +1,112 @@
+{
+  "events": [
+    {
+      "id": "1",
+      "title": "Event 1",
+      "summary": "Event 1 summary",
+      "cover": "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png",
+      "venue": {
+        "lat": 37.7749295,
+        "lng": -122.4194155,
+        "country": "United States",
+        "city": "San Francisco",
+        "street": "1 Market St",
+        "zip": "94105"
+      },
+      "createdAt": "2018-01-01T00:00:00.000Z",
+      "startDate": "2018-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "2",
+      "title": "Event 2",
+      "summary": "Event 2 summary",
+      "cover": "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png",
+      "venue": {
+        "lat": 37.7749295,
+        "lng": -122.4194155,
+        "country": "United States",
+        "city": "San Francisco",
+        "street": "1 Market St",
+        "zip": "94105"
+      },
+      "createdAt": "2018-01-01T00:00:00.000Z",
+      "startDate": "2018-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "3",
+      "title": "Event 3",
+      "summary": "Event 3 summary",
+      "cover": "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png",
+      "venue": {
+        "lat": 37.7749295,
+        "lng": -122.4194155,
+        "country": "United States",
+        "city": "San Francisco",
+        "street": "1 Market St",
+        "zip": "94105"
+      },
+      "createdAt": "2018-01-01T00:00:00.000Z",
+      "startDate": "2018-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "4",
+      "title": "Event 4",
+      "summary": "Event 4 summary",
+      "cover": "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png",
+      "venue": {
+        "lat": 37.7749295,
+        "lng": -122.4194155,
+        "country": "United States",
+        "city": "San Francisco",
+        "street": "1 Market St",
+        "zip": "94105"
+      }
+    },
+    {
+      "id": "5",
+      "title": "Event 5",
+      "summary": "Event 5 summary",
+      "cover": "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png",
+      "venue": {
+        "lat": 37.7749295,
+        "lng": -122.4194155,
+        "country": "United States",
+        "city": "San Francisco",
+        "street": "1 Market St",
+        "zip": "94105"
+      }
+    },
+    {
+      "id": "6",
+      "title": "Event 6",
+      "summary": "Event 6 summary",
+      "cover": "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png",
+      "venue": {
+        "lat": 37.7749295,
+        "lng": -122.4194155,
+        "country": "United States",
+        "city": "San Francisco",
+        "street": "1 Market St",
+        "zip": "94105"
+      }
+    },
+    {
+      "id": "7",
+      "title": "Event 7",
+      "summary": "Event 7 summary",
+      "cover": "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png",
+      "venue": {
+        "lat": 37.7749295,
+        "lng": -122.4194155,
+        "country": "United States",
+        "city": "San Francisco",
+        "street": "1 Market St",
+        "zip": "94105"
+      }
+    }
+  ],
+  "total": 7,
+  "page": 1,
+  "pageSize": 10,
+  "pageCount": 1
+}

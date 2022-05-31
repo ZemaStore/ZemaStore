@@ -4,6 +4,7 @@ import { useAppSelector } from "../../app/hooks/redux_hooks";
 import { eventsSelector } from "../../app/store/features/events/eventsSlice";
 import Loader from "../../common/Widgets/Loader";
 import { Event } from "../../helpers/types";
+import formatter from "../../utils/formatter";
 
 type Props = {
   setSelectedEvent: React.Dispatch<React.SetStateAction<Event | null>>;
@@ -15,7 +16,7 @@ const EventsTable = (props: Props) => {
   const [selectedEventId, setSelectedEvent] = useState<string | null>(null);
 
   const { isLoading, searchEventsList } = useAppSelector(eventsSelector);
-
+  console.log(searchEventsList.length, "searchEventsList");
   const navigate = useNavigate();
 
   const handleClickMore = (id: string) => (e: any) => {
@@ -56,32 +57,20 @@ const EventsTable = (props: Props) => {
       ) : (
         <table className="w-full whitespace-nowrap">
           <thead>
-            {/* /**
- id: string;
-  title: string;
-  summary: string;
-  cover: string;
-  venue: {
-    country: string;
-    city: string;
-    street: string;
-    zip: string;
-  };
-  startDate: string; 
-  createdAt: string; */}
-
             <tr className="h-16 w-full text-sm leading-none text-gray-800">
               <th className="font-normal text-left pl-4">Title</th>
               <th className="font-normal text-left pl-12">Summary</th>
               <th className="font-normal text-left pl-12">Start Day</th>
+              <th className="font-normal text-left pl-12">Created Day</th>
               <th className="font-normal text-left pl-20">Address</th>
             </tr>
           </thead>
-          <tbody className="w-full">
+          <tbody data-test-id="events-list" className="w-full">
             {searchEventsList.length > 0 &&
               searchEventsList.map((event: Event) => {
                 return (
                   <tr
+                    data-test-id="event-item"
                     onClick={handleEventsDetails(event.id)}
                     key={event.id}
                     className="h-20 handleEventsDetails text-sm leading-none text-gray-800 bg-white hover:bg-gray-100 border-b border-t border-gray-100"
@@ -108,9 +97,9 @@ const EventsTable = (props: Props) => {
                       </div>
                     </td>
                     <td className="pl-12">
-                      <p className="font-medium">{event.venue.city}</p>
+                      <p className="font-medium">{event.startDate}</p>
                     </td>
-                    <td className="pl-20">
+                    <td className="pl-12">
                       <p className="font-medium">{event.createdAt}</p>
                     </td>
                     <td className="pl-20">

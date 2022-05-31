@@ -10,6 +10,7 @@ export type EventsState = {
   error: boolean;
   errorMessage: string;
   meta: {
+    total: number;
     totalPage: number;
     currentPage: number;
     limit: number;
@@ -24,6 +25,7 @@ const initialState: EventsState = {
   error: false,
   errorMessage: "",
   meta: {
+    total: 1,
     totalPage: 1,
     currentPage: 1,
     limit: 10,
@@ -37,7 +39,7 @@ export const getEventsApi = createAsyncThunk<any, any>(
   async (payload, { rejectWithValue, fulfillWithValue, dispatch }) => {
     try {
       const { data } = await EventsService.getEvents();
-     
+
       return fulfillWithValue(data);
     } catch (err: any) {
       return rejectWithValue(err.response.data);
@@ -55,9 +57,16 @@ export const eventsSlice = createSlice({
       state.errorMessage = "";
     },
     addEvent: (state, { payload }) => {
-      state.events.push(payload);
+      state.events.unshift(payload);
       state.isLoading = false;
       state.searchEventsList = state.events;
+    },
+    addAllEvent: (state, { payload }) => {
+      state.events = payload.events;
+      state.isLoading = false;
+      state.searchEventsList = state.events;
+      state.meta = payload.meta;
+      state.error = payload.error;
     },
     //
     updateEvent: (state, { payload }) => {
@@ -118,6 +127,7 @@ export const eventsSlice = createSlice({
 export const {
   clearMessage,
   addEvent,
+  addAllEvent,
   searchEvents,
   removeEvent,
   handlePaginate,

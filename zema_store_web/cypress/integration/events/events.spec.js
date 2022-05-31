@@ -1,53 +1,86 @@
+const serverUrl = Cypress.env("serverUrl");
 import reducer, {
-  addSubscription,
-  removeSubscription,
-  subscriptionsSlice,
-  subscriptionsSelector,
-  updateSubscription,
-} from "../../../src/app/store/features/subscriptions/subscriptionsSlice";
+  addAllEvent,
+  addEvent,
+  removeEvent,
+  eventsSelector,
+  eventsSlice,
+  updateEvent,
+} from "../../../src/app/store/features/events/eventsSlice";
+// import { store } from "../../../src/app/store";
 
-context("Subcription ", () => {
+context("Events ", () => {
   let store;
   before(() => {
     cy.visit("http://localhost:3000/signin");
-    cy.waitForReact();
     cy.login("bekele.petros@gmail.com", "Pass@word1");
-    cy.visit("http://localhost:3000/subscriptions").as("subscriptionsPage");
-    cy.waitFor("@subscriptionsPage");
+    cy.visit("http://localhost:3000/events").as("eventsPage");
+    cy.waitFor("@eventsPage");
     cy.waitForReact();
     cy.window()
       .then((win) => {
         store = win.store;
       })
       .its("store")
-      .then((store) => {
-        this.store = store;
+      .then((st) => {
+        store = st;
       });
-    cy.log("store redux ", store);
   });
   beforeEach(() => {
     // load subcription.json fixture file and store
-    // in the test context object
-    cy.fixture("subcriptions.json").as("subcriptions");
-    cy.get("@subcriptions").then((subcriptions) => {
-      store.its("subscriptions").then((subscriptions) => {
-        cy.log("subscriptions ", subscriptions);
-        console.log("subscriptions ", subscriptions);
-      });
-    });
   });
 
-  it("should add a subscription", () => {
-    const subscription = {
-      id: "1",
-      name: "test",
-      email: "",
+  it("should populate initial data", () => {
+    cy.wait(1000);
+    cy.fixture("events.json").then((data) => {
+      store.dispatch(
+        addAllEvent({
+          events: data.events,
+          searchEvents: data.events,
+          loading: false,
+          error: null,
+          meta: {
+            total: data.total,
+            totalPage: data.pageCount,
+            currentPage: data.page,
+            limit: data.pageSize,
+          },
+        })
+      );
+    });
+    cy.wait(5000);
+    cy.getByTestId("event-item").should("exist").should("have.length", 7);
+  });
+
+  it("should add a event", () => {
+    const event = {
+      id: "8",
+      title: "Event 8",
+      summary: "Event 8 summary",
+      cover:
+        "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png",
+      venue: {
+        lat: "37.7749295",
+        lng: "-122.4194155",
+        country: "United States",
+        city: "San Francisco",
+        street: "1 Market St",
+        zip: "94105",
+      },
     };
 
-    store.dispatch(addSubscription(subscription));
-    cy.get("@subcriptions").then((subcriptions) => {
-      expect(subcriptions.length).to.equal(1);
-      expect(subcriptions[0]).to.deep.equal(subscription);
+    store.dispatch(addEvent(event));
+
+    cy.wait(1000);
+
+    const getEvents = (win) => {
+      return win.store.getState().events.events;
+    };
+
+    cy.window().then(getEvents).as("events");
+    cy.get("@events").then((events) => {
+      expect(events.length).to.equal(8);
+      expect(events[0]).to.deep.equal(event);
     });
   });
 

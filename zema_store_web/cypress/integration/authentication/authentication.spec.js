@@ -6,7 +6,7 @@ context("Sign In Actions", () => {
 
   before(() => {
     cy.viewport(1600, 1000);
-    cy.clearLocalStorage();
+    // cy.clearLocalStorage();
     cy.visit("http://localhost:3000/signin");
     cy.waitForReact();
   });
