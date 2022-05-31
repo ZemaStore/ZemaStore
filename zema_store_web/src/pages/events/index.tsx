@@ -1,6 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
-import { useAppDispatch } from "../../app/hooks/redux_hooks";
-import { getEventsApi } from "../../app/store/features/events/eventsSlice";
+import { useAppDispatch, useAppSelector } from "../../app/hooks/redux_hooks";
+import {
+  eventsSelector,
+  getEventsApi,
+} from "../../app/store/features/events/eventsSlice";
 import BaseLayout from "../../common/Layout";
 import Pagination from "../../common/Paginations";
 import EventsTable from "../../components/EventsTable";
@@ -11,7 +14,7 @@ import { Event } from "../../helpers/types";
 function EventsPage() {
   const dispatch = useAppDispatch();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-
+  const { meta } = useAppSelector(eventsSelector);
   const fetchEvents = useCallback(async () => {
     await dispatch(getEventsApi({}));
   }, [dispatch]);
@@ -89,7 +92,11 @@ function EventsPage() {
           handleModalOpen={handleModalOpen}
         />
       </div>
-      <Pagination />
+      <Pagination
+        currentPage={meta.currentPage}
+        pageSize={meta.limit}
+        totalItems={meta.total}
+      />
     </BaseLayout>
   );
 }

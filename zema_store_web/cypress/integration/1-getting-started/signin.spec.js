@@ -5,7 +5,7 @@ context("Sign In Actions", () => {
 
   beforeAll(() => {
     cy.viewport(550, 750);
-    cy.clearLocalStorage();
+    // cy.clearLocalStorage();
   });
 
   beforeEach(() => {

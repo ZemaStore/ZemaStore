@@ -10,16 +10,51 @@
 //
 //
 // -- This is a parent command --
+
+// Cypress.Commands.add("loginByApi", (email, password) => {
+//   const log = Cypress.log({
+//     displayName: "Email LOGIN",
+//     message: [`🔐 Authenticating | ${email}`],
+//     autoEnd: false,
+//   });
+
+//   cy.request({
+//     method: "POST",
+//     url: `${Cypress.env("serverUrl")}/signin`,
+//     body: {
+//       email,
+//       password,
+//     },
+//   }).then(({ body }) => {
+//     const user = jwt.decode(body.id_token);
+
+//     const userItem = {
+//       token: body.access_token,
+//       user: {
+//         sub: user.sub,
+//         nickname: user.nickname,
+//         picture: user.name,
+//         email: user.email,
+//       },
+//     };
+
+//     window.localStorage.setItem("auth0Cypress", JSON.stringify(userItem));
+
+//     log.snapshot("after");
+//     log.end();
+//   });
+
+//   cy.visit("/");
+// });
+
 Cypress.Commands.add("login", (email, password) => {
-  cy.visit("http://localhost:3000/users");
+  cy.visit("http://localhost:3000/signin");
   cy.waitForReact();
 
-  cy.getReactById("Field", "email").type(email, { delay: 100 });
-  cy.getReactById("Field", "password").type(password, { delay: 100 });
+  cy.getReactById("Field", "email").type(email);
+  cy.getReactById("Field", "password").type(password);
   cy.getById("login-form").submit();
   cy.wait(5000);
-  cy.getLocalStorageItem("token").as("token");
-  cy.get("@token").should("exist");
 });
 
 Cypress.Commands.add("logout", (email, password) => {
@@ -44,6 +79,10 @@ Cypress.Commands.add("getReactById", (component, name) => {
 });
 
 Cypress.Commands.add("getById", { prevSubject: false }, (id) => {
+  return cy.get(`[data-test-id="${id}"]`);
+});
+
+Cypress.Commands.add("getByTestId", { prevSubject: false }, (id) => {
   return cy.get(`[data-test-id="${id}"]`);
 });
 

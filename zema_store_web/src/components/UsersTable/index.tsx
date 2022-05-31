@@ -7,7 +7,10 @@ import {
 import Loader from "../../common/Widgets/Loader";
 import { User } from "../../helpers/types";
 
-type Props = {};
+type Props = {
+  setSelectedUser: React.Dispatch<React.SetStateAction<User | null>>;
+  handleModalOpen: () => void;
+};
 
 const UsersTable = (props: Props) => {
   const [show, setShow] = useState<number | null>(0);
@@ -20,6 +23,14 @@ const UsersTable = (props: Props) => {
     } else {
       setSelectedUserId(id);
     }
+  };
+
+  const handleBlockUser = (selUser: User) => {
+    try {
+      props.setSelectedUser(selUser);
+      setSelectedUserId(null);
+      props.handleModalOpen();
+    } catch (error) {}
   };
 
   return (
@@ -136,7 +147,10 @@ const UsersTable = (props: Props) => {
                       </button>
                       {selectedUserId === user.id && (
                         <div className="dropdown-content bg-white shadow-lg shadow-blue-100 w-24 absolute z-50 right-0 mr-16">
-                          <div className="text-xs w-full hover:bg-indigo-700 py-4 px-4 cursor-pointer hover:text-white">
+                          <div
+                            onClick={() => handleBlockUser(user)}
+                            className="text-xs w-full hover:bg-indigo-700 py-4 px-4 cursor-pointer hover:text-white"
+                          >
                             <p className="text-red-500 font-bold">Block</p>
                           </div>
                           <div className="text-xs w-full hover:bg-indigo-700 py-4 px-4 cursor-pointer hover:text-white">
