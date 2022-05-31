@@ -1,0 +1,98 @@
+{
+  "subcriptions": [
+    {
+      "subscriptionType": "free",
+      "subscriptionId": "sub_00000000000000",
+      "summary": "Free subscription",
+      "status": "active",
+      "price": 29.99,
+      "currency": "usd",
+      "interval": "month"
+    },
+    {
+      "subscriptionType": "premium",
+      "subscriptionId": "sub_00000000000000",
+      "summary": "Premium subscription",
+      "status": "active",
+      "price": 59.99,
+      "currency": "usd",
+      "interval": "month"
+    },
+    {
+      "subscriptionType": "enterprise",
+      "subscriptionId": "sub_00000000000000",
+      "summary": "Enterprise subscription",
+      "status": "active",
+      "price": 99.99,
+      "currency": "usd",
+      "interval": "month"
+    },
+    {
+      "subscriptionType": "enterprise",
+      "subscriptionId": "sub_00000000000000",
+      "summary": "Enterprise subscription",
+      "status": "active",
+      "price": 199.99,
+      "currency": "usd",
+      "interval": "month"
+    },
+    {
+      "subscriptionType": "enterprise",
+      "subscriptionId": "sub_00000000000000",
+      "summary": "Enterprise subscription",
+      "status": "active",
+      "price": 299.99,
+      "currency": "usd",
+      "interval": "month"
+    },
+    {
+      "subscriptionType": "enterprise",
+      "subscriptionId": "sub_00000000000000",
+      "summary": "Enterprise subscription",
+      "status": "active",
+      "price": 399.99,
+      "currency": "usd",
+      "interval": "month"
+    },
+    {
+      "subscriptionType": "enterprise",
+      "subscriptionId": "sub_00000000000000",
+      "summary": "Enterprise subscription",
+      "status": "active",
+      "price": 499.99,
+      "currency": "usd",
+      "interval": "month"
+    },
+    {
+      "subscriptionType": "enterprise",
+      "subscriptionId": "sub_00000000000000",
+      "summary": "Enterprise subscription",
+      "status": "active",
+      "price": 599.99,
+      "currency": "usd",
+      "interval": "month"
+    },
+    {
+      "subscriptionType": "enterprise",
+      "subscriptionId": "sub_00000000000000",
+      "summary": "Enterprise subscription",
+      "status": "active",
+      "price": 699.99,
+      "currency": "usd",
+      "interval": "month"
+    },
+    {
+      "subscriptionType": "enterprise",
+      "subscriptionId": "sub_00000000000000",
+      "summary": "Enterprise subscription",
+      "status": "active",
+      "price": 799.99,
+      "currency": "usd",
+      "interval": "month"
+    }
+  ],
+  "total": 8,
+  "page": 1,
+  "pageSize": 10,
+  "pageCount": 1
+}

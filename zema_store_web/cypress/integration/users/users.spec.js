@@ -15,7 +15,7 @@ context("Should Sign In Actions", () => {
     cy.waitForReact();
   });
 
-  it("should list users list", () => {
+  it("should list all users list", () => {
     cy.get("[data-cy=user-list]").should("exist");
   });
 });

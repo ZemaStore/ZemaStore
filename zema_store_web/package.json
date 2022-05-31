@@ -71,6 +71,7 @@
     "@cypress/webpack-dev-server": "^1.8.4",
     "@types/crypto-js": "^4.1.1",
     "@types/googlemaps": "^3.43.3",
+    "@withshepherd/faker": "^5.5.5",
     "cypress": "^9.6.1"
   }
 }
