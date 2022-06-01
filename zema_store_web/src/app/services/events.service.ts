@@ -25,8 +25,51 @@ const getEvents = async () => {
   return { data };
 };
 
+const addEvent = async (formData: any) => {
+  try {
+    const { data } = await Request.post(`${baseUrl}/events`, formData);
+    // const data = {
+    //   id: "23243234234234",
+    //   fullName: "John Doe",
+    //   avatar: "https://cdn.tuk.dev/assets/templates/olympus/projects(3).png",
+    //   followers: 12,
+    //   listenedHours: 4239,
+    //   albumsCount: 21,
+    //   songsCount: 21,
+    //   createdAt: "2020-01-01",
+    // };
+    return { data };
+  } catch (error) {
+    return { data: null, error };
+  }
+};
+
+const updateEvent = async (id: string, formData: any) => {
+  try {
+    const { data } = await Request.patch(`${baseUrl}/events/${id}`, formData);
+    return { data };
+  } catch (error) {
+    return { data: null, error };
+  }
+};
+
+const deleteEvent = async (id: any) => {
+  try {
+    // const { data } = await Request.delete(`${baseUrl}/events${id}`);
+    const data = id;
+    await setTimeout(() => {}, 1000);
+    return { data };
+  } catch (error) {
+    return { data: null, error };
+  }
+};
+
 const EventsService = {
   getEvents,
+  addEvent,
+  updateEvent,
+  deleteEvent,
+  
 };
 
 export default EventsService;

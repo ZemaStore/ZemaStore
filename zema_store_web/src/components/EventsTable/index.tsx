@@ -61,6 +61,7 @@ const EventsTable = (props: Props) => {
               <th className="font-normal text-left pl-4">Title</th>
               <th className="font-normal text-left pl-12">Summary</th>
               <th className="font-normal text-left pl-12">Start Day</th>
+              <th className="font-normal text-left pl-12">End Day</th>
               <th className="font-normal text-left pl-12">Created Day</th>
               <th className="font-normal text-left pl-20">Address</th>
             </tr>
@@ -98,6 +99,9 @@ const EventsTable = (props: Props) => {
                     </td>
                     <td className="pl-12">
                       <p className="font-medium">{event.startDate}</p>
+                    </td>
+                    <td className="pl-12">
+                      <p className="font-medium">{event.endDate}</p>
                     </td>
                     <td className="pl-12">
                       <p className="font-medium">{event.createdAt}</p>

@@ -1,6 +1,6 @@
 {
   "viewportWidth": 1600,
-  "viewportHeight": 660,
+  "viewportHeight": 1000,
   "env": {
     "cypress-react-selector": {
       "root": "#root"

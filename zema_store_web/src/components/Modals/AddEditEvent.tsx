@@ -6,10 +6,13 @@ import { Event } from "../../helpers/types";
 import { useAppDispatch, useAppSelector } from "../../app/hooks/redux_hooks";
 
 import {
+  addEventsApi,
   clearMessage,
   eventsSelector,
+  updateEvent,
 } from "../../app/store/features/events/eventsSlice";
 import PlacesAutocomplete from "../../widgets/GooglePlaceAutoComplete";
+import notify from "../../utils/notify";
 
 Yup.addMethod(
   Yup.string,
@@ -36,9 +39,9 @@ const DisplayingErrorMessagesSchema = Yup.object().shape({
     .min(2, "Too Short!")
     .max(50, "Too Long!")
     .required("Please Enter fullname")
-
     .required("Required!"),
   startDate: Yup.string().required("Required!"),
+  endDate: Yup.string().required("Required!"),
 });
 
 type Props = {
@@ -93,9 +96,9 @@ const AddEditEventModal = (props: Props) => {
   return (
     <div>
       <div
-        
         className=" py-24 bg-gray-700 transition duration-150 ease-in-out z-10 absolute top-0 right-0 bottom-0 left-0"
         id="add_event_modal"
+        data-test-id="add_event_modal"
       >
         <div
           role="alert"
@@ -105,27 +108,29 @@ const AddEditEventModal = (props: Props) => {
             initialValues={{
               title: props.isEditing ? props.eventData?.title : "",
               summary: props.isEditing ? props.eventData?.summary : "",
+              startDate: props.isEditing ? props.eventData?.startDate : "",
+              endDate: props.isEditing ? props.eventData?.endDate : "",
             }}
             validationSchema={DisplayingErrorMessagesSchema}
             onSubmit={async (values) => {
-              // try {
-              //   if (props.isEditing) {
-              //     const updatedData = {
-              //       ...props.artistData,
-              //       ...values,
-              //     };
-              //     console.log(values, updatedData, " is up");
-              //     await dispatch(updateEventsApi(updatedData));
-              //     props.onClose();
-              //     notify.success("Event Updated Successufully!");
-              //   } else {
-              //     await dispatch(addEventsApi(values));
-              //     props.onClose();
-              //     notify.success("Event Added Successufully!");
-              //   }
-              // } catch (error: any) {
-              //   notify.error(error.toString());
-              // }
+              try {
+                if (props.isEditing) {
+                  const updatedData = {
+                    ...props.eventData,
+                    ...values,
+                  };
+                  console.log(values, updatedData, " is up");
+                  await dispatch(updateEvent(updatedData));
+                  props.onClose();
+                  notify.success("Event Updated Successufully!");
+                } else {
+                  await dispatch(addEventsApi(values));
+                  props.onClose();
+                  notify.success("Event Added Successufully!");
+                }
+              } catch (error: any) {
+                notify.error(error.toString());
+              }
             }}
           >
             {({ errors, touched, isValidating }) => (
@@ -145,6 +150,7 @@ const AddEditEventModal = (props: Props) => {
                     <Field
                       id="title"
                       name="title"
+                      data-test-id="title"
                       className={clsx(
                         "mb-5 mt-2 text-gray-600 focus:outline-none focus:border focus:border-indigo-700 font-normal w-full h-10 flex items-center pl-3 text-sm border-gray-300 rounded border",
                         touched.title && errors.title ? "border-red-500" : ""
@@ -166,6 +172,7 @@ const AddEditEventModal = (props: Props) => {
                     <Field
                       id="summary"
                       name="summary"
+                      data-test-id="summary"
                       className={clsx(
                         "mb-5 mt-2 text-gray-600 focus:outline-none focus:border focus:border-indigo-700 font-normal w-full h-10 flex items-center pl-3 text-sm border-gray-300 rounded border",
                         touched.summary && errors.summary
@@ -179,7 +186,56 @@ const AddEditEventModal = (props: Props) => {
                     )}
                   </div>
                   <div className="my-5">
-                    <PlacesAutocomplete
+                    <label
+                      htmlFor="email"
+                      className="text-gray-800 text-sm font-bold leading-tight tracking-normal"
+                    >
+                      Start Date
+                    </label>
+                    <Field
+                      id="start_date"
+                      name="start_date"
+                      data-test-id="start_date"
+                      type="date"
+                      className={clsx(
+                        "mb-5 mt-2 text-gray-600 focus:outline-none focus:border focus:border-indigo-700 font-normal w-full h-10 flex items-center pl-3 text-sm border-gray-300 rounded border",
+                        touched.summary && errors.summary
+                          ? "border-red-500"
+                          : ""
+                      )}
+                      placeholder="Event start date"
+                    />
+                    {touched.summary && errors.summary && (
+                      <div className="text-red-600">{errors.summary}</div>
+                    )}
+                  </div>
+                  <div className="my-5">
+                    <label
+                      htmlFor="end_date"
+                      className="text-gray-800 text-sm font-bold leading-tight tracking-normal"
+                    >
+                      End Date
+                    </label>
+                    <Field
+                      id="end_date"
+                      name="end_date"
+                      data-test-id="end_date"
+                      type="date"
+                      className={clsx(
+                        "mb-5 mt-2 text-gray-600 focus:outline-none focus:border focus:border-indigo-700 font-normal w-full h-10 flex items-center pl-3 text-sm border-gray-300 rounded border",
+                        touched.summary && errors.summary
+                          ? "border-red-500"
+                          : ""
+                      )}
+                      placeholder="Event end date"
+                    />
+                    {touched.summary && errors.summary && (
+                      <div className="text-red-600">{errors.summary}</div>
+                    )}
+                  </div>
+
+                  <div className="my-5">
+                    {/* <PlacesAutocomplete
                       setSelected={setSelected}
                       label={""}
                       inputProps={{
@@ -188,11 +244,12 @@ const AddEditEventModal = (props: Props) => {
                         placeholder: "Enter Location",
                       }}
                       url={""}
-                    />
+                    /> */}
                   </div>
                   <div className="flex items-center justify-start w-full">
                     <button
                       type="submit"
+                      data-test-id="add_event_button"
                       disabled={isLoading}
                       className={clsx(
                         "focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-700 transition duration-150 ease-in-out hover:bg-indigo-600 bg-indigo-700 disabled:bg-indigo-400  disabled:cursor-not-allowed rounded text-white px-8 py-2 text-sm flex"
