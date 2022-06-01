@@ -50,9 +50,7 @@ const updateArtist = async (id: string, formData: any) => {
 
 const deleteArtist = async (id: any) => {
   try {
-    // const { data } = await Request.delete(`${baseUrl}/artists${id}`);
-    const data = id;
-    await setTimeout(() => {}, 1000);
+    const { data } = await Request.delete(`${baseUrl}/artists/${id}`);
     return { data };
   } catch (error) {
     return { data: null, error };
