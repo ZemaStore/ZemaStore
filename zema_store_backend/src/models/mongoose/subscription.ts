@@ -1,7 +1,17 @@
 import mongoose, { Schema, Document } from "mongoose";
 
+enum SubType {
+  FREE = "free",
+  PREMIUM = "premium",
+}
+
+enum Payments {
+  MONTHLY = "monthly",
+  ANNUALY = "annualy",
+}
+
 export interface ISubscriptionDocument extends Document {
-  subscriptionType: String;
+  subscriptionType: SubType;
   subscriptionId: String;
   summary: String;
   price: Number;
@@ -13,6 +23,7 @@ const subscriptionSchema: Schema<ISubscriptionDocument> = new Schema(
   {
     subscriptionType: {
       type: String,
+      enum: SubType,
       required: true,
     },
     subscriptionId: {

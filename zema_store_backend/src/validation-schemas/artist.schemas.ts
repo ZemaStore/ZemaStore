@@ -24,6 +24,7 @@ const addArtistSchema = Joi.object({
     )
     .required(),
   fullName: Joi.string().min(4),
+  photo: Joi.optional(),
 });
 
 const updateArtistSchema = Joi.object({
