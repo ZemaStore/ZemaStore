@@ -47,6 +47,55 @@ export const getEventsApi = createAsyncThunk<any, any>(
   }
 );
 
+export const addEventsApi = createAsyncThunk<any, any>(
+  "/addEvent",
+  async (payload, { rejectWithValue, fulfillWithValue, dispatch }) => {
+    try {
+      const { data } = await EventsService.addEvent(payload);
+
+      return fulfillWithValue({
+        ...data,
+        fullName: data.profileId.fullName,
+        avatar: data.photoUrl,
+        followers: data.profileId.followerNumber,
+        listenedHours: data.profileId.listenedHour,
+        albumsCount: 0,
+        songsCount: 0,
+        createdAt: "2020-01-01",
+      });
+    } catch (err: any) {
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
+export const updateEventsApi = createAsyncThunk<any, any>(
+  "/updateEvent",
+  async (payload, { rejectWithValue, fulfillWithValue, dispatch }) => {
+    try {
+      const { data } = await EventsService.updateEvent(
+        payload.id,
+        payload.formData
+      );
+      return fulfillWithValue(data);
+    } catch (err: any) {
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
+export const deleteEventsApi = createAsyncThunk<any, any>(
+  "/deleteEvent",
+  async (payload, { rejectWithValue, fulfillWithValue, dispatch }) => {
+    try {
+      const { data } = await EventsService.deleteEvent(payload);
+      dispatch(removeEvent(payload));
+    } catch (err: any) {
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
 export const eventsSlice = createSlice({
   name: "events",
   initialState,
@@ -72,11 +121,11 @@ export const eventsSlice = createSlice({
     updateEvent: (state, { payload }) => {
       state.events =
         state.events &&
-        state.events.map((album: Event) => {
-          if (album.id === payload.id) {
+        state.events.map((event: Event) => {
+          if (event.id === payload.id) {
             return payload;
           }
-          return album;
+          return event;
         });
       state.searchEventsList = state.events;
     },

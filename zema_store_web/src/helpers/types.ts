@@ -94,6 +94,7 @@ export type Event = {
   };
   createdAt: string;
   startDate: string;
+  endDate: string;
 };
 
 export type Follow = {
