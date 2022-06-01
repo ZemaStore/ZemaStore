@@ -45,7 +45,8 @@ const DeleteModal = (props: Props) => {
             </p>
             <button className=""></button>
             <button
-              onClick={props.onDelete}
+            data-test-id='confrim_delete'
+              onClick={props.onClose}
               className=" bg-red-400 transition duration-150  hover:bg-red-500 text-white focus:outline-none focus:ring-2 focus:ring-offset-2   ease-in-out  rounded px-10 py-2 text-sm"
             >
               {props.buttonText}
