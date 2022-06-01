@@ -68,7 +68,7 @@ const EventsTable = (props: Props) => {
           </thead>
           <tbody data-test-id="events-list" className="w-full">
             {searchEventsList.length > 0 &&
-              searchEventsList.map((event: Event) => {
+              searchEventsList.map((event: Event, index: number) => {
                 return (
                   <tr
                     data-test-id="event-item"
@@ -119,6 +119,7 @@ const EventsTable = (props: Props) => {
                       onClick={handleClickMore(event.id)}
                     >
                       <button
+                        data-test-id={`more-button-${index}`}
                         onClick={handleClickMore(event.id)}
                         className="focus:outline-none pl-7"
                       >
@@ -153,19 +154,24 @@ const EventsTable = (props: Props) => {
                         </svg>
                       </button>
                       {selectedEventId === event.id && (
-                        <div className="dropdown-content bg-white shadow-lg shadow-blue-100 w-24 absolute z-50 right-0 mr-16">
-                          <div
+                        <div
+                          data-test-id="dropdown_btn"
+                          className="flex flex-col dropdown-content bg-white shadow-lg shadow-blue-100 w-24 absolute z-50 right-0 mr-16"
+                        >
+                          <button
                             onClick={() => handleEditEvent(event)}
-                            className="text-xs w-full hover:bg-indigo-700 py-4 px-4 cursor-pointer hover:text-white"
+                            data-test-id="edit_button"
+                            className="overflow-visible text-xs w-full hover:bg-indigo-700 py-4 px-4 cursor-pointer hover:text-white"
                           >
                             <p>Edit</p>
-                          </div>
-                          <div
+                          </button>
+                          <button
+                            data-test-id="delete-button"
                             onClick={() => handleDeleteEvent(event)}
                             className="text-xs w-full hover:bg-indigo-700 py-4 px-4 cursor-pointer hover:text-white"
                           >
                             <p className="text-red-500">Delete</p>
-                          </div>
+                          </button>
                         </div>
                       )}
                     </td>

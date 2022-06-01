@@ -18,8 +18,9 @@ const getEvents = async () => {
         street: "1 Market St",
         zip: "94105",
       },
-      createdAt: "2018-01-01T00:00:00.000Z",
-      startDate: "2018-01-01T00:00:00.000Z",
+      createdAt: "2018-01-01",
+      endDate: "2018-04-01",
+      startDate: "2018-02-01",
     },
   ];
   return { data };
@@ -69,7 +70,6 @@ const EventsService = {
   addEvent,
   updateEvent,
   deleteEvent,
-  
 };
 
 export default EventsService;
