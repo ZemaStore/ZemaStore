@@ -4,7 +4,8 @@
   "env": {
     "cypress-react-selector": {
       "root": "#root"
-    }
+    },
+    "serverUrl": "https://zema-store.herokuapp.com/api"
   },
   "testFiles": "**/*.spec.{js,ts,jsx,tsx}",
   "integrationFolder": "cypress/integration",

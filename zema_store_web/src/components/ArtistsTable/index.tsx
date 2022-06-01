@@ -72,7 +72,7 @@ const ArtistsTable = (props: Props) => {
               searchArtistsList.map((artist, index) => {
                 return (
                   <tr
-                    onClick={handleArtistsDetails(artist.id)}
+                    onClick={handleArtistsDetails((artist as any).profileId.id)}
                     key={artist.id + index}
                     className="h-20 handleArtistsDetails text-sm leading-none text-gray-800 bg-white hover:bg-gray-100 border-b border-t border-gray-100"
                   >

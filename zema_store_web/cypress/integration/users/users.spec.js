@@ -5,9 +5,6 @@ context("Should Sign In Actions", () => {
 
   before(() => {
     cy.viewport(1600, 1000);
-    cy.clearLocalStorage();
-    cy.login("bekele.petros@gmail.com", "Pass@word1").as("login");
-    cy.waitFor("@login");
   });
 
   beforeEach(() => {
@@ -15,7 +12,7 @@ context("Should Sign In Actions", () => {
     cy.waitForReact();
   });
 
-  it("should list users list", () => {
+  it("should list all users list", () => {
     cy.get("[data-cy=user-list]").should("exist");
   });
 });

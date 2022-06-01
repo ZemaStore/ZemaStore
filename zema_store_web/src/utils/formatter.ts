@@ -1,7 +1,7 @@
 import { format } from "date-fns";
 
 const formatter = {
-  getYear(date: string) {
+  getYear(date: string | Date) {
     return format(new Date(date), "MM/dd/yyyy");
   },
   tin(v: string) {
