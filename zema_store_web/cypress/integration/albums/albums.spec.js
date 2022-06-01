@@ -3,86 +3,93 @@ import { datatype, address, image } from "@withshepherd/faker";
 context("Crud Albums", () => {
   const baseUrl = Cypress.config().baseUrl;
   let token;
+  let store;
+  let ourAlbum;
 
   before(() => {
-     cy.viewport(1600, 1000);
-     cy.visit("http://localhost:3000/signin");
-     cy.login("bekele.petros@gmail.com", "Pass@word1");
-     cy.visit("http://localhost:3000/albums").as("albumsPage");
-     cy.waitFor("@albumsPage");
-     cy.waitForReact();
-     cy.window()
-       .then((win) => {
-         store = win.store;
-       })
-       .its("store")
-       .then((st) => {
-         store = st;
-       });
+    cy.viewport(1600, 1000);
+    cy.visit("http://localhost:3000/signin");
+    cy.login("bekele.petros@gmail.com", "Pass@word1");
+    cy.visit("http://localhost:3000/albums").as("albumsPage");
+    cy.waitFor("@albumsPage");
+    cy.waitForReact();
+    cy.window()
+      .then((win) => {
+        store = win.store;
+      })
+      .its("store")
+      .then((st) => {
+        store = st;
+      });
   });
 
   it("should create album", () => {
-    cy.api({
-      method: "POST",
-      url: `/albums`,
-      headers: {
-        "Access-Token": token,
-      },
-      body: {
-        title: datatype.string(),
-        artistId: datatype.uuid(),
-        photo: image.image(),
-        releaseDate: datatype.date(),
-      },
-    });
+    let albumId = '62973bbe0932be75f329028c';
 
-    cy.api({
+    // cy.request({
+    //   method: "POST",
+    //   url: `https://zema-store.herokuapp.com/api/albums`,
+    //   headers: {
+    //     "Access-Token": token,
+    //   },
+    //   body: {
+    //     title: datatype.string(),
+    //     artistId: '62932f4991d45adaf55d2201',
+    //     releaseDate: new Date(),
+    //   },
+    // }).then((response) => {
+    //   expect(response.status).to.eq(200)
+    //   expect(response.body.data).to.have.property('album')
+    //   expect(response.body.data).to.have.property('songs')
+    //   albumId = response.body.data.album.id
+    // })
+    
+    cy.request({
       method: "GET",
-      url: `/albums`,
+      url: `https://zema-store.herokuapp.com/api/albums`,
       headers: {
         "Access-Token": token,
       },
+    }).then((response) => {
+      expect(response.status).to.eq(200)
+      expect(response.body.data.albumList).to.have.length(10)
+      expect(response).to.have.property('headers')
     })
-      .its("body")
-      .should((albums) => {
-        const ourAlbum = Cypress._.filter(
-          albums,
-          (album) => album.id === albumId
-        );
 
-        expect(ourAlbum.length).to.eq(1);
-      });
-
-    cy.wrap(ourAlbum.length).should("eq", 1);
-
-    const albumId = ourAlbum[0].albumId;
-
-    cy.log(albumId);
-
-    cy.api({
-      method: "PUT",
-      url: `/album/${albumId}`,
+    cy.request({
+      method: "PATCH",
+      url: `https://zema-store.herokuapp.com/api/albums/${albumId}`,
       headers: {
         "Access-Token": token,
       },
       body: {
-        title: datatype.string(),
+        title: 'album updated',
       },
-    });
-    cy.api({
-      method: "GET",
-      url: `/albums/${albumId}`,
-      headers: {
-        "Access-Token": token,
-      },
-    });
+    }).then((response) => {
+      expect(response.status).to.eq(200)
+      expect(response.body.data.album.title).to.eq('album updated')
+      expect(response.body.data).to.have.property('album')
+    })
 
-    cy.api({
-      method: "DELETE",
-      url: `/albums/${albumId}`,
+    cy.request({
+      method: "GET",
+      url: `https://zema-store.herokuapp.com/api/albums/${albumId}`,
       headers: {
         "Access-Token": token,
       },
-    });
+    }).then((response) => {
+      expect(response.status).to.eq(200)
+      expect(response.body.data).to.have.property('album')
+    })
+
+    cy.request({
+      method: "DELETE",
+      url: `https://zema-store.herokuapp.com/api/albums/6297157b95f1ec87049b12dd`,
+      headers: {
+        "Access-Token": token,
+      },
+    }).then((response) => {
+      expect(response.status).to.eq(200)
+    })
   });
 });
