@@ -4,7 +4,22 @@ context("Crud Albums", () => {
   const baseUrl = Cypress.config().baseUrl;
   let token;
 
-  before(() => cy.task("token").then((t) => (token = t)));
+  before(() => {
+     cy.viewport(1600, 1000);
+     cy.visit("http://localhost:3000/signin");
+     cy.login("bekele.petros@gmail.com", "Pass@word1");
+     cy.visit("http://localhost:3000/albums").as("albumsPage");
+     cy.waitFor("@albumsPage");
+     cy.waitForReact();
+     cy.window()
+       .then((win) => {
+         store = win.store;
+       })
+       .its("store")
+       .then((st) => {
+         store = st;
+       });
+  });
 
   it("should create album", () => {
     cy.api({
