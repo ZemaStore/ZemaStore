@@ -194,6 +194,7 @@ const AddEditAlbumModal = (props: Props) => {
                   <div className="flex items-center justify-start w-full">
                     <button
                       type="submit"
+                      data-test-id="add_event_button"
                       disabled={isLoading}
                       className={clsx(
                         "focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-700 transition duration-150 ease-in-out hover:bg-indigo-600 bg-indigo-700 disabled:bg-indigo-400  disabled:cursor-not-allowed rounded text-white px-8 py-2 text-sm flex"

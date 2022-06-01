@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks/redux_hooks";
-import { getArtistsApi } from "../../app/store/features/artists/artistsSlice";
+import { deleteArtistsApi, getArtistsApi } from "../../app/store/features/artists/artistsSlice";
 import Pagination from "../../common/Paginations";
 import ArtistsTable from "../../components/ArtistsTable";
 import AddEditArtistModal from "../../components/Modals/AddEditArtist";
@@ -19,6 +19,8 @@ function ArtistsPage() {
     setIsAddModalOpen(false);
     setIsEditModalOpen(false);
     setIsDeleteModalOpen(false);
+    console.log('closed?')
+    dispatch(deleteArtistsApi(selectedArtist?.id))
   };
 
   const handleModalOpen = (modalType = "add") => {
@@ -30,6 +32,10 @@ function ArtistsPage() {
       setIsDeleteModalOpen(true);
     }
   };
+
+  const onDeleteModal = async ()=>{
+    await dispatch(deleteArtistsApi(selectedArtist?.id))
+  }
 
   const fetchArtists = useCallback(async () => {
     await dispatch(getArtistsApi({}));
@@ -62,7 +68,7 @@ function ArtistsPage() {
             deleteMessage="Delete Artist"
             deleteDescription="Are you sure you want to delete?"
             buttonText="Delete"
-            onDelete={onCloseModal}
+            onDelete={onDeleteModal}
             onClose={onCloseModal}
           />
         )}
@@ -75,6 +81,7 @@ function ArtistsPage() {
               <div>
                 <button
                   onClick={() => handleModalOpen()}
+                  data-test-id="add_artist_button"
                   className="inline-flex sm:ml-3 mt-4 sm:mt-0 items-start justify-start px-6 py-3 bg-indigo-700 hover:bg-indigo-600 focus:outline-none rounded"
                 >
                   <p className="text-sm font-medium leading-none text-white">

@@ -111,6 +111,7 @@ const AddEditArtistModal = (props: Props) => {
       <div
         className="py-24 bg-gray-700 transition duration-150 ease-in-out z-10 absolute top-0 right-0 bottom-0 left-0"
         id="add_artist_modal"
+        data-test-id="artists_page_add_edit_form"
       >
         <div
           role="alert"
@@ -150,8 +151,8 @@ const AddEditArtistModal = (props: Props) => {
             }}
           >
             {({ errors, touched, isValidating }) => (
-              <Form>
-                <div className="relative py-8 px-5 md:px-10 bg-white shadow-md rounded border border-gray-400">
+              <Form >
+                <div className="relative py-8 px-5 md:px-10 bg-white shadow-md rounded border border-gray-400" data-test-id="artitst_add_edit_title">
                   <h1 className="text-gray-800 font-lg font-bold tracking-normal leading-tight mb-4">
                     Enter Artists Details
                   </h1>
@@ -164,6 +165,7 @@ const AddEditArtistModal = (props: Props) => {
                     </label>
                     <Field
                       id="fullName"
+                      data-test-id="fullName"
                       name="fullName"
                       className={clsx(
                         "mb-5 mt-2 text-gray-600 focus:outline-none focus:border focus:border-indigo-700 font-normal w-full h-10 flex items-center pl-3 text-sm border-gray-300 rounded border",
@@ -187,6 +189,7 @@ const AddEditArtistModal = (props: Props) => {
                     </label>
                     <Field
                       id="email"
+                      data-test-id="artist_email"
                       name="email"
                       className={clsx(
                         "mb-5 mt-2 text-gray-600 focus:outline-none focus:border focus:border-indigo-700 font-normal w-full h-10 flex items-center pl-3 text-sm border-gray-300 rounded border",
@@ -207,6 +210,7 @@ const AddEditArtistModal = (props: Props) => {
                       Phone
                     </label>
                     <Field
+                    data-test-id="artist_phone"
                       id="phone"
                       name="phone"
                       type="tel"
@@ -230,6 +234,7 @@ const AddEditArtistModal = (props: Props) => {
                     </label>
                     <div className="flex flex-col relative items-center py-2">
                       <Field
+                      data-test-id="artist_password"
                         id="password"
                         type={showPassword ? "text" : "password"}
                         name="password"
@@ -273,6 +278,7 @@ const AddEditArtistModal = (props: Props) => {
                   <div className="flex items-center justify-start w-full">
                     <button
                       type="submit"
+                      data-test-id="add_event_button"
                       disabled={isLoading}
                       className={clsx(
                         "focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-700 transition duration-150 ease-in-out hover:bg-indigo-600 bg-indigo-700 disabled:bg-indigo-400  disabled:cursor-not-allowed rounded text-white px-8 py-2 text-sm flex"
@@ -314,6 +320,7 @@ const AddEditArtistModal = (props: Props) => {
                     </button>
                   </div>
                   <button
+                  data-test-id="artist_submit_button"
                     className="cursor-pointer absolute top-0 right-0 mt-4 mr-5 text-gray-400 hover:text-gray-600 transition duration-150 ease-in-out rounded focus:ring-2 focus:outline-none focus:ring-gray-600"
                     onClick={() => modalHandler(false)}
                     aria-label="close modal"
