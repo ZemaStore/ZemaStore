@@ -17,6 +17,8 @@ export interface IUserDocument extends Document {
   isActive: Boolean;
   subscriptionId: mongoose.Schema.Types.ObjectId;
   onModel: String;
+  aes_key: String;
+  aes_iv: String;
   createdAt: Date;
   updatedAt: Date;
 }

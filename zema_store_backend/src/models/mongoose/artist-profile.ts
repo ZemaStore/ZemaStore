@@ -1,6 +1,7 @@
 import mongoose, { Schema, Document } from "mongoose";
 
 export interface IArtistProfileDocument extends Document {
+  userId: String;
   fullName: String;
   photoUrl: String;
   followerNumber: Number;
@@ -11,6 +12,10 @@ export interface IArtistProfileDocument extends Document {
 
 const profileSchema: Schema<IArtistProfileDocument> = new Schema(
   {
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
     fullName: {
       type: String,
       required: true,

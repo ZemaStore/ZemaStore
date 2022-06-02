@@ -12,7 +12,7 @@ const router = Router();
 
 router.route("/").get(getusers);
 
-router.route("/status").patch(changeUserStatus);
+router.route("/status/:id").patch(changeUserStatus);
 
 router
   .route("/:id")

@@ -146,14 +146,15 @@ const changeUserStatus = async (req: Request, res: Response) => {
   try {
     const validate = changeUserStatusSchema.validate(req.params);
     if (validate.error && validate.error !== null) {
-      console.log(validate.error.message);
       return res
         .status(400)
         .send(new ErrorResponse(validate.error.message, null));
     }
 
     const id = req.params.id;
-    
+
+    console.log(req.params.id);
+
     const user = await User.findById(id);
     if (isNil(user)) {
       return res.status(400).send(new ErrorResponse("User not found!", null));

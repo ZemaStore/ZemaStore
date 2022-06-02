@@ -5,16 +5,10 @@ enum SubType {
   PREMIUM = "premium",
 }
 
-enum Payments {
-  MONTHLY = "monthly",
-  ANNUALY = "annualy",
-}
-
 export interface ISubscriptionDocument extends Document {
   subscriptionType: SubType;
   subscriptionId: String;
   summary: String;
-  price: Number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -25,6 +19,7 @@ const subscriptionSchema: Schema<ISubscriptionDocument> = new Schema(
       type: String,
       enum: SubType,
       required: true,
+      default: SubType.FREE,
     },
     subscriptionId: {
       type: String,
@@ -32,10 +27,6 @@ const subscriptionSchema: Schema<ISubscriptionDocument> = new Schema(
     },
     summary: {
       type: String,
-      required: true,
-    },
-    price: {
-      type: Number,
       required: true,
     },
   },

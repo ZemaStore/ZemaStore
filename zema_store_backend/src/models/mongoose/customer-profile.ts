@@ -1,6 +1,7 @@
 import mongoose, { Schema, Document } from "mongoose";
 
 export interface ICustomerProfileDocument extends Document {
+  userId: String;
   fullName: String;
   subscriptionId: mongoose.Schema.Types.ObjectId;
   createdAt: Date;
@@ -9,6 +10,10 @@ export interface ICustomerProfileDocument extends Document {
 
 const profileSchema: Schema<ICustomerProfileDocument> = new Schema(
   {
+    userId: {
+      type: String,
+      ref: "User",
+    },
     fullName: {
       type: String,
       required: true,
