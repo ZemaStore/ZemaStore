@@ -2,7 +2,8 @@ import mongoose, { Schema, Document } from "mongoose";
 
 export interface IArtistProfileDocument extends Document {
   userId: String;
-  fullName: String;
+  firstName: String;
+  lastName: String;
   photoUrl: String;
   followerNumber: Number;
   listenedHour: Number;
@@ -16,7 +17,11 @@ const profileSchema: Schema<IArtistProfileDocument> = new Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
-    fullName: {
+    firstName: {
+      type: String,
+      required: true,
+    },
+    lastName: {
       type: String,
       required: true,
     },
@@ -41,6 +46,10 @@ const ArtistProfie = mongoose.model<IArtistProfileDocument>(
 
 profileSchema.virtual("id").get(function (this: IArtistProfileDocument) {
   return this._id.toHexString();
+});
+
+profileSchema.virtual("fullName").get(function (this: IArtistProfileDocument) {
+  return `${this.firstName} ${this.lastName}`;
 });
 
 export default ArtistProfie;

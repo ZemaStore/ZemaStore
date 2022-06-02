@@ -25,7 +25,7 @@ import {
 
 const signUp = async (req: Request, res: Response, _next: NextFunction) => {
   try {
-    const { email, phone, password, fullName } = req.body;
+    const { email, phone, password, firstName, lastName } = req.body;
 
     const validate = signUpSchema.validate(req.body);
     if (validate.error && validate.error !== null) {
@@ -49,7 +49,8 @@ const signUp = async (req: Request, res: Response, _next: NextFunction) => {
 
     const profileModel = "CustomerProfile";
     const userProfile = await CustomerProfile.create({
-      fullName: fullName || "No Name",
+      fullName: firstName || "No",
+      lastName: lastName || "NAME",
     });
 
     const user: IUserDocument = new User({
@@ -63,7 +64,7 @@ const signUp = async (req: Request, res: Response, _next: NextFunction) => {
 
     await user.save();
 
-    sendWelcomeEmail(email, fullName);
+    sendWelcomeEmail(email, firstName);
 
     const payload = {
       _id: user._id,
@@ -225,7 +226,7 @@ const refreshToken = async (req: Request, res: Response) => {
 
     const refreshToken = req.body.refreshToken;
     const userId = await validateRefreshToken(refreshToken);
-    
+
     if (isNil(userId)) {
       return res.status(400).send({
         success: false,

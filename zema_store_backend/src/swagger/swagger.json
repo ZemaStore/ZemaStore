@@ -2285,9 +2285,13 @@
                         "type": "string",
                         "description": "User phone number"
                     },
-                    "fullName": {
+                    "firstName": {
                         "type": "string",
-                        "description": "Full Name"
+                        "description": "First Name"
+                    },
+                    "lastName": {
+                        "type": "string",
+                        "description": "Last Name"
                     }
                 }
             },

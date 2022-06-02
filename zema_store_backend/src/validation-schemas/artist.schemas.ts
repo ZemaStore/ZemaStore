@@ -1,5 +1,8 @@
 import Joi from "joi";
 
+const PASSWORD_MESSAGE =
+  "The password needs to have minimum 8 characters, at least one uppercase letter, one lowercase letter, one number and one special character";
+
 const getArtistSchema = Joi.object({
   id: Joi.string().hex().required(),
 });
@@ -17,13 +20,18 @@ const addArtistSchema = Joi.object({
     .pattern(/^[0-9]+$/)
     .required(),
   password: Joi.string()
+    .min(8)
     .pattern(
       new RegExp(
         "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}"
       )
     )
-    .required(),
-  fullName: Joi.string().min(4),
+    .messages({
+      "string.min": PASSWORD_MESSAGE,
+      "string.pattern.base": PASSWORD_MESSAGE,
+    }),
+  firstName: Joi.string().required(),
+  lastName: Joi.string(),
   photo: Joi.optional(),
 });
 
@@ -32,12 +40,25 @@ const updateArtistSchema = Joi.object({
     id: Joi.string().hex().required(),
   },
   body: {
-    email: Joi.string().email(),
+    email: Joi.string().email().optional(),
     phone: Joi.string()
       .min(10)
-      .pattern(/^[0-9]+$/),
-    password: Joi.string().min(8),
-    fullName: Joi.string().min(4),
+      .pattern(/^[0-9]+$/)
+      .optional(),
+    password: Joi.string()
+      .min(8)
+      .pattern(
+        new RegExp(
+          "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}"
+        )
+      )
+      .messages({
+        "string.min": PASSWORD_MESSAGE,
+        "string.pattern.base": PASSWORD_MESSAGE,
+      })
+      .optional(),
+    firstName: Joi.string().optional(),
+    lastName: Joi.string().optional(),
   },
 });
 

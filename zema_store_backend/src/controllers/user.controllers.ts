@@ -107,13 +107,19 @@ const updateUser = async (req: Request, res: Response) => {
         .send(new ErrorResponse(validate.error.message, null));
     }
 
-    const { email, password, phone, fullName } = req.body;
+    const { email, password, phone, firstName, lastName } = req.body;
 
     const user = await User.findById(req.params.id).populate("profileId");
 
-    if (fullName) {
+    if (firstName) {
       const userProfile = await CustomerProfile.findById(user._id);
-      userProfile.fullName = fullName;
+      userProfile.firstName = firstName;
+      await userProfile.save();
+    }
+
+    if (lastName) {
+      const userProfile = await CustomerProfile.findById(user._id);
+      userProfile.lastName = lastName;
       await userProfile.save();
     }
 

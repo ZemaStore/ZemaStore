@@ -1,5 +1,8 @@
 import Joi from "joi";
 
+const PASSWORD_MESSAGE =
+  "The password needs to have minimum 8 characters, at least one uppercase letter, one lowercase letter, one number and one special character";
+
 const getUserSchema = Joi.object({
   id: Joi.string().hex().required(),
 });
@@ -16,15 +19,21 @@ const udpateUserSchema = Joi.object({
   },
   body: {
     email: Joi.string().email(),
-    password: Joi.string().pattern(
-      new RegExp(
-        "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}"
+    password: Joi.string()
+      .pattern(
+        new RegExp(
+          "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}"
+        )
       )
-    ),
+      .messages({
+        "string.min": PASSWORD_MESSAGE,
+        "string.pattern.base": PASSWORD_MESSAGE,
+      }),
     phone: Joi.string()
       .min(10)
       .pattern(/^[0-9]+$/),
-    fullName: Joi.string().min(4),
+    firstName: Joi.string().required(),
+    lastName: Joi.string(),
   },
 });
 
@@ -32,4 +41,9 @@ const changeUserStatusSchema = Joi.object({
   id: Joi.string().hex().required(),
 });
 
-export { getUserSchema, getUsersSchema, udpateUserSchema, changeUserStatusSchema };
+export {
+  getUserSchema,
+  getUsersSchema,
+  udpateUserSchema,
+  changeUserStatusSchema,
+};

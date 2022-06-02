@@ -69,5 +69,9 @@ const deleteSubscription = async (req: Request, res: Response) => {
     res
       .status(200)
       .send(new OkResponse(null, "Subscription successfully deleted!"));
-  } catch (e) {}
+  } catch (e) {
+    Utils.instance.handleResponseException(res, e);
+  }
 };
+
+export { getSubscription, createSubscription, deleteSubscription };

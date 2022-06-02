@@ -2,7 +2,8 @@ import mongoose, { Schema, Document } from "mongoose";
 
 export interface ICustomerProfileDocument extends Document {
   userId: String;
-  fullName: String;
+  firstName: String;
+  lastName: String;
   subscriptionId: mongoose.Schema.Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;
@@ -14,7 +15,11 @@ const profileSchema: Schema<ICustomerProfileDocument> = new Schema(
       type: String,
       ref: "User",
     },
-    fullName: {
+    firstName: {
+      type: String,
+      required: true,
+    },
+    lastName: {
       type: String,
       required: true,
     },
@@ -33,5 +38,11 @@ const CustomerProfile = mongoose.model<ICustomerProfileDocument>(
 profileSchema.virtual("id").get(function (this: ICustomerProfileDocument) {
   return this._id.toHexString();
 });
+
+profileSchema
+  .virtual("fullName")
+  .get(function (this: ICustomerProfileDocument) {
+    return `${this.firstName} ${this.lastName}`;
+  });
 
 export default CustomerProfile;

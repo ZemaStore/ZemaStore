@@ -31,9 +31,7 @@ const getArtist = async (req: Request, res: Response) => {
 
     const user = await User.findById(req.params.id).populate("profileId");
 
-    const profile = user.profileId;
-
-    res.status(200).send({ success: true, data: user });
+    res.status(200).send(new OkResponse(user, "Artist successfully fetched!"));
   } catch (e) {
     Utils.instance.handleResponseException(res, e);
   }
@@ -60,7 +58,7 @@ const getArtists = async (req: Request, res: Response) => {
     const count = isNil(search)
       ? await User.count({ roleId: role._id })
       : await ArtistProfie.count({
-          fullName: {
+          firstName: {
             $regex: new RegExp(searchExp, "ig"),
           },
         });
@@ -75,7 +73,7 @@ const getArtists = async (req: Request, res: Response) => {
           .sort(sort)
           .populate("profileId")
       : await ArtistProfie.find({
-          fullName: {
+          firstName: {
             $regex: new RegExp(searchExp, "ig"),
           },
         })
@@ -106,7 +104,7 @@ const addArtist = async (req: Request, res: Response) => {
         .send({ success: false, message: validate.error.message });
     }
 
-    const { email, phone, password, fullName } = req.body;
+    const { email, phone, password, firstName, lastName } = req.body;
 
     const existingUser = await User.findOne({
       email,
@@ -140,7 +138,8 @@ const addArtist = async (req: Request, res: Response) => {
 
     const profileModel = "ArtistProfile";
     const artistProfile = await ArtistProfie.create({
-      fullName,
+      firstName,
+      lastName,
     });
 
     const user: IUserDocument = new User({
@@ -159,9 +158,10 @@ const addArtist = async (req: Request, res: Response) => {
 
     // sendWelcomeEmail(email, fullName);
 
-    return res.status(201).send({ success: true, data: savedUser });
+    return res
+      .status(200)
+      .send(new OkResponse(savedUser, "Artist successfully created!"));
   } catch (e) {
-    console.log(e)
     Utils.instance.handleResponseException(res, e);
   }
 };
@@ -180,7 +180,7 @@ const updateArtist = async (req: Request, res: Response) => {
         .send({ success: false, message: validate.error.message });
     }
 
-    const { email, phone, password, fullName } = req.body;
+    const { email, phone, password, firstName, lastName } = req.body;
 
     const user = await User.findById(req.params.id);
     if (isNil(user)) {
@@ -213,14 +213,17 @@ const updateArtist = async (req: Request, res: Response) => {
     user.phone = phone || user.phone;
     user.photoUrl = !isNil(upload) ? upload.secure_url : user.photoUrl;
 
-    artistProfile.fullName = fullName || artistProfile.fullName;
+    artistProfile.firstName = firstName || artistProfile.firstName;
+    artistProfile.lastName = lastName || artistProfile.lastName;
 
     await user.save();
     await artistProfile.save();
 
     const udpatedUser = await User.findById(user._id).populate("profileId");
 
-    res.status(200).send({ success: true, data: udpatedUser });
+    res
+      .status(200)
+      .send(new OkResponse(udpatedUser, "Artist successfully updated!"));
   } catch (e) {
     Utils.instance.handleResponseException(res, e);
   }
@@ -244,7 +247,7 @@ const deleteArtist = async (req: Request, res: Response) => {
 
     await user.delete();
 
-    res.status(200).send({ success: true, data: user });
+    res.status(200).send(new OkResponse(null, "User successfully deleted!"));
   } catch (e) {
     Utils.instance.handleResponseException(res, e);
   }
