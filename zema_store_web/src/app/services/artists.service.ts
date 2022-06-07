@@ -1,8 +1,10 @@
 import { baseUrl } from ".";
 import Request from "../api/request";
 
-const getArtists = async () => {
-  const { data } = await Request.get(`${baseUrl}/artists`);
+const getArtists = async (currentPage: number, orderBy: string) => {
+  const { data } = await Request.get(
+    `${baseUrl}/artists?page=${currentPage - 1}&sortBy=${orderBy}`
+  );
   return { data };
 };
 

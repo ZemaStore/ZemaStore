@@ -1,22 +1,42 @@
 import { baseUrl } from ".";
 import Request from "../api/request";
 
+const getSong = async (id: string) => {
+  try {
+    const { data } = await Request.get(`${baseUrl}/songs/${id}`);
+
+    return { data, error: null };
+  } catch (error) {
+    return { data: null, error };
+  }
+};
+
+
 const getSongs = async ({
   name = "all",
   id = null,
+  currentPage,
+  orderBy,
 }: {
   name: string;
   id: string | null;
+  currentPage: number;
+  orderBy: string;
 }) => {
   console.log(name, id, " is name and id");
   let url = `${baseUrl}/songs`;
   switch (name) {
-    case "artists": {
-      url = `${baseUrl}/songs/artist/${id}`;
-      break;
-    }
+    // case "artists": {
+    //   url = `${baseUrl}/songs/artist/${id}?page=${
+    //     currentPage - 1
+    //   }&sortBy=${orderBy}`;
+    //   break;
+    // }
+    case "artists":
     case "albums": {
-      url = `${baseUrl}/songs/album/${id}`;
+      url = `${baseUrl}/songs/album/${id}?page=${
+        currentPage - 1
+      }&sortBy=${orderBy}`;
       break;
     }
     default: {
@@ -59,8 +79,40 @@ const getSongs = async ({
   return { data };
 };
 
+const addSong = async (formData: any) => {
+  try {
+    const { data } = await Request.post(`${baseUrl}/songs`, formData);
+
+    return { data, error: null };
+  } catch (error) {
+    return { data: null, error };
+  }
+};
+
+const updateSong = async (id: string, formData: any) => {
+  try {
+    const { data } = await Request.patch(`${baseUrl}/songs/${id}`, formData);
+    return { data, error: null };
+  } catch (error) {
+    return { data: null, error };
+  }
+};
+
+const deleteSong = async (id: any) => {
+  try {
+    const { data } = await Request.delete(`${baseUrl}/songs/${id}`);
+    return { data, error: null };
+  } catch (error) {
+    return { data: null, error };
+  }
+};
+
 const SongsService = {
+  getSong,
   getSongs,
+  addSong,
+  updateSong,
+  deleteSong,
 };
 
 export default SongsService;

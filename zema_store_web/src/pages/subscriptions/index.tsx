@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { useAppDispatch } from "../../app/hooks/redux_hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks/redux_hooks";
 import { getSubscriptionsApi } from "../../app/store/features/subscriptions/subscriptionsSlice";
 import BaseLayout from "../../common/Layout";
 import Pagination from "../../common/Paginations";
@@ -11,14 +11,17 @@ import SubscriptionsTable from "../../components/SubscriptionsTable";
 function SubscriptionsPage() {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const dispatch = useAppDispatch();
+  const [shouldReload, setShouldReload] = useState(false);
 
+  const { meta } = useAppSelector((state) => state.users);
+  const [currentPage, setCurrentPage] = useState<number>(1);
   const fetchSubscriptions = useCallback(async () => {
-    await dispatch(getSubscriptionsApi({}));
-  }, [dispatch]);
+    await dispatch(getSubscriptionsApi({currentPage}));
+  }, [dispatch, shouldReload, currentPage]);
 
   useEffect(() => {
     fetchSubscriptions();
-  }, [fetchSubscriptions]);
+  }, [fetchSubscriptions, shouldReload, currentPage]);
 
   const onCloseModal = () => {
     console.log("closing modal");
@@ -59,7 +62,13 @@ function SubscriptionsPage() {
           </div>
           <SubscriptionsTable />
         </div>
-        <Pagination />
+        <Pagination
+          setCurrentPage={setCurrentPage}
+          currentPage={currentPage}
+          pageSize={meta.limit}
+          totalItems={meta.total}
+          totalPages={meta.totalPage}
+        />
       </main>
     </BaseLayout>
   );

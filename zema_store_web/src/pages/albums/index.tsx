@@ -4,10 +4,12 @@ import BaseLayout from "../../common/Layout";
 import Pagination from "../../common/Paginations";
 import AlbumsTable from "../../components/AlbumsTable";
 
-type Props = {};
+type Props = {
+  from: string;
+};
 
 const AlbumsIndexPage = (props: Props) => {
-  return (
+  return props.from === "artists" ? (<Outlet />) : (
     <BaseLayout>
       <Outlet />
     </BaseLayout>

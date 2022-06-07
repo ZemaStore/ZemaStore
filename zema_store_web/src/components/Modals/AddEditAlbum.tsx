@@ -5,15 +5,16 @@ import {
   addAlbumsApi,
   albumsSelector,
   updateAlbum,
+  updateAlbumsApi,
 } from "../../app/store/features/albums/albumsSlice";
 import { Album, Artist } from "../../helpers/types";
 import notify from "../../utils/notify";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
-import AutoCompleteSearch from "../../widgets/AutocompleteSearch";
 import clsx from "clsx";
 
 type Props = {
+  arstistId?: string;
   isEditing: boolean;
   albumData?: Album | null;
   onClose: () => void;
@@ -21,13 +22,9 @@ type Props = {
 };
 
 const AddEditAlbumModal = (props: Props) => {
-  const { onClose, onSubmit } = props;
-  let modal = document.getElementById("modal");
-  const fileUploadFileRef = useRef<HTMLInputElement>(null);
   const dispatch = useAppDispatch();
-  const [selectedArtist, setSelectedArtist] = useState(null);
   const { isLoading } = useAppSelector(albumsSelector);
-
+  const [albumCover, setAlbumCover] = useState<File | null>(null);
   function modalHandler(val = true) {
     // fadeOut(modal);
     props.onClose();
@@ -67,6 +64,41 @@ const AddEditAlbumModal = (props: Props) => {
     releaseDate: Yup.string().required("Please Enter The Release Date"),
   });
 
+  const PreviewAlbumCover = () => {
+    let imgURL = "";
+    if (props.isEditing && props.albumData?.imageUrl) {
+      imgURL = props.albumData.imageUrl;
+    } else if (albumCover !== null) {
+      imgURL = URL.createObjectURL(albumCover);
+    }
+
+    return (
+      <div className="my-2">
+        {
+          imgURL ?
+            <div className="w-20 h-20 rounded-full relative my-2">
+              <img
+                className="w-full h-full rounded-full absolute object-cover border-2 border-orange-500"
+                src={imgURL}
+                alt="album cover" />
+            </div>
+            : <div className="flex" >
+              <span className="relative">
+                <svg className="w-full h-full top-0 left-0 absolute object-fill" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" >
+                  <path d="M9 17H5a2 2 0 0 0-2 2 2 2 0 0 0 2 2h2a2 2 0 0 0 2-2zm12-2h-4a2 2 0 0 0-2 2 2 2 0 0 0 2 2h2a2 2 0 0 0 2-2z"></path><circle cx="9" cy="9" r="5"></circle></svg>
+              </span>
+              <h5>
+                Not Selected
+              </h5>
+            </div>
+        }
+      </div>
+    );
+  }
+
+
+
+
   return (
     <div>
       <div
@@ -80,44 +112,58 @@ const AddEditAlbumModal = (props: Props) => {
           <Formik
             initialValues={{
               title: props.isEditing ? props.albumData?.title : "",
-              artistId: props.isEditing ? props.albumData?.artist : "",
-              photo: props.isEditing ? props.albumData?.cover : null,
-              releaseDate: props.isEditing ? props.albumData?.releaseDate : "",
+              artistId: props.arstistId || "",
+              photo: props.isEditing ? props.albumData?.imageUrl : null,
+              releaseDate: props.isEditing ? props.albumData?.releaseDate ? new Date(props.albumData?.releaseDate).toISOString().split("T")[0] : "" : new Date().toISOString().split("T")[0],
             }}
             validationSchema={AddEditAlbumSchema}
             onSubmit={async (values) => {
-              console.log(values, "are values");
+              const formData = new FormData();
               try {
                 if (props.isEditing) {
-                  const updatedData = {
+                  const updatedData: any = {
                     ...props.albumData,
                     ...values,
+
                   };
-                  console.log(values, updatedData, " is up");
-                  await dispatch(updateAlbum(updatedData));
+                  formData.append("title", values.title || "");
+                  formData.append("id", props.albumData?.id || "")
+                  formData.append("releaseDate", values.releaseDate || new Date().toISOString());
+
+                  if (albumCover) {
+                    formData.append('photo', albumCover);
+                  }
+                  await dispatch(updateAlbumsApi(formData));
                   props.onClose();
-                  notify.success("Artist Updated Successufully!");
+                  notify.success("Album Updated Successufully!");
                 } else {
+                  formData.append("title", values.title || "");
+                  formData.append("artistId", values.artistId);
+                  formData.append("releaseDate", values.releaseDate || new Date().toISOString());
+
+                  if (albumCover) {
+                    formData.append('photo', albumCover);
+                  }
                   await dispatch(
-                    addAlbumsApi({
-                      ...values,
-                    })
+                    addAlbumsApi(
+                      formData
+                    )
                   );
                   props.onClose();
-                  notify.success("Artist Added Successufully!");
+                  notify.success("Album Added Successufully!");
                 }
               } catch (error: any) {
                 notify.error(error.toString());
               }
             }}
           >
-            {({ errors, touched, isValidating, setFieldValue }) => (
+            {({ errors, touched, isValidating, setFieldValue, values }) => (
               <Form>
                 <div className="relative py-8 px-5 md:px-10 bg-white shadow-md rounded border border-gray-400">
                   <h1 className="text-gray-800 font-lg font-bold tracking-normal leading-tight mb-4">
                     Enter Albums Details
+                    {JSON.stringify({ ...values, albumCover })}
                   </h1>
-
                   <label
                     htmlFor="name"
                     className="text-gray-800 text-sm font-bold leading-tight tracking-normal"
@@ -133,11 +179,11 @@ const AddEditAlbumModal = (props: Props) => {
                     )}
                     placeholder="Album Title"
                   />
-                   {touched.title && errors.title && (
-                      <div className="text-red-600">{errors.title}</div>
-                    )}
+                  {touched.title && errors.title && (
+                    <div className="text-red-600">{errors.title}</div>
+                  )}
 
-                  <AutoCompleteSearch
+                  {/* <AutoCompleteSearch
                     label="Artist"
                     selectedItem={selectedArtist}
                     setSelectedItem={(artist: any) => {
@@ -159,7 +205,7 @@ const AddEditAlbumModal = (props: Props) => {
                   />
                    {touched.artistId && errors.artistId && (
                       <div className="text-red-600">{errors.artistId}</div>
-                    )}
+                    )} */}
 
                   <label
                     htmlFor="releaseDate"
@@ -170,26 +216,33 @@ const AddEditAlbumModal = (props: Props) => {
                   <Field
                     id="releaseDate"
                     name="releaseDate"
+                    type="date"
+                    value={values.releaseDate}
                     className="mb-5 mt-2 text-gray-600 focus:outline-none focus:border focus:border-indigo-700 font-normal w-full h-10 flex items-center pl-3 text-sm border-gray-300 rounded border"
                     placeholder="Year"
                   />
-                   {touched.releaseDate && errors.releaseDate && (
-                      <div className="text-red-600">{errors.releaseDate}</div>
-                    )}
+                  {touched.releaseDate && errors.releaseDate && (
+                    <div className="text-red-600">{errors.releaseDate}</div>
+                  )}
                   <div className="overflow-hidden relative mt-4 mb-4">
                     <label className="block">
                       <span className="sr-only">Choose profile photo</span>
                       <input
                         type="file"
-                        name="cover"
+                        name="photo"
                         accept="image/*"
                         onChange={(event: any) => {
-                          setFieldValue("photo", event.currentTarget.files[0]);
-
+                          console.log(event.target.files[0], " is the file");
+                          setAlbumCover(event.target.files[0]);
                         }}
                         className="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold  file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100 hover:file:text-violet-800"
                       />
                     </label>
+                    <div className="my-2">
+                      <PreviewAlbumCover />
+                    </div>
+
+
                   </div>
                   <div className="flex items-center justify-start w-full">
                     <button
@@ -264,7 +317,7 @@ const AddEditAlbumModal = (props: Props) => {
           </Formik>
         </div>
       </div>
-    </div>
+    </div >
   );
 };
 

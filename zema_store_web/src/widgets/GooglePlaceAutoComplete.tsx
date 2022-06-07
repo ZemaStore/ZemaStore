@@ -14,7 +14,6 @@ type Props = {
   label: string;
   name?: string;
   inputProps: {};
-  url: string;
   setSelected: (value: any) => void;
 };
 
@@ -25,7 +24,7 @@ const PlacesAutocomplete = (props: Props) => {
   } | null>(null);
 
   const { isLoaded } = useLoadScript({
-    googleMapsApiKey: "AIzaSyBH79U0xjJLZFQHFkmOZ-4teTyme9zO8K4",
+    googleMapsApiKey: configs.REACT_APP_GOOGLE_MAP_API_KEY,
     libraries: ["places"],
   });
 

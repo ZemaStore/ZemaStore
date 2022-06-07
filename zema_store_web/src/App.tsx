@@ -53,10 +53,12 @@ function App() {
           }
         >
           <Route index element={<ArtistsPage />} />
-          <Route path=":id" element={<SongsIndexPage />}>
+          <Route path=":id" element={<AlbumsIndexPage from="artists" />}>
             <Route index element={<AlbumsPage from="artists" />} />
-            <Route path="songs" element={<SongsPage from="artists" />} />
-            <Route path="songs/:id" element={<SongDetail from="artists" />} />
+            <Route path=":id" element={<SongsIndexPage />} >
+              <Route index element={<SongsPage from="artists" />} />
+              <Route path=":id" element={<SongDetail from="artists" />} />
+            </Route>
           </Route>
         </Route>
         <Route
@@ -64,7 +66,7 @@ function App() {
           element={
             <ProtectedRoute
               redirectPath="/albums"
-              children={<AlbumsIndexPage />}
+              children={<AlbumsIndexPage from="home" />}
             />
           }
         >

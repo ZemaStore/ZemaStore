@@ -50,7 +50,11 @@ export const addAlbumsApi = createAsyncThunk<any, any>(
   "/addAlbum",
   async (payload, { rejectWithValue, fulfillWithValue, dispatch }) => {
     try {
-      const { data } = await AlbumsService.addAlbum(payload);
+      const { data, error } = await AlbumsService.addAlbum(payload);
+      if (error) {
+        return rejectWithValue(data);
+      }
+      console.log(data, " is the added album data");
       return fulfillWithValue(data);
     } catch (err: any) {
       return rejectWithValue(err.response.data);
@@ -60,9 +64,15 @@ export const addAlbumsApi = createAsyncThunk<any, any>(
 
 export const updateAlbumsApi = createAsyncThunk<any, any>(
   "/updateAlbum",
-  async (payload, { rejectWithValue, fulfillWithValue, dispatch }) => {
+  async (
+    payload: FormData,
+    { rejectWithValue, fulfillWithValue, dispatch }
+  ) => {
     try {
-      const { data } = await AlbumsService.updateAlbum(payload);
+      const albumId = payload.get("id")?.toString() || "";
+      payload.delete("id");
+      const { data } = await AlbumsService.updateAlbum(albumId, payload);
+
       return fulfillWithValue(data);
     } catch (err: any) {
       return rejectWithValue(err.response.data);
@@ -74,7 +84,12 @@ export const deleteAlbumsApi = createAsyncThunk<any, any>(
   "/deleteAlbum",
   async (payload, { rejectWithValue, fulfillWithValue, dispatch }) => {
     try {
-      const { data } = await AlbumsService.updateAlbum(payload);
+      const { data, error } = await AlbumsService.deleteAlbum(payload);
+      console.log(data, " is the deleted album data");
+      if (error) {
+        return rejectWithValue(error);
+      }
+      dispatch(removeAlbum(payload));
     } catch (err: any) {
       return rejectWithValue(err.response.data);
     }
@@ -109,8 +124,14 @@ export const albumsSlice = createSlice({
     },
     // can be called when we want to remove Album
     removeAlbum: (state, { payload: id }) => {
+      console.log(id, " is the album id");
+
       state.albums =
-        state.albums && state.albums.filter((album: Album) => album.id !== id);
+        state.albums &&
+        state.albums.filter((album: any) => {
+          console.log(album, id, " is the album id");
+          return album.album.id !== id;
+        });
       state.isLoading = false;
       state.searchAlbumsList = state.albums;
     },
@@ -148,6 +169,47 @@ export const albumsSlice = createSlice({
         state.meta.limit = 10;
       })
       .addCase(getAlbumsApi.rejected, (state, { payload }) => {
+        state.isLoading = false;
+        state.error = true;
+        state.errorMessage = (payload as string).toString();
+      })
+
+      .addCase(addAlbumsApi.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(addAlbumsApi.fulfilled, (state, { payload }) => {
+        state.isLoading = false;
+        if (state.albums.length === 10) {
+          state.albums.pop();
+        }
+        state.albums.unshift(payload);
+        state.searchAlbumsList = state.albums;
+      })
+      .addCase(addAlbumsApi.rejected, (state, { payload }) => {
+        state.isLoading = false;
+        state.error = true;
+        state.errorMessage = (payload as string).toString();
+      })
+
+      .addCase(updateAlbumsApi.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(updateAlbumsApi.fulfilled, (state, { payload }) => {
+        state.albums =
+          state.albums &&
+          state.albums.map((album: any) => {
+            if (album.album.id === payload.album.id) {
+              return {
+                ...album,
+                ...payload,
+              };
+            }
+            return album;
+          });
+        state.searchAlbumsList = state.albums;
+        state.isLoading = false;
+      })
+      .addCase(updateAlbumsApi.rejected, (state, { payload }) => {
         state.isLoading = false;
         state.error = true;
       });

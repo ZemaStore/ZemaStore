@@ -48,10 +48,14 @@ const AddEditArtistModal = (props: Props) => {
   const dispatch = useAppDispatch();
 
   const DisplayingErrorMessagesSchema = Yup.object().shape({
-    fullName: Yup.string()
+    firstName: Yup.string()
       .min(2, "Too Short!")
       .max(50, "Too Long!")
-      .required("Please Enter fullname"),
+      .required("Please Enter firstname"),
+    lastName: Yup.string()
+      .min(2, "Too Short!")
+      .max(50, "Too Long!")
+      .required("Please Enter lastname"),
     email: Yup.string().email("Invalid Email").required("Required!"),
 
     phone: Yup.string()
@@ -119,7 +123,8 @@ const AddEditArtistModal = (props: Props) => {
         >
           <Formik
             initialValues={{
-              fullName: props.isEditing ? props.artistData?.fullName : "",
+              firstName: props.isEditing ? props.artistData?.firstName : "",
+              lastName: props.isEditing ? props.artistData?.lastName : "",
               email: props.isEditing ? props.artistData?.email : "",
               phone: props.isEditing ? props.artistData?.phone : "",
               password: "",
@@ -128,12 +133,13 @@ const AddEditArtistModal = (props: Props) => {
             onSubmit={async (values) => {
               try {
                 if (props.isEditing) {
-                  console.log(props.artistData, "arthis data")
+                  console.log(props.artistData, "arthis data");
                   let updatedData: any = {};
                   updatedData.id = props.artistData?.id;
                   updatedData.phone = values.phone;
                   updatedData.email = values.email;
-                  updatedData.fullName = values.fullName;
+                  updatedData.firstName = values.firstName;
+                  updatedData.lastName = values.lastName;
                   if (values.password !== "") {
                     updatedData.password = values.password;
                   }
@@ -151,32 +157,58 @@ const AddEditArtistModal = (props: Props) => {
             }}
           >
             {({ errors, touched, isValidating }) => (
-              <Form >
-                <div className="relative py-8 px-5 md:px-10 bg-white shadow-md rounded border border-gray-400" data-test-id="artitst_add_edit_title">
+              <Form>
+                <div
+                  className="relative py-8 px-5 md:px-10 bg-white shadow-md rounded border border-gray-400"
+                  data-test-id="artitst_add_edit_title"
+                >
                   <h1 className="text-gray-800 font-lg font-bold tracking-normal leading-tight mb-4">
                     Enter Artists Details
                   </h1>
                   <div className="my-5">
                     <label
-                      htmlFor="fullName"
+                      htmlFor="firstName"
                       className="text-gray-800 text-sm font-bold leading-tight tracking-normal"
                     >
-                      Artist Name
+                      First Name
                     </label>
                     <Field
-                      id="fullName"
-                      data-test-id="fullName"
-                      name="fullName"
+                      id="firstName"
+                      data-test-id="firstName"
+                      name="firstName"
                       className={clsx(
                         "mb-5 mt-2 text-gray-600 focus:outline-none focus:border focus:border-indigo-700 font-normal w-full h-10 flex items-center pl-3 text-sm border-gray-300 rounded border",
-                        touched.fullName && errors.fullName
+                        touched.firstName && errors.firstName
                           ? "border-red-500"
                           : ""
                       )}
                       placeholder="Artist Name"
                     />
-                    {touched.fullName && errors.fullName && (
-                      <div className="text-red-600">{errors.fullName}</div>
+                    {touched.firstName && errors.firstName && (
+                      <div className="text-red-600">{errors.firstName}</div>
+                    )}
+                  </div>
+                  <div className="my-5">
+                    <label
+                      htmlFor="lastName"
+                      className="text-gray-800 text-sm font-bold leading-tight tracking-normal"
+                    >
+                      Last Name
+                    </label>
+                    <Field
+                      id="lastName"
+                      data-test-id="lastName"
+                      name="lastName"
+                      className={clsx(
+                        "mb-5 mt-2 text-gray-600 focus:outline-none focus:border focus:border-indigo-700 font-normal w-full h-10 flex items-center pl-3 text-sm border-gray-300 rounded border",
+                        touched.lastName && errors.lastName
+                          ? "border-red-500"
+                          : ""
+                      )}
+                      placeholder="Artist Name"
+                    />
+                    {touched.lastName && errors.lastName && (
+                      <div className="text-red-600">{errors.lastName}</div>
                     )}
                   </div>
 
@@ -210,7 +242,7 @@ const AddEditArtistModal = (props: Props) => {
                       Phone
                     </label>
                     <Field
-                    data-test-id="artist_phone"
+                      data-test-id="artist_phone"
                       id="phone"
                       name="phone"
                       type="tel"
@@ -234,7 +266,7 @@ const AddEditArtistModal = (props: Props) => {
                     </label>
                     <div className="flex flex-col relative items-center py-2">
                       <Field
-                      data-test-id="artist_password"
+                        data-test-id="artist_password"
                         id="password"
                         type={showPassword ? "text" : "password"}
                         name="password"
@@ -320,7 +352,7 @@ const AddEditArtistModal = (props: Props) => {
                     </button>
                   </div>
                   <button
-                  data-test-id="artist_submit_button"
+                    data-test-id="artist_submit_button"
                     className="cursor-pointer absolute top-0 right-0 mt-4 mr-5 text-gray-400 hover:text-gray-600 transition duration-150 ease-in-out rounded focus:ring-2 focus:outline-none focus:ring-gray-600"
                     onClick={() => modalHandler(false)}
                     aria-label="close modal"

@@ -36,7 +36,10 @@ export const getUsersApi = createAsyncThunk<any, any>(
   "/users",
   async (payload, { rejectWithValue, fulfillWithValue, dispatch }) => {
     try {
-      const { data } = await UsersService.getUsers();
+      const { data } = await UsersService.getUsers(
+        payload.currentPage,
+        "createdAt%3Aasc"
+      );
       console.log("data is ", data);
       return fulfillWithValue(data);
     } catch (err: any) {
@@ -80,8 +83,11 @@ export const usersSlice = createSlice({
       state.searchUsersList =
         state.users &&
         state.users.filter((user: User) => {
-          if (payload.name && user.fullName) {
-            return user.fullName.toLowerCase().includes(payload.name);
+          if (payload.name && user.firstName && user.lastName) {
+            return (
+              user.firstName.toLowerCase().includes(payload.name) ||
+              user.lastName.toLowerCase().includes(payload.name)
+            );
           } else {
             return false;
           }

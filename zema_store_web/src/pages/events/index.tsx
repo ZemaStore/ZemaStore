@@ -15,8 +15,12 @@ function EventsPage() {
   const dispatch = useAppDispatch();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const { meta } = useAppSelector(eventsSelector);
+
+  const [shouldReload, setShouldReload] = useState(false);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+
   const fetchEvents = useCallback(async () => {
-    await dispatch(getEventsApi({}));
+    await dispatch(getEventsApi({ currentPage }));
   }, [dispatch]);
 
   useEffect(() => {
@@ -50,7 +54,7 @@ function EventsPage() {
       {isAddModalOpen && (
         <AddEditEventModal
           onClose={onCloseModal}
-          onSubmit={() => {}}
+          onSubmit={() => { }}
           isEditing={false}
         />
       )}
@@ -58,7 +62,7 @@ function EventsPage() {
         <AddEditEventModal
           onClose={onCloseModal}
           eventData={selectedEvent}
-          onSubmit={() => {}}
+          onSubmit={() => { }}
           isEditing={true}
         />
       )}
@@ -94,9 +98,11 @@ function EventsPage() {
         />
       </div>
       <Pagination
-        currentPage={meta.currentPage}
+        setCurrentPage={setCurrentPage}
+        currentPage={currentPage}
         pageSize={meta.limit}
-        totalItems={meta.total}
+        totalItems={meta.totalPage}
+        totalPages={meta.totalPage}
       />
     </BaseLayout>
   );

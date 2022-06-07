@@ -86,7 +86,7 @@ const ArtistsTable = (props: Props) => {
                           />
                         </div>
                         <div className="pl-4">
-                          <p className="font-medium">{artist.fullName}</p>
+                          <p className="font-medium">{`${artist.firstName} ${artist.lastName}`}</p>
                         </div>
                       </div>
                     </td>
@@ -122,7 +122,7 @@ const ArtistsTable = (props: Props) => {
                       onClick={handleClickMore(artist.id)}
                     >
                       <button
-                      data-test-id="hamburgur"
+                        data-test-id="hamburgur"
                         onClick={handleClickMore(artist.id)}
                         className="focus:outline-none pl-7"
                       >
@@ -159,14 +159,14 @@ const ArtistsTable = (props: Props) => {
                       {selectedArtistId === artist.id && (
                         <div className="dropdown-content bg-white shadow-lg shadow-blue-100 w-24 absolute z-50 right-0 mr-16">
                           <div
-                          data-test-id="artist_edit"
+                            data-test-id="artist_edit"
                             onClick={() => handleEditArtist(artist)}
                             className="text-xs w-full hover:bg-indigo-700 py-4 px-4 cursor-pointer hover:text-white"
                           >
                             <p>Edit</p>
                           </div>
                           <div
-                          data-test-id="artist_delete"
+                            data-test-id="artist_delete"
                             onClick={() => handleDeleteArtist(artist)}
                             className="text-xs w-full hover:bg-indigo-700 py-4 px-4 cursor-pointer hover:text-white"
                           >

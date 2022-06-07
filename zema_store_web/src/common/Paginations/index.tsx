@@ -2,31 +2,31 @@ import clsx from "clsx";
 import React, { useState } from "react";
 
 type Props = {
-  totalItems?: number;
-  currentPage?: number;
-  pageSize?: number;
+  totalItems: number;
+  currentPage: number;
+  pageSize: number;
+  totalPages: number;
+  setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
 };
 
 export default function Pagination(props: Props) {
   let { totalItems, pageSize } = props;
-  const [currentPage, setCurrentPage] = useState(props.currentPage || 1);
-  const itemsPerPage = pageSize || 8;
+  const itemsPerPage = 10;
   const pageCount = totalItems || 25;
-
-  let [pages] = useState(Math.ceil(pageCount / itemsPerPage));
-  let start = Math.floor((currentPage - 1) / itemsPerPage) * itemsPerPage;
+  const pages = props.totalPages;
+  let start = Math.floor(props.currentPage / 10);
 
   function goToNextPage() {
-    setCurrentPage((page) => page + 1);
+    props.setCurrentPage((page) => page + 1);
   }
 
   function goToPreviousPage() {
-    setCurrentPage((page) => page - 1);
+    props.setCurrentPage((page) => page - 1);
   }
 
   function changePage(event: any) {
     const pageNumber = Number(event.target.textContent);
-    setCurrentPage(pageNumber);
+    props.setCurrentPage(pageNumber);
   }
   const getPaginationGroup = () => {
     return new Array(Math.min(pages - start, 10))
@@ -42,8 +42,8 @@ export default function Pagination(props: Props) {
             {/* previous button */}
             <button
               onClick={goToPreviousPage}
-              disabled={currentPage === 1}
-              className={`prev ${currentPage === 1 ? "disabled" : ""}`}
+              disabled={props.currentPage === 1}
+              className={`prev ${props.currentPage === 1 ? "disabled" : ""}`}
             >
               <div className=" flex items-center pt-3 text-gray-600 hover:text-indigo-700 cursor-pointer">
                 <svg
@@ -88,13 +88,13 @@ export default function Pagination(props: Props) {
                   key={index}
                   onClick={changePage}
                   className={`paginationItem ${
-                    currentPage === item ? "active" : null
+                    props.currentPage === item ? "active" : null
                   }`}
                 >
                   <p
                     className={clsx(
                       "text-sm font-medium leading-none cursor-pointer",
-                      item === currentPage
+                      item === props.currentPage
                         ? "text-indigo-700 border-t border-indigo-400 pt-3 mr-4 px-2"
                         : " text-gray-600 hover:text-indigo-700 border-t border-transparent hover:border-indigo-400 pt-3 mr-4 px-2"
                     )}
@@ -108,8 +108,10 @@ export default function Pagination(props: Props) {
             {/* next button */}
             <button
               onClick={goToNextPage}
-              disabled={currentPage === pages}
-              className={`next ${currentPage === pages ? "disabled" : ""}`}
+              disabled={props.currentPage === pages}
+              className={`next ${
+                props.currentPage === pages ? "disabled" : ""
+              }`}
             >
               <div className="flex items-center pt-3 text-gray-600 hover:text-indigo-700 cursor-pointer">
                 <p className="text-sm font-medium leading-none mr-3">Next</p>

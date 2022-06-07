@@ -38,7 +38,10 @@ export const getEventsApi = createAsyncThunk<any, any>(
   "/events",
   async (payload, { rejectWithValue, fulfillWithValue, dispatch }) => {
     try {
-      const { data } = await EventsService.getEvents();
+      const { data } = await EventsService.getEvents(
+        payload.currentPage,
+        "createdAt%3Aasc"
+      );
 
       return fulfillWithValue(data);
     } catch (err: any) {
