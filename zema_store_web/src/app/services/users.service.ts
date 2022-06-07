@@ -1,17 +1,20 @@
 import { baseUrl } from ".";
 import Request from "../api/request";
 
-const getUsers = async () => {
-  const { data } = await Request.get(`${baseUrl}/users`);
+const getUsers = async (currentPage: number, orderBy: string) => {
+  const { data } = await Request.get(
+    `${baseUrl}/users?page=${currentPage - 1}&sortBy=${orderBy}`
+  );
   const res = {
     ...data,
     users: data.users.map(
       (user: { _id: any; profileId: { fullName: any } }) => {
+        console.log("user is ", user.profileId);
         return {
           ...user,
           id: user._id,
-          fullName: user.profileId?.fullName,
-          isActive: true,
+          firstName: user.profileId?.fullName,
+          lastName: user.profileId?.fullName,
           avatar:
             "https://cdn.tuk.dev/assets/templates/olympus/projects(3).png",
           subType: {
@@ -31,14 +34,11 @@ const getUsers = async () => {
       }
     ),
   };
-  console.log(res, " is response");
   return { data: res };
 };
 
 const toggleUserStatus = async (userId: string) => {
-  const { data } = await Request.patch(
-    `${baseUrl}/users/${userId}/toggleStatus`
-  );
+  const { data } = await Request.patch(`${baseUrl}/users/status/${userId}`);
   return { data };
 };
 

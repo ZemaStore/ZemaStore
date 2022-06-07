@@ -34,7 +34,10 @@ export const getSubscriptionsApi = createAsyncThunk<any, any>(
   "/subscriptions",
   async (payload, { rejectWithValue, fulfillWithValue, dispatch }) => {
     try {
-      const { data } = await SubscriptionsService.getSubscriptions();
+      const { data } = await SubscriptionsService.getSubscriptions(
+        payload.currentPage,
+        "createdAt%3Aasc"
+      );
       return fulfillWithValue(data);
     } catch (err: any) {
       return rejectWithValue(err.response.data);

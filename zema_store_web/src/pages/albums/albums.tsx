@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/hooks/redux_hooks";
-import { getAlbumsApi } from "../../app/store/features/albums/albumsSlice";
+import { deleteAlbumsApi, getAlbumsApi } from "../../app/store/features/albums/albumsSlice";
 import Pagination from "../../common/Paginations";
 import AlbumsTable from "../../components/AlbumsTable";
 import AddEditAlbumModal from "../../components/Modals/AddEditAlbum";
@@ -20,8 +20,14 @@ const AlbumsPage = (props: Props) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
   const [selectedAlbum, setSelectedAlbum] = useState<Album | null>(null);
   const [setArtistDetail, setSetArtistDetail] = useState(null);
-  const { meta } = useAppSelector((state) => state.albums);
+  const [shouldReload, setShouldReload] = useState(false);
+
+  const { meta, searchAlbumsList } = useAppSelector((state) => state.albums);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+
   const location = useLocation();
+  const ArtistId = location.pathname.split("/").slice().pop();
+
   const onCloseModal = () => {
     setIsAddModalOpen(false);
     setIsEditModalOpen(false);
@@ -53,12 +59,22 @@ const AlbumsPage = (props: Props) => {
         id: pathId || null,
       };
     }
-    await dispatch(getAlbumsApi(from));
-  }, [dispatch]);
+    await dispatch(getAlbumsApi({
+      ...from,
+      currentPage,
+      orderBy: "createdAt%3Adesc",
+    }));
+  }, [dispatch, currentPage]);
 
   useEffect(() => {
     fetchAlbums();
-  }, [fetchAlbums]);
+  }, [fetchAlbums, shouldReload, currentPage]);
+
+  const onDeleteModal = async () => {
+    await dispatch(deleteAlbumsApi(selectedAlbum?.id));
+    onCloseModal()
+  };
+
 
   return (
     <main>
@@ -66,15 +82,17 @@ const AlbumsPage = (props: Props) => {
         {isAddModalOpen && (
           <AddEditAlbumModal
             onClose={onCloseModal}
-            onSubmit={() => {}}
+            arstistId={ArtistId}
+            onSubmit={() => { }}
             isEditing={false}
           />
         )}{" "}
         {isEditModalOpen && (
           <AddEditAlbumModal
             onClose={onCloseModal}
+            arstistId={ArtistId}
             albumData={selectedAlbum}
-            onSubmit={() => {}}
+            onSubmit={() => { }}
             isEditing={true}
           />
         )}
@@ -83,7 +101,7 @@ const AlbumsPage = (props: Props) => {
             deleteMessage="Delete Album"
             deleteDescription="Are you sure you want to delete?"
             buttonText="Delete"
-            onDelete={onCloseModal}
+            onDelete={onDeleteModal}
             onClose={onCloseModal}
           />
         )}
@@ -92,16 +110,18 @@ const AlbumsPage = (props: Props) => {
             <p className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold leading-normal text-gray-800">
               Albums
             </p>
-            <div>
-              <button
-                onClick={() => handleModalOpen()}
-                className="inline-flex sm:ml-3 mt-4 sm:mt-0 items-start justify-start px-6 py-3 bg-indigo-700 hover:bg-indigo-600 focus:outline-none rounded"
-              >
-                <p className="text-sm font-medium leading-none text-white">
-                  Add Album
-                </p>
-              </button>
-            </div>
+            {location.pathname.includes("artists") && (
+              <div>
+                <button
+                  onClick={() => handleModalOpen()}
+                  className="inline-flex sm:ml-3 mt-4 sm:mt-0 items-start justify-start px-6 py-3 bg-indigo-700 hover:bg-indigo-600 focus:outline-none rounded"
+                >
+                  <p className="text-sm font-medium leading-none text-white">
+                    Add Album
+                  </p>
+                </button>
+              </div>
+            )}
           </div>
         </div>
         <AlbumsTable
@@ -109,11 +129,17 @@ const AlbumsPage = (props: Props) => {
           setSelectedAlbum={setSelectedAlbum}
         />
       </div>
-      <Pagination
-        currentPage={meta.currentPage}
-        pageSize={meta.limit}
-        totalItems={meta.total}
-      />
+      {
+        searchAlbumsList.length > 0 && (
+          <Pagination
+            setCurrentPage={setCurrentPage}
+            currentPage={currentPage}
+            pageSize={meta.limit}
+            totalItems={meta.totalPage}
+            totalPages={meta.totalPage}
+          />
+        )
+      }
     </main>
   );
 };

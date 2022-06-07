@@ -2,7 +2,7 @@ import { useEffect, useLayoutEffect, useState } from "react";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import clsx from "clsx";
-import { Event } from "../../helpers/types";
+import { Event, PlaceType } from "../../helpers/types";
 import { useAppDispatch, useAppSelector } from "../../app/hooks/redux_hooks";
 
 import {
@@ -13,6 +13,9 @@ import {
 } from "../../app/store/features/events/eventsSlice";
 import PlacesAutocomplete from "../../widgets/GooglePlaceAutoComplete";
 import notify from "../../utils/notify";
+import AutoComplete from "../../widgets/AutocompleteSearch";
+import PlaceAutocomplete from "../../widgets/PlaceAutocomplete";
+import PlacesAutocompleteSearch from "../../widgets/PlaceAutocomplete";
 
 Yup.addMethod(
   Yup.string,
@@ -29,7 +32,7 @@ Yup.addMethod(
   }
 );
 
-const DisplayingErrorMessagesSchema = Yup.object().shape({
+const EventsValidationSchema = Yup.object().shape({
   title: Yup.string()
     .min(2, "Too Short!")
     .max(50, "Too Long!")
@@ -54,8 +57,13 @@ type Props = {
 const AddEditEventModal = (props: Props) => {
   let modal = document.getElementById("add_event_modal");
   const { isLoading } = useAppSelector(eventsSelector);
-  const [selected, setSelected] = useState(null);
-
+  const [selectedPlace, setSelectedPlace] = useState<PlaceType>(
+    props.eventData?.venue || {
+      name: "Addis Ababa, Addis Ababa",
+      latitude: 8.9806034,
+      longitude: 38.7577605,
+    }
+  );
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -111,20 +119,23 @@ const AddEditEventModal = (props: Props) => {
               startDate: props.isEditing ? props.eventData?.startDate : "",
               endDate: props.isEditing ? props.eventData?.endDate : "",
             }}
-            validationSchema={DisplayingErrorMessagesSchema}
+            validationSchema={EventsValidationSchema}
             onSubmit={async (values) => {
               try {
                 if (props.isEditing) {
                   const updatedData = {
                     ...props.eventData,
                     ...values,
+                    venue: selectedPlace,
                   };
                   console.log(values, updatedData, " is up");
                   await dispatch(updateEvent(updatedData));
                   props.onClose();
                   notify.success("Event Updated Successufully!");
                 } else {
-                  await dispatch(addEventsApi(values));
+                  await dispatch(
+                    addEventsApi({ venue: selectedPlace, ...values })
+                  );
                   props.onClose();
                   notify.success("Event Added Successufully!");
                 }
@@ -170,11 +181,13 @@ const AddEditEventModal = (props: Props) => {
                       Summary
                     </label>
                     <Field
+                      component="textarea"
+                      rows={3}
                       id="summary"
                       name="summary"
                       data-test-id="summary"
                       className={clsx(
-                        "mb-5 mt-2 text-gray-600 focus:outline-none focus:border focus:border-indigo-700 font-normal w-full h-10 flex items-center pl-3 text-sm border-gray-300 rounded border",
+                        "mb-5 mt-2 text-gray-600 focus:outline-none focus:border focus:border-indigo-700 font-normal w-full min-h-10 flex items-center pl-3 pt-3 text-sm border-gray-300 rounded border",
                         touched.summary && errors.summary
                           ? "border-red-500"
                           : ""
@@ -184,6 +197,25 @@ const AddEditEventModal = (props: Props) => {
                     {touched.summary && errors.summary && (
                       <div className="text-red-600">{errors.summary}</div>
                     )}
+                  </div>
+                  <div className="my-5">
+                    <label
+                      htmlFor="places"
+                      className="text-gray-800 text-sm font-bold leading-tight tracking-normal"
+                    >
+                      Event Places
+                    </label>
+                    <PlacesAutocompleteSearch
+                      selectedPlace={selectedPlace}
+                      setSelectedPlace={setSelectedPlace}
+                      inputProps={{
+                        className:
+                          "mb-5 mt-2 text-gray-600 focus:outline-none focus:border focus:border-indigo-700 font-normal w-full h-10 flex items-center pl-3 text-sm border-gray-300 rounded border",
+                        placeholder: "Enter Location",
+                      }}
+                      name="places"
+                      id="places"
+                    />
                   </div>
                   <div className="my-5">
                     <label
@@ -234,18 +266,6 @@ const AddEditEventModal = (props: Props) => {
                     )}
                   </div>
 
-                  <div className="my-5">
-                    {/* <PlacesAutocomplete
-                      setSelected={setSelected}
-                      label={""}
-                      inputProps={{
-                        className:
-                          "mb-5 mt-2 text-gray-600 focus:outline-none focus:border focus:border-indigo-700 font-normal w-full h-10 flex items-center pl-3 text-sm border-gray-300 rounded border",
-                        placeholder: "Enter Location",
-                      }}
-                      url={""}
-                    /> */}
-                  </div>
                   <div className="flex items-center justify-start w-full">
                     <button
                       type="submit"
@@ -277,7 +297,6 @@ const AddEditEventModal = (props: Props) => {
                               d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                             ></path>
                           </svg>
-                          
                           Loading...
                         </>
                       ) : (

@@ -1,30 +1,52 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks/redux_hooks";
+import UsersService from "../../app/services/users.service";
 import { getUsersApi } from "../../app/store/features/users/usersSlice";
 import BaseLayout from "../../common/Layout";
 import Pagination from "../../common/Paginations";
 import DeleteModal from "../../components/Modals/DeleteModal";
 import UsersTable from "../../components/UsersTable";
 import { User } from "../../helpers/types";
+import notify from "../../utils/notify";
 
 type Props = {};
 
 const UsersPage = (props: Props) => {
   const dispatch = useAppDispatch();
   const { meta } = useAppSelector((state) => state.users);
+  const [currentPage, setCurrentPage] = useState<number>(1);
   const [isBlockModalOpen, setIsBlockModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [shouldReload, setShouldReload] = useState(false);
+
   const fetchUsers = useCallback(async () => {
-    await dispatch(getUsersApi({}));
-  }, [dispatch]);
+    await dispatch(getUsersApi({ currentPage }));
+  }, [dispatch, currentPage]);
 
   useEffect(() => {
     fetchUsers();
-  }, [fetchUsers]);
+  }, [fetchUsers, shouldReload, currentPage]);
 
   const onCloseModal = () => {
-    
     setIsBlockModalOpen(false);
+  };
+
+  const toggleUserStatus = useCallback(async () => {
+    if (selectedUser) {
+      try {
+        await UsersService.toggleUserStatus(selectedUser?.id);
+        setShouldReload((prev) => !prev);
+        notify.success("User Account Status Updated");
+      } catch (error) {
+        notify.error("There is an error when updated User status");
+      }
+    }
+  }, [selectedUser]);
+
+  const onUserBlock = () => {
+    console.log("hellow", selectedUser);
+    setIsBlockModalOpen(false);
+    toggleUserStatus();
   };
 
   const handleModalOpen = () => {
@@ -35,10 +57,12 @@ const UsersPage = (props: Props) => {
     <BaseLayout>
       {isBlockModalOpen && (
         <DeleteModal
-          deleteMessage="Block User"
-          deleteDescription="Are you sure you want to block user?"
-          buttonText="Block"
-          onDelete={onCloseModal}
+          deleteMessage={`${selectedUser?.isActive ? "Block" : "Unblock"} User`}
+          deleteDescription={`Are you sure you want to ${
+            selectedUser?.isActive ? "block" : "unblock"
+          } user?`}
+          buttonText={`${selectedUser?.isActive ? "Block" : "Unblock"}`}
+          onDelete={onUserBlock}
           onClose={onCloseModal}
         />
       )}
@@ -56,9 +80,11 @@ const UsersPage = (props: Props) => {
         />
       </div>
       <Pagination
-        currentPage={meta.currentPage}
+        setCurrentPage={setCurrentPage}
+        currentPage={currentPage}
         pageSize={meta.limit}
-        totalItems={meta.total}
+        totalItems={meta.totalPage}
+        totalPages={meta.totalPage}
       />
     </BaseLayout>
   );

@@ -9,6 +9,8 @@ export type songsState = {
   searchSongsList: Array<Song>;
   isLoading: boolean;
   error: boolean;
+  errorMessage: string;
+
   meta: {
     total: number;
     totalPage: number;
@@ -23,6 +25,7 @@ const initialState: songsState = {
   searchSongsList: [],
   isLoading: false,
   error: false,
+  errorMessage: "",
   meta: {
     total: 0,
     totalPage: 1,
@@ -46,10 +49,65 @@ export const getSongsApi = createAsyncThunk<any, any>(
   }
 );
 
+export const addSongsApi = createAsyncThunk<any, any>(
+  "/addSong",
+  async (payload, { rejectWithValue, fulfillWithValue, dispatch }) => {
+    try {
+      const { data, error } = await SongsService.addSong(payload);
+      if (error) {
+        return rejectWithValue(data);
+      }
+      console.log(data, " is the added album data");
+      return fulfillWithValue(data);
+    } catch (err: any) {
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
+export const updateSongsApi = createAsyncThunk<any, any>(
+  "/updateSong",
+  async (
+    payload: FormData,
+    { rejectWithValue, fulfillWithValue, dispatch }
+  ) => {
+    try {
+      const albumId = payload.get("id")?.toString() || "";
+      payload.delete("id");
+      const { data } = await SongsService.updateSong(albumId, payload);
+
+      return fulfillWithValue(data);
+    } catch (err: any) {
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
+export const deleteSongsApi = createAsyncThunk<any, any>(
+  "/deleteSong",
+  async (payload, { rejectWithValue, fulfillWithValue, dispatch }) => {
+    try {
+      const { data, error } = await SongsService.deleteSong(payload);
+      console.log(data, " is the deleted album data");
+      if (error) {
+        return rejectWithValue(error);
+      }
+      dispatch(removeSong(payload));
+    } catch (err: any) {
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
 export const songsSlice = createSlice({
   name: "songs",
   initialState,
   reducers: {
+    clearMessage: (state) => {
+      state.isLoading = false;
+      state.error = false;
+      state.errorMessage = "";
+    },
     addSong: (state, { payload }) => {
       state.songs.push(payload);
       state.isLoading = false;
@@ -111,6 +169,45 @@ export const songsSlice = createSlice({
         state.meta.limit = 10;
       })
       .addCase(getSongsApi.rejected, (state, { payload }) => {
+        state.isLoading = false;
+        state.error = true;
+      })
+      .addCase(addSongsApi.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(addSongsApi.fulfilled, (state, { payload }) => {
+        state.isLoading = false;
+        if (state.songs.length === 10) {
+          state.songs.pop();
+        }
+        state.songs.unshift(payload);
+        state.searchSongsList = state.songs;
+      })
+      .addCase(addSongsApi.rejected, (state, { payload }) => {
+        state.isLoading = false;
+        state.error = true;
+        state.errorMessage = (payload as string).toString();
+      })
+
+      .addCase(updateSongsApi.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(updateSongsApi.fulfilled, (state, { payload }) => {
+        state.songs =
+          state.songs &&
+          state.songs.map((album: any) => {
+            if (album.album.id === payload.album.id) {
+              return {
+                ...album,
+                ...payload,
+              };
+            }
+            return album;
+          });
+        state.searchSongsList = state.songs;
+        state.isLoading = false;
+      })
+      .addCase(updateSongsApi.rejected, (state, { payload }) => {
         state.isLoading = false;
         state.error = true;
       });

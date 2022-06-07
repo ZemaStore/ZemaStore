@@ -1,26 +1,30 @@
 import { useCallback, useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks/redux_hooks";
-import { deleteArtistsApi, getArtistsApi } from "../../app/store/features/artists/artistsSlice";
+import {
+  deleteArtistsApi,
+  getArtistsApi,
+} from "../../app/store/features/artists/artistsSlice";
 import Pagination from "../../common/Paginations";
 import ArtistsTable from "../../components/ArtistsTable";
 import AddEditArtistModal from "../../components/Modals/AddEditArtist";
 import DeleteModal from "../../components/Modals/DeleteModal";
 import { Artist } from "../../helpers/types";
- 
+
 function ArtistsPage() {
   const dispatch = useAppDispatch();
   const [isAddModalOpen, setIsAddModalOpen] = useState<boolean>(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
   const [selectedArtist, setSelectedArtist] = useState<Artist | null>(null);
-  const { meta } = useAppSelector((state) => state.artists);
+  const { searchArtistsList, meta } = useAppSelector((state) => state.artists);
+  const [shouldReload, setShouldReload] = useState(false);
+  const [currentPage, setCurrentPage] = useState<number>(1);
 
   const onCloseModal = () => {
     setIsAddModalOpen(false);
     setIsEditModalOpen(false);
     setIsDeleteModalOpen(false);
-    console.log('closed?')
-    dispatch(deleteArtistsApi(selectedArtist?.id))
+    console.log("closed?");
   };
 
   const handleModalOpen = (modalType = "add") => {
@@ -33,17 +37,18 @@ function ArtistsPage() {
     }
   };
 
-  const onDeleteModal = async ()=>{
-    await dispatch(deleteArtistsApi(selectedArtist?.id))
-  }
+  const onDeleteModal = async () => {
+    await dispatch(deleteArtistsApi(selectedArtist?.id));
+    onCloseModal()
+  };
 
   const fetchArtists = useCallback(async () => {
-    await dispatch(getArtistsApi({}));
-  }, [dispatch]);
+    await dispatch(getArtistsApi({ currentPage }));
+  }, [dispatch, currentPage]);
 
   useEffect(() => {
     fetchArtists();
-  }, [fetchArtists]);
+  }, [fetchArtists, shouldReload, currentPage]);
 
   return (
     <main>
@@ -51,15 +56,15 @@ function ArtistsPage() {
         {isAddModalOpen && (
           <AddEditArtistModal
             onClose={onCloseModal}
-            onSubmit={() => {}}
+            onSubmit={() => { }}
             isEditing={false}
           />
-        )}{" "}
+        )}
         {isEditModalOpen && (
           <AddEditArtistModal
             onClose={onCloseModal}
             artistData={selectedArtist}
-            onSubmit={() => {}}
+            onSubmit={() => { }}
             isEditing={true}
           />
         )}
@@ -97,11 +102,17 @@ function ArtistsPage() {
           />
         </div>
       </div>
-      <Pagination
-        currentPage={meta.currentPage}
-        pageSize={meta.limit}
-        totalItems={meta.total}
-      />
+      {
+        searchArtistsList.length > 0 && (
+          <Pagination
+            setCurrentPage={setCurrentPage}
+            currentPage={currentPage}
+            pageSize={meta.limit}
+            totalItems={meta.totalPage}
+            totalPages={meta.totalPage}
+          />
+        )
+      }
     </main>
   );
 }

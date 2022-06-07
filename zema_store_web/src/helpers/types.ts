@@ -11,9 +11,16 @@ export type LocationState = {
   from: Location;
 };
 
+export type PlaceType = {
+  name: string;
+  latitude: number;
+  longitude: number;
+};
+
 export type User = {
   id: string;
-  fullName: string;
+  firstName: string;
+  lastName: string;
   email: string;
   phone: string;
   isActive: boolean;
@@ -35,7 +42,8 @@ export type User = {
 
 export type Artist = {
   id: string;
-  fullName: string;
+  firstName: string;
+  lastName: string;
   email: string;
   phone: string;
   password?: string | null;
@@ -50,7 +58,7 @@ export type Artist = {
 export type Album = {
   id: string;
   title: string;
-  cover: string;
+  imageUrl: string;
   artist: Artist;
   releaseDate: string;
   songs: number;
@@ -84,14 +92,7 @@ export type Event = {
   title: string;
   summary: string;
   cover: string;
-  venue: {
-    lat: number;
-    lng: number;
-    country: string;
-    city: string;
-    street: string;
-    zip: string;
-  };
+  venue: PlaceType;
   createdAt: string;
   startDate: string;
   endDate: string;

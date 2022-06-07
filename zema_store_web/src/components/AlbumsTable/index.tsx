@@ -18,12 +18,18 @@ const AlbumsTable = (props: Props) => {
   const { searchAlbumsList, isLoading } = useAppSelector(albumsSelector);
 
   const handleAlbumDetails = (id: string) => (e: any) => {
-    navigate(`/albums/${id}`, {
+    // navigate(`/albums/${id}`, {
+    //   state: {
+    //     from: "albums",
+    //     id,
+    //   },
+    // });
+    navigate(id, {
       state: {
         from: "albums",
         id,
       },
-    });
+    })
   };
 
   const handleClickMore = (id: string) => (e: any) => {
@@ -40,7 +46,7 @@ const AlbumsTable = (props: Props) => {
       props.setSelectedAlbum(selAlbum);
       setSelectedAlbumId(null);
       props.handleModalOpen("edit");
-    } catch (error) {}
+    } catch (error) { }
   };
 
   const handleDeleteAlbum = (selAlbum: Album) => {
@@ -48,7 +54,7 @@ const AlbumsTable = (props: Props) => {
       props.setSelectedAlbum(selAlbum);
       setSelectedAlbumId(null);
       props.handleModalOpen("delete");
-    } catch (error) {}
+    } catch (error) { }
   };
 
   return (
@@ -178,9 +184,9 @@ const AlbumsTable = (props: Props) => {
                   );
                 })
               ) : (
-                <div className="text-center w-full p-10 grid place-items-center min-h-[200px]">
-                  <h1 className="text-4xl font-bold">No Data</h1>
-                </div>
+                <tr className="text-center w-full p-10 grid place-items-center min-h-[200px]">
+                  <td className="text-4xl font-bold">No Data</td>
+                </tr>
               )}
             </tbody>
             {/* <tbody className="w-full">
