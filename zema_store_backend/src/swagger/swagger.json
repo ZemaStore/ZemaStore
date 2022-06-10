@@ -2341,10 +2341,6 @@
                         "type": "string",
                         "description": "Album Id"
                     },
-                    "artistId": {
-                        "type": "string",
-                        "description": "Artist Id"
-                    },
                     "title": {
                         "type": "string",
                         "description": "Song title"
@@ -2364,8 +2360,9 @@
                         ]
                     },
                     "length": {
-                        "type": "number",
-                        "description": "Song duration"
+                        "type": "string",
+                        "description": "Song duration in seconds",
+                        "example": "456"
                     },
                     "releaseDate": {
                         "type": "string",

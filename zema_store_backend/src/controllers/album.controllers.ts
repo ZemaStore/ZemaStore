@@ -112,31 +112,20 @@ const getAlbumsByArtist = async (req: Request, res: Response) => {
     }
 
     const artistId: string = req.params.artistId;
-    const search = req.query.search;
     const { page, sort } = Utils.instance.getPaginationData(req);
 
-    const count = isNil(search)
-      ? await Album.count({
-          artistId,
-        })
-      : await Album.count({ artistId }).populate({
-          path: "artistId",
-          match: { fullName: { $regex: search } },
-        });
+    const count = await Album.count({
+      artistId,
+    });
     const totalPages = Utils.instance.getNumberOfPages(count, fetchItemCount);
 
-    const albums = isNil(search)
-      ? await Album.find({
-          artistId,
-        })
-          .limit(fetchItemCount)
-          .skip(page * fetchItemCount)
-          .sort(sort)
-          .populate("artistId")
-      : await Album.find({}).populate({
-          path: "artistId",
-          match: { fullName: { $regex: search } },
-        });
+    const albums = await Album.find({
+      artistId,
+    })
+      .limit(fetchItemCount)
+      .skip(page * fetchItemCount)
+      .sort(sort)
+      .populate("artistId");
 
     const albumList = await Promise.all(
       albums.map(async (album) => {

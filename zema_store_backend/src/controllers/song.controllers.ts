@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
 import { isNil } from "lodash";
+import axios from "axios";
+import { nanoid } from "nanoid";
 
 import {
   cloudinaryRemover,
@@ -20,6 +22,8 @@ import {
   getSongsSchema,
   updateSongSchema,
 } from "../validation-schemas/song.schemas";
+import Album from "../models/mongoose/album";
+import User from "../models/mongoose/user";
 
 const fetchItemCount = 10;
 
@@ -32,10 +36,26 @@ const getSong = async (req: Request, res: Response) => {
         .send(new ErrorResponse(validate.error.message, null));
     }
 
-    const song = await Song.findById(req.params.id);
+    const songData = await Song.findById(req.params.id);
+
+    const song = await axios.post(
+      "https://zemastore-file-server.herokuapp.com/upload",
+      {
+        audio_url: songData.song,
+        random_file_name: "nanoid",
+        aes_key: res.locals.user?.aes_key,
+        aes_iv: res.locals.user?.aes_iv,
+      }
+    );
+
+    if (isNil(res.locals.user?.aes_iv) || isNil(res.locals.user?.aes_key)) {
+      const user = await User.findById(res.locals.user?._id);
+      console.log(user);
+    }
 
     res.status(200).send(new OkResponse(song, "Song successfully fetched!"));
   } catch (e) {
+    console.log(e.message);
     Utils.instance.handleResponseException(res, e);
   }
 };
@@ -106,7 +126,7 @@ const getSongsByAlbum = async (req: Request, res: Response) => {
     const albumId = req.params.albumId;
     const { page, sort } = Utils.instance.getPaginationData(req);
     const count = await Song.count({
-      albumId
+      albumId,
     });
     const totalPages = Utils.instance.getNumberOfPages(count, fetchItemCount);
 
@@ -147,7 +167,7 @@ const getSongsByArtist = async (req: Request, res: Response) => {
     const artistId = req.params.artistId;
     const { page, sort } = Utils.instance.getPaginationData(req);
     const count = await Song.count({
-      artistId
+      artistId,
     });
     const totalPages = Utils.instance.getNumberOfPages(count, fetchItemCount);
 
@@ -173,7 +193,7 @@ const getSongsByArtist = async (req: Request, res: Response) => {
 
 const addSong = async (req: Request, res: Response) => {
   try {
-    const { albumId, artistId, title, genre, length, releaseDate } = req.body;
+    const { albumId, title, genre, length, releaseDate } = req.body;
 
     const validate = addSongSchema.validate(req.body);
     if (validate.error && validate.error !== null) {
@@ -191,6 +211,13 @@ const addSong = async (req: Request, res: Response) => {
       filename,
       res
     );
+
+    const album = await Album.findById(albumId);
+    if (isNil(album)) {
+      return res.status(400).send(new ErrorResponse("Album not found!", null));
+    }
+
+    const artistId = album.artistId;
 
     const songData = new Song({
       albumId,
@@ -306,7 +333,7 @@ const deleteSong = async (req: Request, res: Response) => {
 
     const url = song.song.split("/");
     const public_id = [url[url.length - 2], url[url.length - 1]].join("/");
-    console.log(public_id.replace(/%20/g, " "));
+
     await cloudinaryRemover(public_id.replace(/%20/g, " ").toString());
 
     res.status(200).send({
