@@ -21,9 +21,12 @@ function SongsPage(props: Props) {
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
   const [selectedSong, setSelectedSong] = useState<Song | null>(null);
+  const [shouldReload, setShouldReload] = useState(false);
+
   const { meta } = useAppSelector((state) => state.artists);
+  const [currentPage, setCurrentPage] = useState<number>(1);
   const location = useLocation();
-  console.log(location.pathname.includes("albums"), " is the state");
+  console.log(location.pathname.split("/").slice().pop(), " is the state");
 
   const fetchSongs = useCallback(async () => {
     const pathId = location.pathname.split("/").slice().pop();
@@ -45,12 +48,12 @@ function SongsPage(props: Props) {
         id: pathId || null,
       };
     }
-    await dispatch(getSongsApi(from));
+    await dispatch(getSongsApi({ ...from, currentPage, orderBy: "createdAt%3Aasc" }));
   }, [dispatch, location]);
 
   useEffect(() => {
     fetchSongs();
-  }, [fetchSongs]);
+  }, [fetchSongs, shouldReload, currentPage]);
 
   const onCloseModal = () => {
     setIsAddModalOpen(false);
@@ -74,7 +77,7 @@ function SongsPage(props: Props) {
         {isAddModalOpen && (
           <AddEditSongModal
             onClose={onCloseModal}
-            onSubmit={() => {}}
+            onSubmit={() => { }}
             isEditing={false}
           />
         )}{" "}
@@ -82,7 +85,7 @@ function SongsPage(props: Props) {
           <AddEditSongModal
             onClose={onCloseModal}
             songData={selectedSong}
-            onSubmit={() => {}}
+            onSubmit={() => { }}
             isEditing={true}
           />
         )}
@@ -95,28 +98,39 @@ function SongsPage(props: Props) {
             onClose={onCloseModal}
           />
         )}
-        <div className="px-4 md:px-10 py-4 md:py-7 bg-gray-100 rounded-tl-lg rounded-tr-lg">
-          <div className="sm:flex items-center justify-between">
-            <p className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold leading-normal text-gray-800">
-              Songs
-            </p>
-            <div>
-              <button
-                onClick={() => handleModalOpen()}
-                className="inline-flex sm:ml-3 mt-4 sm:mt-0 items-start justify-start px-6 py-3 bg-indigo-700 hover:bg-indigo-600 focus:outline-none rounded"
-              >
-                <p className="text-sm font-medium leading-none text-white">
-                  Add Songs
-                </p>
-              </button>
+
+
+        {location.pathname.includes("artists") && (
+          <div className="px-4 md:px-10 py-4 md:py-7 bg-gray-100 rounded-tl-lg rounded-tr-lg">
+            <div className="sm:flex items-center justify-between">
+              <p className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold leading-normal text-gray-800">
+                Songs
+              </p>
+              <div>
+                <button
+                  onClick={() => handleModalOpen()}
+                  className="inline-flex sm:ml-3 mt-4 sm:mt-0 items-start justify-start px-6 py-3 bg-indigo-700 hover:bg-indigo-600 focus:outline-none rounded"
+                >
+                  <p className="text-sm font-medium leading-none text-white">
+                    Add Songs
+                  </p>
+                </button>
+              </div>
             </div>
           </div>
-        </div>
+        )
+        }
         <SongsTable
           handleModalOpen={handleModalOpen}
           setSelectedSong={setSelectedSong}
         />
-        <Pagination />
+        <Pagination
+          setCurrentPage={setCurrentPage}
+          currentPage={currentPage}
+          pageSize={meta.limit}
+          totalItems={meta.total}
+          totalPages={meta.totalPage}
+        />
       </div>
     </main>
   );

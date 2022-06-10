@@ -11,7 +11,7 @@ export default function BaseLayout({ children }: LayoutProps) {
   return (
     <div className="flex flex-col flex-no-wrap w-full">
       <Navbar />
-      <div className="w-full  flex justify-between h-[calc(100vh-64px)] overflow-hidden ">
+      <div className="w-full  flex justify-between h-[calc(100vh-64px)] overflow-hidden my-12 lg:my-0">
         <div className="hidden xl:flex min-h-full w-1/6 relative">
           <Sidebar />
         </div>

@@ -106,11 +106,10 @@ const EventsTable = (props: Props) => {
                     <td className="pl-12">
                       <p className="font-medium">{event.createdAt}</p>
                     </td>
-                    <td className="pl-20">
-                      <p className="font-medium">{event.venue.zip}</p>
+                  <td className="pl-20">
+                      <p className="font-medium">{event.venue.name}</p>
                       <p className="text-xs leading-3 text-gray-600 mt-2">
-                        {event.venue.street} ,{event.venue.zip},{" "}
-                        {event.venue.city}, {event.venue.country}{" "}
+                        {event.venue.latitude} ,{event.venue.longitude}
                       </p>
                     </td>
 

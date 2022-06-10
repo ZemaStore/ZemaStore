@@ -38,11 +38,16 @@ export const getArtistsApi = createAsyncThunk<any, any>(
   "/artists",
   async (payload, { rejectWithValue, fulfillWithValue, dispatch }) => {
     try {
-      const { data } = await ArtistsService.getArtists();
+      const { data } = await ArtistsService.getArtists(
+        payload.currentPage,
+        "createdAt%3Aasc"
+      );
       const res = data.artists.map((artist: any) => {
+        const [fname, lname] = artist.profileId.fullName.split(" ");
         return {
           ...artist,
-          fullName: artist.profileId.fullName,
+          firstName: artist.profileId.firstName || fname || "firstName",
+          lastName: artist.profileId.lastName || lname || "lastName",
           avatar: artist.photoUrl,
           followers: artist.profileId.followerNumber,
           listenedHours: artist.profileId.listenedHour,
@@ -185,8 +190,11 @@ export const artistsSlice = createSlice({
       state.searchArtistsList =
         state.artists &&
         state.artists.filter((artist: Artist) => {
-          if (payload.name && artist.fullName) {
-            return artist.fullName.toLowerCase().includes(payload.name);
+          if (payload.name && artist.firstName && artist.lastName) {
+            return (
+              artist.firstName.toLowerCase().includes(payload.name) ||
+              artist.lastName.toLowerCase().includes(payload.name)
+            );
           } else {
             return false;
           }
