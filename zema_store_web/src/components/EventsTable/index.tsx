@@ -4,7 +4,6 @@ import { useAppSelector } from "../../app/hooks/redux_hooks";
 import { eventsSelector } from "../../app/store/features/events/eventsSlice";
 import Loader from "../../common/Widgets/Loader";
 import { Event } from "../../helpers/types";
-import formatter from "../../utils/formatter";
 
 type Props = {
   setSelectedEvent: React.Dispatch<React.SetStateAction<Event | null>>;
@@ -33,7 +32,7 @@ const EventsTable = (props: Props) => {
       props.setSelectedEvent(selEvent);
       setSelectedEvent(null);
       props.handleModalOpen("edit");
-    } catch (error) {}
+    } catch (error) { }
   };
 
   const handleDeleteEvent = (selEvent: Event) => {
@@ -41,11 +40,11 @@ const EventsTable = (props: Props) => {
       props.setSelectedEvent(selEvent);
       setSelectedEvent(null);
       props.handleModalOpen("delete");
-    } catch (error) {}
+    } catch (error) { }
   };
 
   const handleEventsDetails = (id: string) => (e: any) => {
-    navigate(`/artists/${id}`);
+    navigate(`/events/${id}`);
   };
 
   return (
@@ -61,7 +60,6 @@ const EventsTable = (props: Props) => {
               <th className="font-normal text-left pl-4">Title</th>
               <th className="font-normal text-left pl-12">Summary</th>
               <th className="font-normal text-left pl-12">Start Day</th>
-              <th className="font-normal text-left pl-12">End Day</th>
               <th className="font-normal text-left pl-12">Created Day</th>
               <th className="font-normal text-left pl-20">Address</th>
             </tr>
@@ -98,15 +96,12 @@ const EventsTable = (props: Props) => {
                       </div>
                     </td>
                     <td className="pl-12">
-                      <p className="font-medium">{event.startDate}</p>
-                    </td>
-                    <td className="pl-12">
-                      <p className="font-medium">{event.endDate}</p>
+                      <p className="font-medium">{event.date}</p>
                     </td>
                     <td className="pl-12">
                       <p className="font-medium">{event.createdAt}</p>
                     </td>
-                  <td className="pl-20">
+                    <td className="pl-20">
                       <p className="font-medium">{event.venue.name}</p>
                       <p className="text-xs leading-3 text-gray-600 mt-2">
                         {event.venue.latitude} ,{event.venue.longitude}

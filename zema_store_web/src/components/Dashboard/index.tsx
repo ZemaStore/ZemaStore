@@ -1,43 +1,54 @@
 import React from "react";
+import { Report } from "../../helpers/types";
 
-type Props = {};
+type Props = {
+  report: Report
+};
 
 const DashboardComponent = (props: Props) => {
+
   return (
     <div className="mt-20 relative w-full">
       <div className="z-0 my-5 w-full grid grid-cols-1  sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-10 justify-between ">
         <div className="min-h-[200px] bg-white w-full rounded-xl shadow-lg flex items-center justify-around">
           <img className="w-24 h-24" src="/images/users.svg" alt="" />
           <div className="text-center">
-            <h1 className="text-4xl font-bold text-gray-800">534</h1>
+            <h1 className="text-4xl font-bold text-gray-800">{props.report && props.report.totalUsers}</h1>
             <span className="text-gray-500">Users</span>
+          </div>
+        </div>
+        <div className="min-h-[200px] bg-white w-full rounded-xl shadow-lg flex items-center justify-around">
+          <img className="w-24 h-24" src="/images/users.svg" alt="" />
+          <div className="text-center">
+            <h1 className="text-4xl font-bold text-gray-800">{props.report && props.report.artists}</h1>
+            <span className="text-gray-500">Artists</span>
           </div>
         </div>
         <div className="min-h-[200px] bg-white w-full rounded-xl shadow-lg flex items-center justify-around">
           <img className="w-24 h-24" src="/images/song.svg" alt="" />
           <div className="text-center">
-            <h1 className="text-4xl font-bold text-gray-800">9.43k</h1>
+            <h1 className="text-4xl font-bold text-gray-800">{props.report && props.report.songs}</h1>
             <span className="text-gray-500">Songs</span>
           </div>
         </div>
         <div className="min-h-[200px] bg-white w-full rounded-xl shadow-lg flex items-center justify-around">
           <img className="w-24 h-24" src="/images/folder-music.svg" alt="" />
           <div className="text-center">
-            <h1 className="text-4xl font-bold text-gray-800">9.7k</h1>
+            <h1 className="text-4xl font-bold text-gray-800">{props.report && props.report.albums}</h1>
             <span className="text-gray-500">Albums</span>
           </div>
         </div>
         <div className="min-h-[200px] bg-white w-full rounded-xl shadow-lg flex items-center justify-around">
           <img className="w-24 h-24" src="/images/economy-grow.svg" alt="" />
           <div className="text-center">
-            <h1 className="text-4xl font-bold text-gray-800">50 M</h1>
+            <h1 className="text-4xl font-bold text-gray-800">{props.report && props.report.revenue}</h1>
             <span className="text-gray-500">Total Revenue</span>
           </div>
         </div>
         <div className="min-h-[200px] bg-white w-full rounded-xl shadow-lg flex items-center justify-around">
           <img className="w-24 h-24" src="/images/concert.svg" alt="" />
           <div className="text-center">
-            <h1 className="text-4xl font-bold text-gray-800">534</h1>
+            <h1 className="text-4xl font-bold text-gray-800">{props.report && props.report.activeEvents}</h1>
             <span className="text-gray-500">Active Events</span>
           </div>
         </div>

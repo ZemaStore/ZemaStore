@@ -1,16 +1,53 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../app/hooks/redux_hooks";
 import { subscriptionsSelector } from "../../app/store/features/subscriptions/subscriptionsSlice";
 import Loader from "../../common/Widgets/Loader";
 import { Subscription } from "../../helpers/types";
 
-type Props = {};
+type Props = {
+  setSelectedSubcription: React.Dispatch<React.SetStateAction<Subscription | null>>;
+  handleModalOpen: (modalType?: string) => void;
+};
 
 const SubscriptionsTable = (props: Props) => {
   const [show, setShow] = useState<number | null>(0);
   const { searchSubscriptionsList, isLoading } = useAppSelector(
     subscriptionsSelector
   );
+  const [selectedSubscriptionId, setSelectedSubscription] = useState<string | null>(null);
+
+  const navigate = useNavigate();
+
+  const handleClickMore = (id: string) => (e: any) => {
+    e.stopPropagation();
+    if (selectedSubscriptionId === id) {
+      setSelectedSubscription(null);
+    } else {
+      setSelectedSubscription(id);
+    }
+  };
+
+  const handleEditSubcription = (selSub: Subscription) => {
+    try {
+      props.setSelectedSubcription(selSub);
+      setSelectedSubscription(null);
+      props.handleModalOpen("edit");
+    } catch (error) { }
+  };
+
+  const handleDeleteSubscription = (selSubcription: Subscription) => {
+    try {
+      props.setSelectedSubcription(selSubcription);
+      setSelectedSubscription(null);
+      props.handleModalOpen("delete");
+    } catch (error) { }
+  };
+
+  const handleEventsDetails = (id: string) => (e: any) => {
+    navigate(`/events/${id}`);
+  };
+
 
   return (
     <div className="bg-white shadow px-4 md:px-10 pt-4 md:pt-7 pb-5 overflow-y-auto">
@@ -25,8 +62,8 @@ const SubscriptionsTable = (props: Props) => {
               <th className="font-normal text-left pl-4">Title</th>
               <th className="font-normal text-left pl-12">Summary</th>
               <th className="font-normal text-left pl-12">Price</th>
-              <th className="font-normal text-left pl-20">Sub Type</th>
-              <th className="font-normal text-left pl-20">Created At</th>
+              <th className="font-normal text-left pl-12">Sub Type</th>
+              <th className="font-normal text-left pl-12">Created At</th>
             </tr>
           </thead>
           <tbody className="w-full">
@@ -35,6 +72,7 @@ const SubscriptionsTable = (props: Props) => {
                 return (
                   <tr
                     key={subscription.id}
+                    // onClick={handleEventsDetails(subscription.id)}
                     className="h-20 text-sm leading-none text-gray-800 border-b border-t bg-white hover:bg-gray-100 border-gray-100"
                   >
                     <td className="pl-4 cursor-pointer">
@@ -66,90 +104,68 @@ const SubscriptionsTable = (props: Props) => {
                     <td className="pl-12">
                       <p className="font-medium">{subscription.subType}</p>
                     </td>
-                    <td className="pl-20">
+                    <td className="pl-12">
                       <p className="font-medium">{subscription.createdAt}</p>
                     </td>
 
-                    <td className="px-7 2xl:px-0">
-                      {show == 4 ? (
-                        <button
-                          onClick={() => setShow(null)}
-                          className="focus:outline-none pl-7"
+                    <td
+                      className="px-7 2xl:px-0 cursor-pointer"
+                      onClick={handleClickMore(subscription.id)}
+                    >
+                      <button
+                        data-test-id={`more-button-${index}`}
+                        onClick={handleClickMore(subscription.id)}
+                        className="focus:outline-none pl-7"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width={20}
+                          height={20}
+                          viewBox="0 0 20 20"
+                          fill="none"
                         >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width={20}
-                            height={20}
-                            viewBox="0 0 20 20"
-                            fill="none"
-                          >
-                            <path
-                              d="M4.16667 10.8334C4.62691 10.8334 5 10.4603 5 10.0001C5 9.53984 4.62691 9.16675 4.16667 9.16675C3.70643 9.16675 3.33334 9.53984 3.33334 10.0001C3.33334 10.4603 3.70643 10.8334 4.16667 10.8334Z"
-                              stroke="#A1A1AA"
-                              strokeWidth="1.25"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                            <path
-                              d="M10 10.8334C10.4602 10.8334 10.8333 10.4603 10.8333 10.0001C10.8333 9.53984 10.4602 9.16675 10 9.16675C9.53976 9.16675 9.16666 9.53984 9.16666 10.0001C9.16666 10.4603 9.53976 10.8334 10 10.8334Z"
-                              stroke="#A1A1AA"
-                              strokeWidth="1.25"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                            <path
-                              d="M15.8333 10.8334C16.2936 10.8334 16.6667 10.4603 16.6667 10.0001C16.6667 9.53984 16.2936 9.16675 15.8333 9.16675C15.3731 9.16675 15 9.53984 15 10.0001C15 10.4603 15.3731 10.8334 15.8333 10.8334Z"
-                              stroke="#A1A1AA"
-                              strokeWidth="1.25"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
-                        </button>
-                      ) : (
-                        <button
-                          onClick={() => setShow(4)}
-                          className="focus:outline-none pl-7"
+                          <path
+                            d="M4.16667 10.8334C4.62691 10.8334 5 10.4603 5 10.0001C5 9.53984 4.62691 9.16675 4.16667 9.16675C3.70643 9.16675 3.33334 9.53984 3.33334 10.0001C3.33334 10.4603 3.70643 10.8334 4.16667 10.8334Z"
+                            stroke="#A1A1AA"
+                            strokeWidth="1.25"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                          <path
+                            d="M10 10.8334C10.4602 10.8334 10.8333 10.4603 10.8333 10.0001C10.8333 9.53984 10.4602 9.16675 10 9.16675C9.53976 9.16675 9.16666 9.53984 9.16666 10.0001C9.16666 10.4603 9.53976 10.8334 10 10.8334Z"
+                            stroke="#A1A1AA"
+                            strokeWidth="1.25"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                          <path
+                            d="M15.8333 10.8334C16.2936 10.8334 16.6667 10.4603 16.6667 10.0001C16.6667 9.53984 16.2936 9.16675 15.8333 9.16675C15.3731 9.16675 15 9.53984 15 10.0001C15 10.4603 15.3731 10.8334 15.8333 10.8334Z"
+                            stroke="#A1A1AA"
+                            strokeWidth="1.25"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </button>
+                      {selectedSubscriptionId === subscription.id && (
+                        <div
+                          data-test-id="dropdown_btn"
+                          className="flex flex-col dropdown-content bg-white shadow-lg shadow-blue-100 w-24 absolute z-50 right-0 mr-16"
                         >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width={20}
-                            height={20}
-                            viewBox="0 0 20 20"
-                            fill="none"
+                          <button
+                            onClick={() => handleEditSubcription(subscription)}
+                            data-test-id="edit_button"
+                            className="overflow-visible text-xs w-full hover:bg-indigo-700 py-4 px-4 cursor-pointer hover:text-white"
                           >
-                            <path
-                              d="M4.16667 10.8334C4.62691 10.8334 5 10.4603 5 10.0001C5 9.53984 4.62691 9.16675 4.16667 9.16675C3.70643 9.16675 3.33334 9.53984 3.33334 10.0001C3.33334 10.4603 3.70643 10.8334 4.16667 10.8334Z"
-                              stroke="#A1A1AA"
-                              strokeWidth="1.25"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                            <path
-                              d="M10 10.8334C10.4602 10.8334 10.8333 10.4603 10.8333 10.0001C10.8333 9.53984 10.4602 9.16675 10 9.16675C9.53976 9.16675 9.16666 9.53984 9.16666 10.0001C9.16666 10.4603 9.53976 10.8334 10 10.8334Z"
-                              stroke="#A1A1AA"
-                              strokeWidth="1.25"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                            <path
-                              d="M15.8333 10.8334C16.2936 10.8334 16.6667 10.4603 16.6667 10.0001C16.6667 9.53984 16.2936 9.16675 15.8333 9.16675C15.3731 9.16675 15 9.53984 15 10.0001C15 10.4603 15.3731 10.8334 15.8333 10.8334Z"
-                              stroke="#A1A1AA"
-                              strokeWidth="1.25"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
-                        </button>
-                      )}
-                      {show == 4 && (
-                        <div className="dropdown-content bg-white shadow w-24 absolute z-30 right-0 mr-6 ">
-                          <div className="text-xs w-full hover:bg-indigo-700 py-4 px-4 cursor-pointer hover:text-white">
                             <p>Edit</p>
-                          </div>
-                          <div className="text-xs w-full hover:bg-indigo-700 py-4 px-4 cursor-pointer hover:text-white">
-                            <p>Delete</p>
-                          </div>
+                          </button>
+                          <button
+                            data-test-id="delete-button"
+                            onClick={() => handleDeleteSubscription(subscription)}
+                            className="text-xs w-full hover:bg-indigo-700 py-4 px-4 cursor-pointer hover:text-white"
+                          >
+                            <p className="text-red-500">Delete</p>
+                          </button>
                         </div>
                       )}
                     </td>

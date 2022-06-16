@@ -82,7 +82,7 @@ export type Subscription = {
   title: string;
   summary: string;
   cover: string;
-  price: number;
+  price: string;
   subType: string;
   createdAt: string;
 };
@@ -94,8 +94,7 @@ export type Event = {
   cover: string;
   venue: PlaceType;
   createdAt: string;
-  startDate: string;
-  endDate: string;
+  date: string;
 };
 
 export type Follow = {
@@ -103,4 +102,14 @@ export type Follow = {
   follower: User;
   followee: Artist;
   createdAt: string;
+};
+
+export type Report = {
+  activeUsers: number;
+  activeEvents: number;
+  totalUsers: number;
+  albums: number;
+  songs: number;
+  artists: number;
+  revenue: number;
 };

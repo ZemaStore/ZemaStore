@@ -9,6 +9,7 @@ export type subscriptionsState = {
   isLoading: boolean;
   error: boolean;
   meta: {
+    total: number;
     totalPage: number;
     currentPage: number;
     limit: number;
@@ -23,6 +24,7 @@ const initialState: subscriptionsState = {
   error: false,
   meta: {
     totalPage: 1,
+    total: 1,
     currentPage: 1,
     limit: 10,
   },
@@ -100,8 +102,12 @@ export const subscriptionsSlice = createSlice({
       })
       .addCase(getSubscriptionsApi.fulfilled, (state, { payload }) => {
         state.isLoading = false;
-        state.subscriptions = payload;
+        state.subscriptions = payload.subscriptions;
         state.searchSubscriptionsList = state.subscriptions;
+        state.meta.total = payload.totalItems;
+        state.meta.totalPage = payload.totalPages;
+        state.meta.currentPage = payload.pageNumber + 1;
+        state.meta.limit = 10;
       })
       .addCase(getSubscriptionsApi.rejected, (state, { payload }) => {
         state.isLoading = false;

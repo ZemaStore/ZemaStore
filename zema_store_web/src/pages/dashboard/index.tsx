@@ -1,14 +1,30 @@
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
+import ReportService from "../../app/services/reports.service";
 import BaseLayout from "../../common/Layout";
-import Pagination from "../../common/Paginations";
 import DashboardComponent from "../../components/Dashboard";
+import { Report } from "../../helpers/types";
 
 type Props = {};
 
-const DashboardPage = (props: Props) => {
+const DashboardPage = (_props: Props) => {
+  const [report, setReport] = useState<Report | any>(null)
+
+  const fetchReports = useCallback(
+    async () => {
+      const {data} = await ReportService.getReports()
+      setReport(data)
+    },
+    [],
+  )
+
+  useEffect(() => {
+    fetchReports()
+  }, [])
+
+
   return (
     <BaseLayout>
-      <DashboardComponent />
+      <DashboardComponent report={report} />
     </BaseLayout>
   );
 };

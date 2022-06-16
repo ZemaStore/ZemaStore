@@ -42,7 +42,7 @@ export const getEventsApi = createAsyncThunk<any, any>(
         payload.currentPage,
         "createdAt%3Aasc"
       );
-
+      console.log("events ", data);
       return fulfillWithValue(data);
     } catch (err: any) {
       return rejectWithValue(err.response.data);
@@ -165,8 +165,12 @@ export const eventsSlice = createSlice({
       })
       .addCase(getEventsApi.fulfilled, (state, { payload }) => {
         state.isLoading = false;
-        state.events = payload;
+        state.events = payload.events;
         state.searchEventsList = state.events;
+        state.meta.total = payload.totalItems;
+        state.meta.totalPage = payload.totalPages;
+        state.meta.currentPage = payload.pageNumber + 1;
+        state.meta.limit = 10;
       })
       .addCase(getEventsApi.rejected, (state, { payload }) => {
         state.isLoading = false;

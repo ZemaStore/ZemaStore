@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/hooks/redux_hooks";
 import { getSubscriptionsApi } from "../../app/store/features/subscriptions/subscriptionsSlice";
 import BaseLayout from "../../common/Layout";
 import Pagination from "../../common/Paginations";
 import AddEditSubscriptionModal from "../../components/Modals/AddEditSubcription";
-import AddSongModal from "../../components/Modals/AddEditSong";
 import SubscriptionsTable from "../../components/SubscriptionsTable";
+import DeleteModal from "../../components/Modals/DeleteModal";
+import { Subscription } from "../../helpers/types";
 
 function SubscriptionsPage() {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -16,7 +16,7 @@ function SubscriptionsPage() {
   const { meta } = useAppSelector((state) => state.users);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const fetchSubscriptions = useCallback(async () => {
-    await dispatch(getSubscriptionsApi({currentPage}));
+    await dispatch(getSubscriptionsApi({ currentPage }));
   }, [dispatch, shouldReload, currentPage]);
 
   useEffect(() => {
@@ -24,13 +24,25 @@ function SubscriptionsPage() {
   }, [fetchSubscriptions, shouldReload, currentPage]);
 
   const onCloseModal = () => {
-    console.log("closing modal");
-    setIsModalOpen(false);
+    setIsAddModalOpen(false);
+    setIsEditModalOpen(false);
+    setIsDeleteModalOpen(false);
   };
 
-  const handleModalOpen = () => {
-    setIsModalOpen(true);
+  const handleModalOpen = (modalType = "add") => {
+    if (modalType === "add") {
+      setIsAddModalOpen(true);
+    } else if (modalType === "edit") {
+      setIsEditModalOpen(true);
+    } else {
+      setIsDeleteModalOpen(true);
+    }
   };
+
+  const [isAddModalOpen, setIsAddModalOpen] = useState<boolean>(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
+  const [selectedSubcription, setSelectedSubcription] = useState<Subscription | null>(null);
 
   return (
     <BaseLayout>
@@ -39,8 +51,31 @@ function SubscriptionsPage() {
           {isModalOpen && (
             <AddEditSubscriptionModal
               onClose={onCloseModal}
-              onSubmit={() => {}}
               isEditing={false}
+            />
+          )}
+
+          {isAddModalOpen && (
+            <AddEditSubscriptionModal
+              onClose={onCloseModal}
+              isEditing={false}
+            />
+          )}
+
+          {isEditModalOpen && (
+            <AddEditSubscriptionModal
+              onClose={onCloseModal}
+              subscriptionData={selectedSubcription}
+              isEditing={true}
+            />
+          )}
+          {isDeleteModalOpen && (
+            <DeleteModal
+              deleteMessage="Delete Event"
+              deleteDescription="Are you sure you want to delete?"
+              buttonText="Delete"
+              onDelete={onCloseModal}
+              onClose={onCloseModal}
             />
           )}
           <div className="px-4 md:px-10 py-4 md:py-7 bg-gray-100 rounded-tl-lg rounded-tr-lg">
@@ -50,7 +85,7 @@ function SubscriptionsPage() {
               </p>
               <div>
                 <button
-                  onClick={handleModalOpen}
+                  onClick={() => handleModalOpen("add")}
                   className="inline-flex sm:ml-3 mt-4 sm:mt-0 items-start justify-start px-6 py-3 bg-indigo-700 hover:bg-indigo-600 focus:outline-none rounded"
                 >
                   <p className="text-sm font-medium leading-none text-white">
@@ -60,13 +95,17 @@ function SubscriptionsPage() {
               </div>
             </div>
           </div>
-          <SubscriptionsTable />
+          <SubscriptionsTable
+            setSelectedSubcription={setSelectedSubcription}
+            handleModalOpen={handleModalOpen}
+
+          />
         </div>
         <Pagination
           setCurrentPage={setCurrentPage}
           currentPage={currentPage}
           pageSize={meta.limit}
-          totalItems={meta.total}
+          totalItems={meta.totalPage}
           totalPages={meta.totalPage}
         />
       </main>

@@ -13,7 +13,6 @@ import { Event } from "../../helpers/types";
 
 function EventsPage() {
   const dispatch = useAppDispatch();
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const { meta } = useAppSelector(eventsSelector);
 
   const [shouldReload, setShouldReload] = useState(false);

@@ -11,10 +11,7 @@ import {
   eventsSelector,
   updateEvent,
 } from "../../app/store/features/events/eventsSlice";
-import PlacesAutocomplete from "../../widgets/GooglePlaceAutoComplete";
 import notify from "../../utils/notify";
-import AutoComplete from "../../widgets/AutocompleteSearch";
-import PlaceAutocomplete from "../../widgets/PlaceAutocomplete";
 import PlacesAutocompleteSearch from "../../widgets/PlaceAutocomplete";
 
 Yup.addMethod(
@@ -43,8 +40,7 @@ const EventsValidationSchema = Yup.object().shape({
     .max(50, "Too Long!")
     .required("Please Enter fullname")
     .required("Required!"),
-  startDate: Yup.string().required("Required!"),
-  endDate: Yup.string().required("Required!"),
+  date: Yup.string().required("Required!")
 });
 
 type Props = {
@@ -56,7 +52,7 @@ type Props = {
 
 const AddEditEventModal = (props: Props) => {
   let modal = document.getElementById("add_event_modal");
-  const { isLoading } = useAppSelector(eventsSelector);
+  const { isLoading, searchEventsList } = useAppSelector(eventsSelector);
   const [selectedPlace, setSelectedPlace] = useState<PlaceType>(
     props.eventData?.venue || {
       name: "Addis Ababa, Addis Ababa",
@@ -65,7 +61,7 @@ const AddEditEventModal = (props: Props) => {
     }
   );
   const dispatch = useAppDispatch();
-
+  console.log(props.eventData, " event")
   useEffect(() => {
     dispatch(clearMessage());
   }, []);
@@ -89,17 +85,6 @@ const AddEditEventModal = (props: Props) => {
       }
     })();
   }
-  function fadeIn(el: any, display: string) {
-    el.style.opacity = 0;
-    el.style.display = display || "flex";
-    (function fade() {
-      let val = el.style.opacity;
-      if (!((val += 0.2) > 1)) {
-        el.style.opacity = val;
-        requestAnimationFrame(fade);
-      }
-    })();
-  }
 
   return (
     <div>
@@ -116,8 +101,7 @@ const AddEditEventModal = (props: Props) => {
             initialValues={{
               title: props.isEditing ? props.eventData?.title : "",
               summary: props.isEditing ? props.eventData?.summary : "",
-              startDate: props.isEditing ? props.eventData?.startDate : "",
-              endDate: props.isEditing ? props.eventData?.endDate : "",
+              date: props.isEditing ? props.eventData?.date : "",
             }}
             validationSchema={EventsValidationSchema}
             onSubmit={async (values) => {
@@ -146,9 +130,13 @@ const AddEditEventModal = (props: Props) => {
           >
             {({ errors, touched, isValidating }) => (
               <Form>
+                {JSON.stringify(errors)}
                 <div className="relative py-8 px-5 md:px-10 bg-white shadow-md rounded border border-gray-400">
                   <h1 className="text-gray-800 font-lg font-bold tracking-normal leading-tight mb-4">
                     Enter Events Details
+                    {JSON.stringify(errors)}
+                    {JSON.stringify(searchEventsList)}
+                    {JSON.stringify(isLoading)}
                   </h1>
 
                   <div className="my-5">
@@ -216,55 +204,33 @@ const AddEditEventModal = (props: Props) => {
                       name="places"
                       id="places"
                     />
+
                   </div>
                   <div className="my-5">
                     <label
-                      htmlFor="email"
+                      htmlFor="event_date"
                       className="text-gray-800 text-sm font-bold leading-tight tracking-normal"
                     >
-                      Start Date
+                      Event Date
                     </label>
                     <Field
-                      id="start_date"
-                      name="start_date"
-                      data-test-id="start_date"
+                      id="event_date"
+                      name="date"
+                      data-test-id="event_date"
                       type="date"
                       className={clsx(
                         "mb-5 mt-2 text-gray-600 focus:outline-none focus:border focus:border-indigo-700 font-normal w-full h-10 flex items-center pl-3 text-sm border-gray-300 rounded border",
-                        touched.summary && errors.summary
+                        touched.date && errors.date
                           ? "border-red-500"
                           : ""
                       )}
                       placeholder="Event start date"
                     />
-                    {touched.summary && errors.summary && (
-                      <div className="text-red-600">{errors.summary}</div>
+                    {touched.date && errors.date && (
+                      <div className="text-red-600">{errors.date}</div>
                     )}
                   </div>
-                  <div className="my-5">
-                    <label
-                      htmlFor="end_date"
-                      className="text-gray-800 text-sm font-bold leading-tight tracking-normal"
-                    >
-                      End Date
-                    </label>
-                    <Field
-                      id="end_date"
-                      name="end_date"
-                      data-test-id="end_date"
-                      type="date"
-                      className={clsx(
-                        "mb-5 mt-2 text-gray-600 focus:outline-none focus:border focus:border-indigo-700 font-normal w-full h-10 flex items-center pl-3 text-sm border-gray-300 rounded border",
-                        touched.summary && errors.summary
-                          ? "border-red-500"
-                          : ""
-                      )}
-                      placeholder="Event end date"
-                    />
-                    {touched.summary && errors.summary && (
-                      <div className="text-red-600">{errors.summary}</div>
-                    )}
-                  </div>
+
 
                   <div className="flex items-center justify-start w-full">
                     <button

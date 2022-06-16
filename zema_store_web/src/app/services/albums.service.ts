@@ -8,21 +8,15 @@ const getAlbums = async (payload: {
   orderBy: string;
 }) => {
   let url = `${baseUrl}/albums`;
-  switch (payload.name) {
-    case "artists": {
-      url = `${baseUrl}/albums/artist/${payload.id}?page=${
-        payload.currentPage - 1
-      }&sortBy=${payload.orderBy}`;
-      break;
-    }
-    default: {
-      url = `${baseUrl}/albums?page=${payload.currentPage - 1}&sortBy=${
-        payload.orderBy
-      }`;
-      break;
-    }
+  if (payload.name === "artists") {
+    url = `${baseUrl}/albums/artist/${payload.id}?page=${
+      payload.currentPage - 1
+    }&sortBy=${payload.orderBy}`;
+  } else {
+    url = `${baseUrl}/albums?page=${payload.currentPage - 1}&sortBy=${
+      payload.orderBy
+    }`;
   }
-  console.log(payload.name, payload.id, " is name and id");
   const { data } = await Request.get(url);
   return { data };
 };
@@ -59,7 +53,7 @@ const updateAlbum = async (albumId: string, formData: any) => {
 
 const deleteAlbum = async (id: any) => {
   try {
-    const {data} = await Request.delete(`${baseUrl}/albums/${id}`);
+    const { data } = await Request.delete(`${baseUrl}/albums/${id}`);
     console.log("response is ", data);
     return { data, error: null };
   } catch (error) {
