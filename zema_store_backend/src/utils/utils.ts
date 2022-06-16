@@ -58,4 +58,12 @@ export default class Utils {
 
     return totalPages;
   }
+
+  public formatUSD(stripeAmount: number) {
+    return `$${(stripeAmount / 100).toFixed(2)}`;
+  }
+
+  public formatStripeAmount(USDString: string) {
+    return parseFloat(USDString) * 100;
+  };
 }

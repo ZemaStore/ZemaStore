@@ -6,11 +6,17 @@ import ErrorResponse from "../models/responses/error-response.model";
 import OkResponse from "../models/responses/ok-response.model";
 import Utils from "../utils/utils";
 
+import Stripe from "stripe";
+const stripe = new Stripe(configs.STRIPE_API_KEY, {
+  apiVersion: "2020-08-27",
+});
+
 import {
   createSubscriptionSchema,
   deleteSubscriptionSchema,
   getSubscriptionSchema,
 } from "../validation-schemas/subscription.schemas";
+import configs from "../configs/app.configs";
 
 const getSubscription = async (req: Request, res: Response) => {
   try {
@@ -42,9 +48,42 @@ const createSubscription = async (req: Request, res: Response) => {
 
     const { subscriptionType, subscriptionId } = req.body;
 
+    //
+
+    const {
+      name,
+      amount,
+      subType,
+      fromDate,
+      toDate,
+      description,
+      included,
+      promoCredit,
+      interval = "month",
+    } = req.body;
+
+    const price = await stripe.prices.create({
+      unit_amount: new Utils().formatStripeAmount(amount),
+      currency: "usd",
+      recurring: { interval },
+      product: configs.STRIPE_SUBSCRIPTION_PRODUCT_ID,
+    });
+
+    //
+
     const subscription = await Subscription.create({
       subscriptionType,
       subscriptionId,
+      name,
+      amount,
+      subType,
+      fromDate,
+      toDate,
+      description,
+      included,
+      promoCredit,
+      price_id: price.id,
+      interval,
     });
 
     res
@@ -55,13 +94,88 @@ const createSubscription = async (req: Request, res: Response) => {
   }
 };
 
+const updateSubscription = async (req: Request, res: Response, next) => {
+  const { interval, amount } = req.body;
+
+  const existedSubscription = await Subscription.findById(req.params.id);
+
+  if (!existedSubscription) {
+    return res
+      .status(500)
+      .json({ message: "Subscription does n't exist", success: false });
+  }
+  try {
+    const previous_price = await stripe.prices.update(
+      existedSubscription.subscriptionId,
+      {
+        active: false,
+      }
+    );
+    if (!previous_price) {
+      return res
+        .status(500)
+        .json({ message: "price is not able to be deleted", success: false });
+    }
+
+    const price = await stripe.prices.create({
+      unit_amount: amount
+        ? Utils.instance.formatStripeAmount(amount)
+        : previous_price.unit_amount,
+      currency: "usd",
+      recurring: {
+        interval: interval ? interval : previous_price.recurring,
+      },
+      product: configs.STRIPE_SUBSCRIPTION_PRODUCT_ID,
+    });
+
+    const newObject = {
+      ...existedSubscription,
+      ...req.body,
+      price_id: price.id,
+    };
+    try {
+      const params = req.params;
+      const body = req.body;
+
+      const subscription = await Subscription.findOneAndUpdate(
+        { _id: req.params.id },
+        newObject,
+        { new: true }
+      );
+      res
+        .status(200)
+        .send(
+          new OkResponse(subscription, "Subscriptions successfully updated!")
+        );
+    } catch (e) {
+      Utils.instance.handleResponseException(res, e);
+    }
+  } catch (error) {
+    console.log("error is ", error);
+  }
+};
+
 const deleteSubscription = async (req: Request, res: Response) => {
   try {
+    const existedSubscription = await Subscription.findById(req.params.id);
+
     const validate = deleteSubscriptionSchema.validate(req.params);
     if (validate.error && validate.error !== null) {
       return res
         .status(400)
         .send(new ErrorResponse(validate.error.message, null));
+    }
+
+    const previous_price = await stripe.prices.update(
+      existedSubscription.subscriptionId,
+      {
+        active: false,
+      }
+    );
+    if (!previous_price) {
+      return res
+        .status(500)
+        .json({ message: "price is not able to be deleted", success: false });
     }
 
     await Subscription.findByIdAndDelete(req.params.id);
@@ -74,4 +188,52 @@ const deleteSubscription = async (req: Request, res: Response) => {
   }
 };
 
-export { getSubscription, createSubscription, deleteSubscription };
+const createCustomerAndSubscription = (req: Request, res: Response) => {
+  const { stripeToken, customerEmail, planId } = req.body;
+
+  try {
+    return stripe.customers
+      .create({
+        source: stripeToken,
+        email: customerEmail,
+      })
+      .then((customer) => {
+        stripe.subscriptions.create({
+          customer: customer.id,
+          items: [
+            {
+              plan: planId,
+            },
+          ],
+        });
+      });
+  } catch (error) {
+    console.log(error, " stripe error");
+  }
+};
+
+const updateCustomerAndSubscription = (req: Request, res: Response) => {
+  const { stripeToken, customerEmail, planId } = req.body;
+
+  try {
+    return;
+    // stripe.subscriptions.create({
+    //   customer: customer.id,
+    //   items: [
+    //     {
+    //       plan: planId,
+    //     },
+    //   ],
+    // });
+  } catch (error) {
+    console.log(error, " stripe error");
+  }
+};
+
+export {
+  getSubscription,
+  createSubscription,
+  deleteSubscription,
+  createCustomerAndSubscription,
+  updateCustomerAndSubscription,
+};

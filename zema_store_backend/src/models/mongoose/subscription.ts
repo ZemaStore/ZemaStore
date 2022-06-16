@@ -7,8 +7,8 @@ enum SubType {
 
 export interface ISubscriptionDocument extends Document {
   subscriptionType: SubType;
-  subscriptionId: String;
-  summary: String;
+  subscriptionId: string;
+  summary: string;
   createdAt: Date;
   updatedAt: Date;
 }

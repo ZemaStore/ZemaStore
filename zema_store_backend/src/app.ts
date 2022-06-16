@@ -13,6 +13,7 @@ import {
   playlistRouter,
   songRouter,
   userRouter,
+  subscriptionRouter
 } from "./routes/index.routes";
 
 const corsOptions = {
@@ -62,5 +63,6 @@ app.use("/api", albumRouter);
 app.use("/api", playlistRouter);
 app.use("/api", followRouter);
 app.use("/api", eventRouter);
+app.use("/api", subscriptionRouter);
 
 export default app;

@@ -6,6 +6,8 @@ import albumRouter from "./album.routes";
 import playlistRouter from "./playlist.routes";
 import followRouter from "./follow.routes";
 import eventRouter from "./event.routes";
+import subscriptionRouter from "./subcriptions.routes";
+
 
 export {
   authRouter,
@@ -16,4 +18,5 @@ export {
   playlistRouter,
   followRouter,
   eventRouter,
+  subscriptionRouter,
 };
