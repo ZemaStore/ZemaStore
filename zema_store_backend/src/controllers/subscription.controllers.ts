@@ -12,6 +12,7 @@ import {
   createSubscriptionSchema,
   deleteSubscriptionSchema,
   getSubscriptionSchema,
+  getSubscriptionsSchema,
 } from "../validation-schemas/subscription.schemas";
 import User from "../models/mongoose/user";
 import { isNil } from "lodash";
@@ -24,7 +25,7 @@ const fetchItemCount = 10;
 
 const getSubscriptions = async (req: Request, res: Response) => {
   try {
-    const validate = getSubscriptionSchema.validate(req.query);
+    const validate = getSubscriptionsSchema.validate(req.query);
     if (validate.error && validate.error !== null) {
       return res
         .status(400)
@@ -309,6 +310,7 @@ const updateCustomerAndSubscription = async (req: Request, res: Response) => {
 };
 
 export {
+  getSubscriptions,
   getSubscription,
   createSubscription,
   updateSubscription,

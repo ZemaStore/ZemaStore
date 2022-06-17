@@ -4,14 +4,14 @@ import {
   createSubscription,
   deleteSubscription,
   getSubscription,
+  getSubscriptions,
 } from "../controllers/subscription.controllers";
 
 import { isAdmin } from "../middlewares/auth.middlewares";
 
 const router = Router();
 
-
-router.route("/").get(getSubscription).post(createSubscription);
+router.route("/").get(getSubscriptions).post(createSubscription);
 router.route("/subscribe").post(createCustomerAndSubscription);
 router
   .route("/:id")
