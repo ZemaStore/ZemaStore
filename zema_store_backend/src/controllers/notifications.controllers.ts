@@ -6,7 +6,6 @@ import CustomerProfile from "../models/mongoose/customer-profile";
 import Event from "../models/mongoose/event";
 import Follow from "../models/mongoose/follow";
 
-
 const notifyOne = async (req: Request, res: Response, next) => {
   const { customerId, messageContent } = req.body;
   try {

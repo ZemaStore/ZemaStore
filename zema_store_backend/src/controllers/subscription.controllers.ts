@@ -13,6 +13,7 @@ import {
   deleteSubscriptionSchema,
   getSubscriptionSchema,
 } from "../validation-schemas/subscription.schemas";
+import User from "../models/mongoose/user";
 
 const stripe = new Stripe(configs.STRIPE_API_KEY, {
   apiVersion: "2020-08-27",
@@ -171,52 +172,85 @@ const deleteSubscription = async (req: Request, res: Response) => {
   }
 };
 
-const createCustomerAndSubscription = (req: Request, res: Response) => {
-  const { stripeToken, customerEmail, planId } = req.body;
+const createCustomerAndSubscription = async (req: Request, res: Response) => {
+  const { stripeToken, customerEmail, subscriptionId } = req.body;
 
   try {
-    return stripe.customers
+    const subscription = await Subscription.findById(subscriptionId).exec();
+    if (!subscription) {
+      return res.status(500).json({
+        message: "there is no subscription with the given id",
+        success: false,
+      });
+    }
+
+    await stripe.customers
       .create({
         source: stripeToken,
         email: customerEmail,
       })
-      .then((customer) => {
-        stripe.subscriptions.create({
+      .then(async (customer) => {
+        await stripe.subscriptions.create({
           customer: customer.id,
           items: [
             {
-              plan: planId,
+              plan: subscription.priceId,
             },
           ],
         });
+
+        await User.findOneAndUpdate(
+          { email: customerEmail },
+          {
+            subscriptionId,
+          }
+        );
       });
+    return res
+      .status(200)
+      .json({ message: "user successfully subscribed", success: false });
   } catch (error) {
     console.log(error, " stripe error");
   }
 };
 
-const updateCustomerAndSubscription = (req: Request, res: Response) => {
-  const { stripeToken, customerEmail, planId } = req.body;
+const updateCustomerAndSubscription = async(req: Request, res: Response) => {
+  const { stripeToken, customerEmail, subscriptionId } = req.body;
 
   try {
-    // stripe.subscriptions.update('sub_49ty4767H20z6a', {
-    //   cancel_at_period_end: false,
-    //   proration_behavior: 'create_prorations',
-    //   items: [{
-    //     id: subscription.items.data[0].id,
-    //     price: planId,
-    //   }]
-    // });
+    const subscription = await Subscription.findById(subscriptionId).exec();
+    if (!subscription) {
+      return res.status(500).json({
+        message: "there is no subscription with the given id",
+        success: false,
+      });
+    }
 
-   
-    // return stripe.subscriptions.create({
-    //   customer: customer.id,
-    //   items: [
-    //     {
-    //       plan: planId,
-    //     },
-    //   ],
-    // });
+    // stripe.customers
+    //   .retrieve({})
+      
+    //   .then(async (customer) => {
+    //     const res = await stripe.subscriptions.update(customer.id, {
+    //       cancel_at_period_end: false,
+    //       proration_behavior: "create_prorations",
+    //       items: [
+    //         {
+    //           plan: subscription.priceId,
+    //         },
+    //       ],
+    //     });
+
+
+        // return stripe.subscriptions.create({
+        //   customer: customer.id,
+        //   items: [
+        //     {
+        //       plan: planId,
+        //     },
+        //   ],
+        // });
+      // })
+      // .catch();
   } catch (error) {
     console.log(error, " stripe error");
   }
