@@ -14,10 +14,63 @@ import {
   getSubscriptionSchema,
 } from "../validation-schemas/subscription.schemas";
 import User from "../models/mongoose/user";
+import { isNil } from "lodash";
 
 const stripe = new Stripe(configs.STRIPE_API_KEY, {
   apiVersion: "2020-08-27",
 });
+
+const fetchItemCount = 10;
+
+const getSubscriptions = async (req: Request, res: Response) => {
+  try {
+    const validate = getSubscriptionSchema.validate(req.query);
+    if (validate.error && validate.error !== null) {
+      return res
+        .status(400)
+        .send(new ErrorResponse(validate.error.message, null));
+    }
+
+    const { page, sort } = Utils.instance.getPaginationData(req);
+
+    const search = req.query.search;
+
+    const count = isNil(search)
+      ? await Subscription.count({})
+      : await Subscription.count({
+          title: {
+            $regex: search,
+          },
+        });
+    const totalPages = Utils.instance.getNumberOfPages(count, fetchItemCount);
+
+    const subscriptions = isNil(search)
+      ? await Subscription.find({})
+          .limit(fetchItemCount)
+          .skip(page * fetchItemCount)
+          .sort(sort)
+      : await Subscription.find({
+          title: {
+            $regex: search,
+          },
+        })
+          .limit(fetchItemCount)
+          .skip(page * fetchItemCount)
+          .sort(sort);
+
+    res
+      .status(200)
+      .send(
+        new OkResponse(
+          { subscriptions, totalPages, totalItems: count, pageNumber: page },
+          "Subscriptions successfully fetched!"
+        )
+      );
+  } catch (e) {
+    Utils.instance.handleResponseException(res, e);
+  }
+};
+
 const getSubscription = async (req: Request, res: Response) => {
   try {
     const validate = getSubscriptionSchema.validate(req.params);
@@ -214,7 +267,7 @@ const createCustomerAndSubscription = async (req: Request, res: Response) => {
   }
 };
 
-const updateCustomerAndSubscription = async(req: Request, res: Response) => {
+const updateCustomerAndSubscription = async (req: Request, res: Response) => {
   const { stripeToken, customerEmail, subscriptionId } = req.body;
 
   try {
@@ -228,7 +281,7 @@ const updateCustomerAndSubscription = async(req: Request, res: Response) => {
 
     // stripe.customers
     //   .retrieve({})
-      
+
     //   .then(async (customer) => {
     //     const res = await stripe.subscriptions.update(customer.id, {
     //       cancel_at_period_end: false,
@@ -240,17 +293,16 @@ const updateCustomerAndSubscription = async(req: Request, res: Response) => {
     //       ],
     //     });
 
-
-        // return stripe.subscriptions.create({
-        //   customer: customer.id,
-        //   items: [
-        //     {
-        //       plan: planId,
-        //     },
-        //   ],
-        // });
-      // })
-      // .catch();
+    // return stripe.subscriptions.create({
+    //   customer: customer.id,
+    //   items: [
+    //     {
+    //       plan: planId,
+    //     },
+    //   ],
+    // });
+    // })
+    // .catch();
   } catch (error) {
     console.log(error, " stripe error");
   }
