@@ -7,8 +7,8 @@ import playlistRouter from "./playlist.routes";
 import followRouter from "./follow.routes";
 import eventRouter from "./event.routes";
 import subscriptionRouter from "./subcriptions.routes";
-
-
+import notificationRouter from "./notification.routes";
+import reportRouter from "./report.routes";
 export {
   authRouter,
   songRouter,
@@ -19,4 +19,6 @@ export {
   followRouter,
   eventRouter,
   subscriptionRouter,
+  notificationRouter,
+  reportRouter,
 };

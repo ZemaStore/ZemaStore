@@ -6,6 +6,7 @@ export interface IEventDocument extends Document {
   imageUrl: String;
   venue: Object;
   date: Date;
+  artistId: mongoose.Schema.Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -16,13 +17,17 @@ const eventSchema: Schema<IEventDocument> = new Schema(
       type: String,
       required: true,
     },
+    artistId: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: "ArtistProfile",
+    },
     summary: {
       type: String,
       required: true,
     },
     imageUrl: {
       type: String,
-      required: true,
     },
     venue: {
       type: Object,

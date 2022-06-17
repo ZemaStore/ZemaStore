@@ -29,7 +29,17 @@ const getEvent = async (req: Request, res: Response) => {
 
     const event = await Event.findById(req.params.id);
 
-    res.status(200).send(new OkResponse(event, "Event successfully fetched!"));
+    res.status(200).send(
+      new OkResponse(
+        {
+          event,
+          venue: JSON.parse(
+            '\'{"name":"Addis Ababa, Addis Ababa","latitude":8.9806034,"longitude":38.7577605}\''
+          ),
+        },
+        "Event successfully fetched!"
+      )
+    );
   } catch (e) {
     Utils.instance.handleResponseException(res, e);
   }
@@ -92,11 +102,11 @@ const createEvent = async (req: Request, res: Response) => {
         .status(400)
         .send(new ErrorResponse(validate.error.message, null));
     }
-    const { title, summary, venue, date } = req.body;
-    const { path = "", filename = "" } = req.file;
+    const { title, summary, venue, date, artistId } = req.body;
 
     let upload;
     if (req.file) {
+      const { path = "", filename = "" } = req.file;
       upload = await cloudinaryUploader(
         path,
         "auto",
@@ -109,12 +119,13 @@ const createEvent = async (req: Request, res: Response) => {
     const event = await Event.create({
       title,
       summary,
-      imageUrl: upload.secure_url || "",
-      venue,
+      imageUrl: (upload && upload.secure_url) || "",
+      venue: JSON.parse(venue),
       date,
+      artistId
     });
 
-    res.status(200).send(new OkResponse(event, "Event successfully created!"));
+    return res.status(200).send(new OkResponse(event, "Event successfully created!"));
   } catch (e) {
     Utils.instance.handleResponseException(res, e);
   }
@@ -150,15 +161,15 @@ const updateEvent = async (req: Request, res: Response) => {
     //   new: true,
     // });
 
-    const { title, summary, venue, date } = body;
+    const { title, summary, venue, date, artistId } = body;
 
     const eventData = await Event.findById(params.id);
 
     eventData.title = !isNil(title) ? title : eventData.title;
     eventData.summary = !isNil(summary) ? summary : eventData.summary;
-    eventData.venue = !isNil(venue) ? venue : eventData.venue;
+    eventData.venue = !isNil(venue) ? JSON.parse(venue) : eventData.venue;
     eventData.date = !isNil(date) ? date : eventData.venue;
-    eventData.imageUrl = !isNil(upload.secure_url)
+    eventData.imageUrl = !isNil(upload && upload.secure_url)
       ? upload.secure_url
       : eventData.imageUrl;
 

@@ -53,12 +53,14 @@ type Props = {
 const AddEditEventModal = (props: Props) => {
   let modal = document.getElementById("add_event_modal");
   const { isLoading, searchEventsList } = useAppSelector(eventsSelector);
+  const [eventCover, setEventCover] = useState<File | null>(null);
+
   const [selectedPlace, setSelectedPlace] = useState<PlaceType>(
-    props.eventData?.venue || {
+    props.eventData?.venue ? props.eventData?.venue : ({
       name: "Addis Ababa, Addis Ababa",
       latitude: 8.9806034,
       longitude: 38.7577605,
-    }
+    })
   );
   const dispatch = useAppDispatch();
   console.log(props.eventData, " event")
@@ -75,6 +77,7 @@ const AddEditEventModal = (props: Props) => {
     fadeOut(modal);
     props.onClose();
   }
+  
   function fadeOut(el: any) {
     el.style.opacity = 1;
     (function fade() {
@@ -102,23 +105,42 @@ const AddEditEventModal = (props: Props) => {
               title: props.isEditing ? props.eventData?.title : "",
               summary: props.isEditing ? props.eventData?.summary : "",
               date: props.isEditing ? props.eventData?.date : "",
+              cover: props.isEditing ? props.eventData?.cover : null,
             }}
             validationSchema={EventsValidationSchema}
             onSubmit={async (values) => {
+              const formData = new FormData();
               try {
                 if (props.isEditing) {
-                  const updatedData = {
-                    ...props.eventData,
-                    ...values,
-                    venue: selectedPlace,
-                  };
-                  console.log(values, updatedData, " is up");
-                  await dispatch(updateEvent(updatedData));
+              
+                  formData.append("title", values.title || "");
+                  formData.append("id", props.eventData?.id || "")
+                  formData.append("summary", values.summary || "");
+                  formData.append("date", values.date || new Date().toISOString());
+                  formData.append("venue", JSON.stringify(selectedPlace) || new Date().toISOString());
+
+                  if (eventCover) {
+                    formData.append('cover', eventCover);
+                  }
+                  await dispatch(updateEvent(formData));
+
                   props.onClose();
                   notify.success("Event Updated Successufully!");
                 } else {
+                  formData.append("title", values.title || "");
+                  formData.append("title", values.title || "");
+                  formData.append("id", props.eventData?.id || "")
+                  formData.append("summary", values.summary || "");
+                  formData.append("date", values.date || new Date().toISOString());
+                  formData.append("venue", JSON.stringify(selectedPlace) || new Date().toISOString());
+
+                  if (eventCover) {
+                    formData.append('cover', eventCover);
+                  }
                   await dispatch(
-                    addEventsApi({ venue: selectedPlace, ...values })
+                    addEventsApi(
+                      formData
+                    )
                   );
                   props.onClose();
                   notify.success("Event Added Successufully!");
@@ -126,7 +148,8 @@ const AddEditEventModal = (props: Props) => {
               } catch (error: any) {
                 notify.error(error.toString());
               }
-            }}
+            }
+            }
           >
             {({ errors, touched, isValidating }) => (
               <Form>

@@ -6,7 +6,9 @@ const getSubscriptionSchema = Joi.object({
 
 const createSubscriptionSchema = Joi.object({
   subscriptionType: Joi.string().required(),
-  subscriptionId: Joi.string().required(),
+  title: Joi.string().required(),
+  amount: Joi.number().required(),
+  interval: Joi.string().required(),
   summary: Joi.string().optional(),
 });
 

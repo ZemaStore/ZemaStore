@@ -1,23 +1,22 @@
 import { Request, Response } from "express";
+import Stripe from "stripe";
 
 import Subscription from "../models/mongoose/subscription";
 
 import ErrorResponse from "../models/responses/error-response.model";
 import OkResponse from "../models/responses/ok-response.model";
 import Utils from "../utils/utils";
-
-import Stripe from "stripe";
-const stripe = new Stripe(configs.STRIPE_API_KEY, {
-  apiVersion: "2020-08-27",
-});
+import configs from "../configs/app.configs";
 
 import {
   createSubscriptionSchema,
   deleteSubscriptionSchema,
   getSubscriptionSchema,
 } from "../validation-schemas/subscription.schemas";
-import configs from "../configs/app.configs";
 
+const stripe = new Stripe(configs.STRIPE_API_KEY, {
+  apiVersion: "2020-08-27",
+});
 const getSubscription = async (req: Request, res: Response) => {
   try {
     const validate = getSubscriptionSchema.validate(req.params);
@@ -46,43 +45,27 @@ const createSubscription = async (req: Request, res: Response) => {
         .send(new ErrorResponse(validate.error.message, null));
     }
 
-    const { subscriptionType, subscriptionId } = req.body;
-
-    //
-
     const {
-      name,
+      title,
       amount,
-      subType,
-      fromDate,
-      toDate,
-      description,
-      included,
-      promoCredit,
+      summary,
       interval = "month",
+      subscriptionType,
     } = req.body;
 
     const price = await stripe.prices.create({
-      unit_amount: new Utils().formatStripeAmount(amount),
+      unit_amount: Utils.instance.formatStripeAmount(amount),
       currency: "usd",
       recurring: { interval },
       product: configs.STRIPE_SUBSCRIPTION_PRODUCT_ID,
     });
 
-    //
-
     const subscription = await Subscription.create({
-      subscriptionType,
-      subscriptionId,
-      name,
+      title,
       amount,
-      subType,
-      fromDate,
-      toDate,
-      description,
-      included,
-      promoCredit,
-      price_id: price.id,
+      summary,
+      subscriptionType,
+      priceId: price.id,
       interval,
     });
 
@@ -106,7 +89,7 @@ const updateSubscription = async (req: Request, res: Response, next) => {
   }
   try {
     const previous_price = await stripe.prices.update(
-      existedSubscription.subscriptionId,
+      existedSubscription.priceId,
       {
         active: false,
       }
@@ -167,7 +150,7 @@ const deleteSubscription = async (req: Request, res: Response) => {
     }
 
     const previous_price = await stripe.prices.update(
-      existedSubscription.subscriptionId,
+      existedSubscription.priceId,
       {
         active: false,
       }
@@ -216,8 +199,17 @@ const updateCustomerAndSubscription = (req: Request, res: Response) => {
   const { stripeToken, customerEmail, planId } = req.body;
 
   try {
-    return;
-    // stripe.subscriptions.create({
+    // stripe.subscriptions.update('sub_49ty4767H20z6a', {
+    //   cancel_at_period_end: false,
+    //   proration_behavior: 'create_prorations',
+    //   items: [{
+    //     id: subscription.items.data[0].id,
+    //     price: planId,
+    //   }]
+    // });
+
+   
+    // return stripe.subscriptions.create({
     //   customer: customer.id,
     //   items: [
     //     {
@@ -233,6 +225,7 @@ const updateCustomerAndSubscription = (req: Request, res: Response) => {
 export {
   getSubscription,
   createSubscription,
+  updateSubscription,
   deleteSubscription,
   createCustomerAndSubscription,
   updateCustomerAndSubscription,

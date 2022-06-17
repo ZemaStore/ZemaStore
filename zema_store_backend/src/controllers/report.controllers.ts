@@ -7,7 +7,7 @@ const analyticsDataClient = new BetaAnalyticsDataClient({
 });
 
 export const totalReport = async (req, res) => {
-  const propertyId = configs.GOOGLE_ANALYTICS_PROPERTY_ID || "262329619";
+  const propertyId = configs.GOOGLE_ANALYTICS_PROPERTY_ID || 319939776;
   const startDate = req.body.startDate || "7daysAgo";
   const endDate = req.body.endDate || "yesterday";
 
@@ -76,7 +76,7 @@ export const totalReport = async (req, res) => {
 };
 
 export const getUsersByMedium = async (req, res) => {
-  const propertyId = configs.GOOGLE_ANALYTICS_PROPERTY_ID || "262329619";
+  const propertyId = configs.GOOGLE_ANALYTICS_PROPERTY_ID || 319939776;
   const startDate = req.body.startDate || "2014-11-01";
   const endDate = req.body.endDate || "yesterday";
 
@@ -111,9 +111,13 @@ export const getUsersByMedium = async (req, res) => {
 };
 
 export const getActiveUsers = async (req, res) => {
-  const propertyId = configs.GOOGLE_ANALYTICS_PROPERTY_ID || "262329619";
+  const propertyId = configs.GOOGLE_ANALYTICS_PROPERTY_ID || 319939776;
   const startDate = req.body.startDate || "2018-01-01";
   const endDate = req.body.endDate || "today";
+  console.log(
+    configs.GOOGLE_ANALYTICS_PROPERTY_ID,
+    configs.GOOGLE_APPLICATION_CREDENTIALS
+  );
 
   const metrics = [{ name: "activeUsers" }];
 
