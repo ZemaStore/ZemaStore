@@ -42,7 +42,7 @@ const getSong = async (req: Request, res: Response) => {
       "https://zemastore-file-server.herokuapp.com/upload",
       {
         audio_url: songData.song,
-        random_file_name: "nanoid",
+        random_file_name: nanoid(),
         aes_key: res.locals.user?.aes_key,
         aes_iv: res.locals.user?.aes_iv,
       }

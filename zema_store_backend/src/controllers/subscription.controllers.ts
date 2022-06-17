@@ -7,7 +7,7 @@ import OkResponse from "../models/responses/ok-response.model";
 import Utils from "../utils/utils";
 
 import Stripe from "stripe";
-const stripe = new Stripe(configs.STRIPE_API_KEY, {
+const stripe = new Stripe('sk_test_51L6GQGHoMVBFZ4tv8VsuSTijfzBq7LQTXoRe2KhRnCBWrdgqJs9mYb9Y5thlzacj9V9BeGQfGBS2nM6G6Dpvn24X00PK6K4eNF', {
   apiVersion: "2020-08-27",
 });
 
