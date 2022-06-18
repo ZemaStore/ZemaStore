@@ -9,7 +9,7 @@ import ArtistsIndexPage from "./pages/artists";
 import ArtistsPage from "./pages/artists/artists";
 import SigninPage from "./pages/auth/signin";
 import DashboardPage from "./pages/dashboard";
-import EventsPage from "./pages/events";
+import EventsPage from "./pages/events/events";
 import UserProfilePage from "./pages/profile";
 import SettingsPage from "./pages/settings";
 import SubscriptionsPage from "./pages/subscriptions";
@@ -19,6 +19,8 @@ import ProtectedRoute from "./common/Route/ProtectedRoute";
 import SongsIndexPage from "./pages/songs";
 import SongsPage from "./pages/songs/songs";
 import SongDetail from "./pages/songs/song_detail";
+import EventsIndexPage from "./pages/events/index";
+import EventDetail from "./pages/events/event_detail";
 
 function App() {
   return (
@@ -71,19 +73,24 @@ function App() {
           }
         >
           <Route index element={<AlbumsPage />} />
-
           <Route path=":id" element={<SongsIndexPage />}>
             <Route index element={<SongsPage from="albums" />} />
             <Route path=":id" element={<SongDetail from="albums" />} />
           </Route>
         </Route>
-
         <Route
-          path="/events"
+          path="events"
           element={
-            <ProtectedRoute redirectPath="/events" children={<EventsPage />} />
+            <ProtectedRoute
+              redirectPath="/events"
+              children={<EventsIndexPage />}
+            />
           }
-        />
+        >
+          <Route index element={<EventsPage />} />
+          <Route path=":id" element={<EventDetail from="events" />} />
+        </Route>
+
         <Route
           path="/subscriptions"
           element={

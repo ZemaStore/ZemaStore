@@ -24,6 +24,7 @@ const profileSchema: Schema<ICustomerProfileDocument> = new Schema(
       type: String,
       required: true,
     },
+
     notification_token: {
       type: String,
       default: "",
