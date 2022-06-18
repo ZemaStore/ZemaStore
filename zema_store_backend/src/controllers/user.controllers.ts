@@ -57,7 +57,7 @@ const getusers = async (req: Request, res: Response) => {
     const count = isNil(search)
       ? await User.count({ roleId: role._id })
       : await CustomerProfile.count({
-          fullName: {
+          firstName: {
             $regex: search,
           },
         });
@@ -72,7 +72,7 @@ const getusers = async (req: Request, res: Response) => {
           .sort(sort)
           .populate("profileId")
       : await CustomerProfile.find({
-          fullName: {
+          firstName: {
             $regex: search,
           },
         })

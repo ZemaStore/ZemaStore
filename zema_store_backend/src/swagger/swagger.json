@@ -2118,12 +2118,16 @@
             "type": "string",
             "description": "User phone number"
           },
-          "fullName": {
+          "firstName": {
             "type": "string",
-            "description": "Full Name"
+            "description": "First Name"
+          },
+          "lastName": {
+            "type": "string",
+            "description": "Last Name"
           }
         },
-        "required": ["email", "password", "fullName", "address"]
+        "required": ["email", "password", "firstName", "address"]
       },
       "Artist": {
         "type": "object",

@@ -145,7 +145,7 @@ const forgotPassword = async (req: Request, res: Response) => {
 
     const user = await User.findOne({
       email,
-    }).populate("profileId", "fullName");
+    }).populate("profileId", "firstName");
 
     if (!user) {
       return res
@@ -164,7 +164,7 @@ const forgotPassword = async (req: Request, res: Response) => {
 
     const profile = user.profileId;
 
-    sendOtpCode(user.email.toString(), profile["fullName"], code.toString());
+    sendOtpCode(user.email.toString(), profile["firstName"], code.toString());
 
     res.status(200).send({
       success: true,
