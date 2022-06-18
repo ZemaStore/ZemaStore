@@ -1,10 +1,11 @@
 import mongoose, { Schema, Document } from "mongoose";
 
 export interface ICustomerProfileDocument extends Document {
-  userId: String;
-  firstName: String;
-  lastName: String;
+  userId: string;
+  firstName: string;
+  lastName: string;
   subscriptionId: mongoose.Schema.Types.ObjectId;
+  notification_token: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -22,6 +23,10 @@ const profileSchema: Schema<ICustomerProfileDocument> = new Schema(
     lastName: {
       type: String,
       required: true,
+    },
+    notification_token: {
+      type: String,
+      default: "",
     },
     subscriptionId: {
       type: mongoose.Schema.Types.ObjectId,

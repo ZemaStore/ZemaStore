@@ -1,10 +1,16 @@
 import { Router } from "express";
-import { sendOverallNotifications } from "../controllers/notifications.controllers";
+import {
+  notifyAll,
+  notifyFollowers,
+  notifyOne,
+} from "../controllers/notifications.controllers";
 
 import { isAuthorized } from "../middlewares/auth.middlewares";
 
 const router = Router();
 
-router.route("/events/").post(sendOverallNotifications);
+router.route("/notify-one").post(notifyOne);
+router.route("/notify-all").post(notifyAll);
+router.route("/notify-followers").post(notifyFollowers);
 
-export default (() => Router().use("/playlists", router))();
+export default (() => Router().use("/notifications", router))();

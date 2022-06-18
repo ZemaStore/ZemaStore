@@ -121,11 +121,7 @@ const AddEditAlbumModal = (props: Props) => {
               const formData = new FormData();
               try {
                 if (props.isEditing) {
-                  const updatedData: any = {
-                    ...props.albumData,
-                    ...values,
-
-                  };
+              
                   formData.append("title", values.title || "");
                   formData.append("id", props.albumData?.id || "")
                   formData.append("releaseDate", values.releaseDate || new Date().toISOString());

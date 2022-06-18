@@ -49,7 +49,7 @@ const signUp = async (req: Request, res: Response, _next: NextFunction) => {
 
     const profileModel = "CustomerProfile";
     const userProfile = await CustomerProfile.create({
-      fullName: firstName || "No",
+      firstName: firstName || "No",
       lastName: lastName || "NAME",
     });
 

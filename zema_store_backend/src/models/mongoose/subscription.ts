@@ -6,8 +6,11 @@ enum SubType {
 }
 
 export interface ISubscriptionDocument extends Document {
+  title: string;
+  amount: number;
   subscriptionType: SubType;
-  subscriptionId: string;
+  priceId: string;
+  interval: string;
   summary: string;
   createdAt: Date;
   updatedAt: Date;
@@ -15,13 +18,26 @@ export interface ISubscriptionDocument extends Document {
 
 const subscriptionSchema: Schema<ISubscriptionDocument> = new Schema(
   {
+    title: {
+      type: String,
+      required: true,
+    },
+    amount: {
+      type: Number,
+      required: true,
+    },
+    interval: {
+      type: String,
+      required: true,
+      default: "monthly",
+    },
     subscriptionType: {
       type: String,
       enum: SubType,
       required: true,
       default: SubType.FREE,
     },
-    subscriptionId: {
+    priceId: {
       type: String,
       required: true,
     },

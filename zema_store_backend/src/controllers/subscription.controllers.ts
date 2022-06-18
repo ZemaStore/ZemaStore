@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import Stripe from "stripe";
 
 import Subscription from "../models/mongoose/subscription";
 
@@ -6,18 +7,71 @@ import ErrorResponse from "../models/responses/error-response.model";
 import OkResponse from "../models/responses/ok-response.model";
 import Utils from "../utils/utils";
 
-import Stripe from "stripe";
+import configs from "../configs/app.configs";
 
 import {
   createSubscriptionSchema,
   deleteSubscriptionSchema,
   getSubscriptionSchema,
+  getSubscriptionsSchema,
 } from "../validation-schemas/subscription.schemas";
-import configs from "../configs/app.configs";
+import User from "../models/mongoose/user";
+import { isNil } from "lodash";
 
 const stripe = new Stripe(configs.STRIPE_API_KEY, {
   apiVersion: "2020-08-27",
 });
+
+const fetchItemCount = 10;
+
+const getSubscriptions = async (req: Request, res: Response) => {
+  try {
+    const validate = getSubscriptionsSchema.validate(req.query);
+    if (validate.error && validate.error !== null) {
+      return res
+        .status(400)
+        .send(new ErrorResponse(validate.error.message, null));
+    }
+
+    const { page, sort } = Utils.instance.getPaginationData(req);
+
+    const search = req.query.search;
+
+    const count = isNil(search)
+      ? await Subscription.count({})
+      : await Subscription.count({
+          title: {
+            $regex: search,
+          },
+        });
+    const totalPages = Utils.instance.getNumberOfPages(count, fetchItemCount);
+
+    const subscriptions = isNil(search)
+      ? await Subscription.find({})
+          .limit(fetchItemCount)
+          .skip(page * fetchItemCount)
+          .sort(sort)
+      : await Subscription.find({
+          title: {
+            $regex: search,
+          },
+        })
+          .limit(fetchItemCount)
+          .skip(page * fetchItemCount)
+          .sort(sort);
+
+    res
+      .status(200)
+      .send(
+        new OkResponse(
+          { subscriptions, totalPages, totalItems: count, pageNumber: page },
+          "Subscriptions successfully fetched!"
+        )
+      );
+  } catch (e) {
+    Utils.instance.handleResponseException(res, e);
+  }
+};
 
 const getSubscription = async (req: Request, res: Response) => {
   try {
@@ -47,43 +101,27 @@ const createSubscription = async (req: Request, res: Response) => {
         .send(new ErrorResponse(validate.error.message, null));
     }
 
-    const { subscriptionType, subscriptionId } = req.body;
-
-    //
-
     const {
-      name,
+      title,
       amount,
-      subType,
-      fromDate,
-      toDate,
-      description,
-      included,
-      promoCredit,
+      summary,
       interval = "month",
+      subscriptionType,
     } = req.body;
 
     const price = await stripe.prices.create({
-      unit_amount: new Utils().formatStripeAmount(amount),
+      unit_amount: Utils.instance.formatStripeAmount(amount),
       currency: "usd",
       recurring: { interval },
       product: configs.STRIPE_SUBSCRIPTION_PRODUCT_ID,
     });
 
-    //
-
     const subscription = await Subscription.create({
-      subscriptionType,
-      subscriptionId,
-      name,
+      title,
       amount,
-      subType,
-      fromDate,
-      toDate,
-      description,
-      included,
-      promoCredit,
-      price_id: price.id,
+      summary,
+      subscriptionType,
+      priceId: price.id,
       interval,
     });
 
@@ -107,7 +145,7 @@ const updateSubscription = async (req: Request, res: Response, next) => {
   }
   try {
     const previous_price = await stripe.prices.update(
-      existedSubscription.subscriptionId,
+      existedSubscription.priceId,
       {
         active: false,
       }
@@ -168,7 +206,7 @@ const deleteSubscription = async (req: Request, res: Response) => {
     }
 
     const previous_price = await stripe.prices.update(
-      existedSubscription.subscriptionId,
+      existedSubscription.priceId,
       {
         active: false,
       }
@@ -189,36 +227,75 @@ const deleteSubscription = async (req: Request, res: Response) => {
   }
 };
 
-const createCustomerAndSubscription = (req: Request, res: Response) => {
-  const { stripeToken, customerEmail, planId } = req.body;
+const createCustomerAndSubscription = async (req: Request, res: Response) => {
+  const { stripeToken, customerEmail, subscriptionId } = req.body;
 
   try {
-    return stripe.customers
+    const subscription = await Subscription.findById(subscriptionId).exec();
+    if (!subscription) {
+      return res.status(500).json({
+        message: "there is no subscription with the given id",
+        success: false,
+      });
+    }
+
+    await stripe.customers
       .create({
         source: stripeToken,
         email: customerEmail,
       })
-      .then((customer) => {
-        stripe.subscriptions.create({
+      .then(async (customer) => {
+        await stripe.subscriptions.create({
           customer: customer.id,
           items: [
             {
-              plan: planId,
+              plan: subscription.priceId,
             },
           ],
         });
+
+        await User.findOneAndUpdate(
+          { email: customerEmail },
+          {
+            subscriptionId,
+          }
+        );
       });
+    return res
+      .status(200)
+      .json({ message: "user successfully subscribed", success: false });
   } catch (error) {
     console.log(error, " stripe error");
   }
 };
 
-const updateCustomerAndSubscription = (req: Request, res: Response) => {
-  const { stripeToken, customerEmail, planId } = req.body;
+const updateCustomerAndSubscription = async (req: Request, res: Response) => {
+  const { stripeToken, customerEmail, subscriptionId } = req.body;
 
   try {
-    return;
-    // stripe.subscriptions.create({
+    const subscription = await Subscription.findById(subscriptionId).exec();
+    if (!subscription) {
+      return res.status(500).json({
+        message: "there is no subscription with the given id",
+        success: false,
+      });
+    }
+
+    // stripe.customers
+    //   .retrieve({})
+
+    //   .then(async (customer) => {
+    //     const res = await stripe.subscriptions.update(customer.id, {
+    //       cancel_at_period_end: false,
+    //       proration_behavior: "create_prorations",
+    //       items: [
+    //         {
+    //           plan: subscription.priceId,
+    //         },
+    //       ],
+    //     });
+
+    // return stripe.subscriptions.create({
     //   customer: customer.id,
     //   items: [
     //     {
@@ -226,14 +303,18 @@ const updateCustomerAndSubscription = (req: Request, res: Response) => {
     //     },
     //   ],
     // });
+    // })
+    // .catch();
   } catch (error) {
     console.log(error, " stripe error");
   }
 };
 
 export {
+  getSubscriptions,
   getSubscription,
   createSubscription,
+  updateSubscription,
   deleteSubscription,
   createCustomerAndSubscription,
   updateCustomerAndSubscription,

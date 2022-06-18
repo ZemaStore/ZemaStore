@@ -15,6 +15,7 @@ const createEventSchema = Joi.object({
   summary: Joi.string().required(),
   venue: Joi.any().required(),
   date: Joi.date().required(),
+  artistId: Joi.string().required(),
 });
 
 const updateEventSchema = Joi.object({
