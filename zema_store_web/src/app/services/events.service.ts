@@ -1,6 +1,17 @@
 import { baseUrl } from ".";
 import Request from "../api/request";
 
+const getEvent = async (id: string) => {
+  try {
+    const { data } = await Request.get(`${baseUrl}/events/${id}`);
+
+    return { data, error: null };
+  } catch (error) {
+    return { data: null, error };
+  }
+};
+
+
 const getEvents = async (currentPage: number, orderBy: string) => {
   const { data } = await Request.get(
     `${baseUrl}/events?page=${currentPage - 1}&sortBy=${orderBy}`
@@ -57,6 +68,7 @@ const deleteEvent = async (id: any) => {
 
 const EventsService = {
   getEvents,
+  getEvent,
   addEvent,
   updateEvent,
   deleteEvent,

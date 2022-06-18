@@ -91,7 +91,7 @@ export type Event = {
   id: string;
   title: string;
   summary: string;
-  cover: string;
+  imageUrl: string;
   venue: PlaceType;
   createdAt: string;
   date: string;

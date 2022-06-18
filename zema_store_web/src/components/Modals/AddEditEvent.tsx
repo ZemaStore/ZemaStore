@@ -77,7 +77,7 @@ const AddEditEventModal = (props: Props) => {
     fadeOut(modal);
     props.onClose();
   }
-  
+
   function fadeOut(el: any) {
     el.style.opacity = 1;
     (function fade() {
@@ -87,6 +87,38 @@ const AddEditEventModal = (props: Props) => {
         requestAnimationFrame(fade);
       }
     })();
+  }
+
+  const PreviewEventCover = () => {
+    let imgURL = "";
+    if (props.isEditing && props.eventData?.imageUrl) {
+      imgURL = props.eventData.imageUrl;
+    } else if (eventCover !== null) {
+      imgURL = URL.createObjectURL(eventCover);
+    }
+
+    return (
+      <div className="my-2">
+        {
+          imgURL ?
+            <div className="w-20 h-20 rounded-full relative my-2">
+              <img
+                className="w-full h-full rounded-full absolute object-cover border-2 border-orange-500"
+                src={imgURL}
+                alt="album cover" />
+            </div>
+            : <div className="flex" >
+              <span className="relative">
+                <svg className="w-full h-full top-0 left-0 absolute object-fill" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" >
+                  <path d="M9 17H5a2 2 0 0 0-2 2 2 2 0 0 0 2 2h2a2 2 0 0 0 2-2zm12-2h-4a2 2 0 0 0-2 2 2 2 0 0 0 2 2h2a2 2 0 0 0 2-2z"></path><circle cx="9" cy="9" r="5"></circle></svg>
+              </span>
+              <h5>
+                Not Selected
+              </h5>
+            </div>
+        }
+      </div>
+    );
   }
 
   return (
@@ -105,14 +137,14 @@ const AddEditEventModal = (props: Props) => {
               title: props.isEditing ? props.eventData?.title : "",
               summary: props.isEditing ? props.eventData?.summary : "",
               date: props.isEditing ? props.eventData?.date : "",
-              cover: props.isEditing ? props.eventData?.cover : null,
+              cover: props.isEditing ? props.eventData?.imageUrl : null,
             }}
             validationSchema={EventsValidationSchema}
             onSubmit={async (values) => {
               const formData = new FormData();
               try {
                 if (props.isEditing) {
-              
+
                   formData.append("title", values.title || "");
                   formData.append("id", props.eventData?.id || "")
                   formData.append("summary", values.summary || "");
@@ -252,6 +284,25 @@ const AddEditEventModal = (props: Props) => {
                     {touched.date && errors.date && (
                       <div className="text-red-600">{errors.date}</div>
                     )}
+                  </div>
+                  <div className="overflow-hidden relative mt-4 mb-4">
+                    <label className="block">
+                      <span className="sr-only">Choose profile photo</span>
+                      <input
+                        type="file"
+                        name="photo"
+                        accept="image/*"
+                        onChange={(event: any) => {
+                          setEventCover(event.target.files[0]);
+                        }}
+                        className="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold  file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100 hover:file:text-violet-800"
+                      />
+                    </label>
+                    <div className="my-2">
+                      <PreviewEventCover />
+                    </div>
+
+
                   </div>
 
 
