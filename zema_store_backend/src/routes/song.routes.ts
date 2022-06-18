@@ -27,4 +27,4 @@ router.route("/album/:albumId").get(getSongsByAlbum);
 
 router.route("/artist/:artistId").get(getSongsByArtist);
 
-export default (() => Router().use("/songs", router))();
+export default (() => Router().use("/songs", isAuthorized, router))();

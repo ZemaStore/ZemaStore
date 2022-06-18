@@ -43,19 +43,23 @@ const getSong = async (req: Request, res: Response) => {
       {
         audio_url: songData.song,
         random_file_name: nanoid(),
-        aes_key: res.locals.user?.aes_key,
-        aes_iv: res.locals.user?.aes_iv,
+        aes_key: isNil(res.locals.user?.aes_key)
+          ? null
+          : res.locals.user?.aes_key,
+        aes_iv: isNil(res.locals.user?.aes_iv) ? null : res.locals.user?.aes_iv,
       }
     );
 
     if (isNil(res.locals.user?.aes_iv) || isNil(res.locals.user?.aes_key)) {
       const user = await User.findById(res.locals.user?._id);
-      console.log(user);
+      user.aes_key = song.data?.aes_key;
+      user.aes_iv = song.data?.aes_iv;
+      await user.save()
     }
 
-    res.status(200).send(new OkResponse(song, "Song successfully fetched!"));
+    res.status(200).send(new OkResponse(song.data, "Song successfully fetched!"));
   } catch (e) {
-    console.log(e.message);
+    console.log(e.message, "here");
     Utils.instance.handleResponseException(res, e);
   }
 };

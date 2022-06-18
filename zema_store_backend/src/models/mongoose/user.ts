@@ -67,6 +67,14 @@ const userSchema: Schema<IUserDocument> = new Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Subscription",
     },
+    aes_key: {
+      type: String,
+      required: false,
+    },
+    aes_iv: {
+      type: String,
+      required: false,
+    },
   },
   {
     timestamps: true,
