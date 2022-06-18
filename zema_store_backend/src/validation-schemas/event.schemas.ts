@@ -24,8 +24,9 @@ const updateEventSchema = Joi.object({
   },
   body: {
     title: Joi.string().optional(),
+    artistId: Joi.string().optional(),
     summary: Joi.string().optional(),
-    venue: Joi.object().optional(),
+    venue: Joi.any().required(),
     date: Joi.date().optional(),
   },
 });

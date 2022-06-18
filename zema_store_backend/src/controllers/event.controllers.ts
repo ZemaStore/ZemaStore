@@ -166,6 +166,7 @@ const updateEvent = async (req: Request, res: Response) => {
 
     eventData.title = !isNil(title) ? title : eventData.title;
     eventData.summary = !isNil(summary) ? summary : eventData.summary;
+    eventData.artistId = !isNil(artistId) ? artistId : eventData.artistId;
     eventData.venue = !isNil(venue) ? JSON.parse(venue) : eventData.venue;
     eventData.date = !isNil(date) ? date : eventData.venue;
     eventData.imageUrl = !isNil(upload && upload.secure_url)
@@ -174,7 +175,7 @@ const updateEvent = async (req: Request, res: Response) => {
 
     const event = await eventData.save();
 
-    res.status(200).send(new OkResponse(event, "Event updated successfully!"));
+    return res.status(200).send(new OkResponse(event, "Event updated successfully!"));
   } catch (e) {
     Utils.instance.handleResponseException(res, e);
   }
