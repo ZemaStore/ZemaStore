@@ -98,7 +98,7 @@ function EventDetail(props: Props) {
 
   return (
     <main className="flex justify-center">
-      <div className="min-h-[600px] w-full lg:w-2/3 2xl:1/2 my-10">
+      <div className="min-h-[600px] w-full lg:w-3/4 2xl:2/3 my-10">
         <div className="px-4 md:px-10 py-4 md:py-7 bg-gray-100 rounded-tl-lg rounded-tr-lg flex justify-between">
           <p className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold leading-normal text-gray-800">
             Event Detail

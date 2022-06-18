@@ -55,17 +55,7 @@ export const addEventsApi = createAsyncThunk<any, any>(
   async (payload, { rejectWithValue, fulfillWithValue, dispatch }) => {
     try {
       const { data } = await EventsService.addEvent(payload);
-
-      return fulfillWithValue({
-        ...data,
-        fullName: data.profileId.fullName,
-        avatar: data.photoUrl,
-        followers: data.profileId.followerNumber,
-        listenedHours: data.profileId.listenedHour,
-        albumsCount: 0,
-        songsCount: 0,
-        createdAt: "2020-01-01",
-      });
+      return fulfillWithValue(data);
     } catch (err: any) {
       return rejectWithValue(err.response.data);
     }
@@ -76,10 +66,9 @@ export const updateEventsApi = createAsyncThunk<any, any>(
   "/updateEvent",
   async (payload, { rejectWithValue, fulfillWithValue, dispatch }) => {
     try {
-      const { data } = await EventsService.updateEvent(
-        payload.id,
-        payload.formData
-      );
+      const eventId = payload.get("id")?.toString() || "";
+      payload.delete("id");
+      const { data } = await EventsService.updateEvent(eventId, payload);
       return fulfillWithValue(data);
     } catch (err: any) {
       return rejectWithValue(err.response.data);
@@ -173,6 +162,47 @@ export const eventsSlice = createSlice({
         state.meta.limit = 10;
       })
       .addCase(getEventsApi.rejected, (state, { payload }) => {
+        state.isLoading = false;
+        state.error = true;
+      })
+      .addCase(addEventsApi.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(addEventsApi.fulfilled, (state, { payload }) => {
+        state.isLoading = false;
+        state.events.unshift(payload);
+        state.searchEventsList = state.events;
+      })
+      .addCase(addEventsApi.rejected, (state, { payload }) => {
+        state.isLoading = false;
+        state.error = true;
+        state.errorMessage = (payload as string).toString();
+      })
+      .addCase(updateEventsApi.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(updateEventsApi.fulfilled, (state, { payload }) => {
+        state.events =
+          state.events &&
+          state.events.map((event: Event) => {
+            if (event.id === payload.id) {
+              return {
+                ...payload,
+                // fullName: payload.profileId.fullName,
+                // avatar: payload.photoUrl,
+                // followers: payload.profileId.followerNumber,
+                // listenedHours: payload.profileId.listenedHour,
+                // albumsCount: 0,
+                // songsCount: 0,
+                // createdAt: "2020-01-01",
+              };
+            }
+            return event;
+          });
+        state.searchEventsList = state.events;
+        state.isLoading = false;
+      })
+      .addCase(updateEventsApi.rejected, (state, { payload }) => {
         state.isLoading = false;
         state.error = true;
       });

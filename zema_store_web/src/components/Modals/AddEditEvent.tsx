@@ -2,7 +2,7 @@ import { useEffect, useLayoutEffect, useState } from "react";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import clsx from "clsx";
-import { Event, PlaceType } from "../../helpers/types";
+import { Artist, Event, PlaceType } from "../../helpers/types";
 import { useAppDispatch, useAppSelector } from "../../app/hooks/redux_hooks";
 
 import {
@@ -10,9 +10,12 @@ import {
   clearMessage,
   eventsSelector,
   updateEvent,
+  updateEventsApi,
 } from "../../app/store/features/events/eventsSlice";
 import notify from "../../utils/notify";
 import PlacesAutocompleteSearch from "../../widgets/PlaceAutocomplete";
+import AutoCompleteSearch from "../../widgets/AutocompleteSearch";
+import { values } from "cypress/types/lodash";
 
 Yup.addMethod(
   Yup.string,
@@ -54,7 +57,7 @@ const AddEditEventModal = (props: Props) => {
   let modal = document.getElementById("add_event_modal");
   const { isLoading, searchEventsList } = useAppSelector(eventsSelector);
   const [eventCover, setEventCover] = useState<File | null>(null);
-
+  const [selectedArtist, setSelectedArtist] = useState<Artist | null>()
   const [selectedPlace, setSelectedPlace] = useState<PlaceType>(
     props.eventData?.venue ? props.eventData?.venue : ({
       name: "Addis Ababa, Addis Ababa",
@@ -63,7 +66,6 @@ const AddEditEventModal = (props: Props) => {
     })
   );
   const dispatch = useAppDispatch();
-  console.log(props.eventData, " event")
   useEffect(() => {
     dispatch(clearMessage());
   }, []);
@@ -131,21 +133,25 @@ const AddEditEventModal = (props: Props) => {
         <div
           role="alert"
           className="container mx-auto w-11/12 md:w-2/3 max-w-lg"
-        >
+          >
+          {JSON.stringify(props.eventData?.id)}
           <Formik
             initialValues={{
               title: props.isEditing ? props.eventData?.title : "",
               summary: props.isEditing ? props.eventData?.summary : "",
-              date: props.isEditing ? props.eventData?.date : "",
+              artistId: props.isEditing ? props.eventData?.artistId : "",
+              date: props.isEditing ? props.eventData?.date ? new Date(props.eventData?.date).toISOString().split("T")[0] : "" : new Date().toISOString().split("T")[0],
               cover: props.isEditing ? props.eventData?.imageUrl : null,
             }}
             validationSchema={EventsValidationSchema}
             onSubmit={async (values) => {
+              console.log("values are ", props.eventData, values)
               const formData = new FormData();
               try {
                 if (props.isEditing) {
 
                   formData.append("title", values.title || "");
+                  formData.append("artistId", values.artistId || "");
                   formData.append("id", props.eventData?.id || "")
                   formData.append("summary", values.summary || "");
                   formData.append("date", values.date || new Date().toISOString());
@@ -154,14 +160,13 @@ const AddEditEventModal = (props: Props) => {
                   if (eventCover) {
                     formData.append('cover', eventCover);
                   }
-                  await dispatch(updateEvent(formData));
+                  await dispatch(updateEventsApi(formData));
 
                   props.onClose();
                   notify.success("Event Updated Successufully!");
                 } else {
                   formData.append("title", values.title || "");
-                  formData.append("title", values.title || "");
-                  formData.append("id", props.eventData?.id || "")
+                  formData.append("artistId", values.artistId || "");
                   formData.append("summary", values.summary || "");
                   formData.append("date", values.date || new Date().toISOString());
                   formData.append("venue", JSON.stringify(selectedPlace) || new Date().toISOString());
@@ -183,15 +188,12 @@ const AddEditEventModal = (props: Props) => {
             }
             }
           >
-            {({ errors, touched, isValidating }) => (
+            {({ errors, touched, isValidating, setFieldValue, values }) => (
               <Form>
-                {JSON.stringify(errors)}
+                {JSON.stringify(values)}
                 <div className="relative py-8 px-5 md:px-10 bg-white shadow-md rounded border border-gray-400">
                   <h1 className="text-gray-800 font-lg font-bold tracking-normal leading-tight mb-4">
                     Enter Events Details
-                    {JSON.stringify(errors)}
-                    {JSON.stringify(searchEventsList)}
-                    {JSON.stringify(isLoading)}
                   </h1>
 
                   <div className="my-5">
@@ -261,6 +263,29 @@ const AddEditEventModal = (props: Props) => {
                     />
 
                   </div>
+                  <AutoCompleteSearch
+                    label="Artist"
+                    selectedItem={selectedArtist}
+                    setSelectedItem={(artist: any) => {
+                      setSelectedArtist(artist);
+                      setFieldValue("artistId", artist.id);
+                    }}
+                    inputProps={{
+                      id: "artistId",
+                      name: "artistId",
+                      placeholder: "Search artist",
+                      className: `${clsx(
+                        "w-full py-2 bg-transparent border-none rounded-md outline-none text-ivory-800 font-cal focus:outline-none focus:ring-0 focus:border-transparent",
+                        touched.artistId && errors.artistId
+                          ? "border-red-500"
+                          : ""
+                      )}`,
+                    }}
+                    url={`${process.env.REACT_APP_BACKEND_URL}/artists?search=`}
+                  />
+                  {touched.artistId && errors.artistId && (
+                    <div className="text-red-600">{errors.artistId}</div>
+                  )}
                   <div className="my-5">
                     <label
                       htmlFor="event_date"

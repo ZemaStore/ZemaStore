@@ -228,7 +228,7 @@ export const artistsSlice = createSlice({
       })
       .addCase(addArtistsApi.fulfilled, (state, { payload }) => {
         state.isLoading = false;
-        state.artists.push(payload);
+        state.artists.unshift(payload);
         state.searchArtistsList = state.artists;
       })
       .addCase(addArtistsApi.rejected, (state, { payload }) => {

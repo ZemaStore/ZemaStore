@@ -5,7 +5,7 @@ const getEvent = async (id: string) => {
   try {
     const { data } = await Request.get(`${baseUrl}/events/${id}`);
 
-    return { data, error: null };
+    return { data: data.event, error: null };
   } catch (error) {
     return { data: null, error };
   }

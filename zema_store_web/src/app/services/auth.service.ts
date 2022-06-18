@@ -14,7 +14,6 @@ const login = async (user: any) => {
     });
     console.log("data is ", data);
     if (data.accessToken) {
-      // localStorage.setItem(configs.ACCESS_TOKEN_KEY, data.accessToken);
       updateToken(data.accessToken);
     }
 

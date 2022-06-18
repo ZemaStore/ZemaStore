@@ -82,14 +82,16 @@ export type Subscription = {
   title: string;
   summary: string;
   cover: string;
-  price: string;
-  subType: string;
+  amount: string;
+  interval: string;
+  subscriptionType: string;
   createdAt: string;
 };
 
 export type Event = {
   id: string;
   title: string;
+  artistId: string;
   summary: string;
   imageUrl: string;
   venue: PlaceType;

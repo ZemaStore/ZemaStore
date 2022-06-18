@@ -95,14 +95,14 @@ const SubscriptionsTable = (props: Props) => {
                     </td>
                     <td className="pl-12">
                       <p className="text-sm font-medium leading-none text-gray-800">
-                        {subscription.price}
+                        {subscription.amount}
                       </p>
                       <div className="w-24 h-3 bg-gray-100 rounded-full mt-2">
                         <div className="w-20 h-3 bg-green-progress rounded-full" />
                       </div>
                     </td>
                     <td className="pl-12">
-                      <p className="font-medium">{subscription.subType}</p>
+                      <p className="font-medium">{subscription.subscriptionType}</p>
                     </td>
                     <td className="pl-12">
                       <p className="font-medium">{subscription.createdAt}</p>

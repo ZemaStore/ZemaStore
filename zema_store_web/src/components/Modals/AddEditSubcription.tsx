@@ -32,15 +32,6 @@ const AddEditSubscriptionModal = (props: Props) => {
       .max(50, "Too Long!")
       .required("Please Enter Title")
       .required("Required!"),
-    artistId: Yup.string().required("Required!"),
-    email: Yup.string().email("Invalid Email").required("Required!"),
-
-    password: Yup.string()
-      .required("Please Enter the password")
-      .matches(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
-        "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character"
-      ),
   });
 
   function modalHandler(val = true) {
@@ -87,8 +78,8 @@ const AddEditSubscriptionModal = (props: Props) => {
             initialValues={{
               title: props.isEditing ? props.subscriptionData?.title : "",
               summary: props.isEditing ? props.subscriptionData?.summary : "",
-              price: props.isEditing ? props.subscriptionData?.price : "",
-              subType: props.isEditing ? props.subscriptionData?.subType : "",
+              amount: props.isEditing ? props.subscriptionData?.amount : "",
+              subscriptionType: props.isEditing ? props.subscriptionData?.subscriptionType : "",
             }}
             validationSchema={AddEditSubscriptionSchema}
             onSubmit={async (values) => {
