@@ -195,14 +195,14 @@ export const songsSlice = createSlice({
       .addCase(updateSongsApi.fulfilled, (state, { payload }) => {
         state.songs =
           state.songs &&
-          state.songs.map((album: any) => {
-            if (album.album.id === payload.album.id) {
+          state.songs.map((song: any) => {
+            if (song.id === payload.id) {
               return {
-                ...album,
+                ...song,
                 ...payload,
               };
             }
-            return album;
+            return song;
           });
         state.searchSongsList = state.songs;
         state.isLoading = false;

@@ -60,9 +60,9 @@ const getSong = async (req: Request, res: Response) => {
 
     await Song.findByIdAndUpdate(songData._id, {
       $inc: {
-        listenersCount: 1
-      }
-    })
+        listenersCount: 1,
+      },
+    });
 
     song.data.title = songData.title;
 
@@ -215,7 +215,7 @@ const getSongsByArtist = async (req: Request, res: Response) => {
 const addSong = async (req: Request, res: Response) => {
   try {
     const { albumId, title, genre, length, releaseDate } = req.body;
-
+    console.log(req.body, "request body");
     const validate = addSongSchema.validate(req.body);
     if (validate.error && validate.error !== null) {
       return res
@@ -308,10 +308,10 @@ const updateSong = async (req: Request, res: Response) => {
       );
     }
 
+    songData.song = upload ? upload.secure_url : songData.song;
     songData.albumId = albumId || songData.albumId;
     songData.artistId = artistId || songData.artistId;
     songData.title = title || songData.title;
-    songData.song = upload.secure_url || songData.song;
     songData.genre = genre || songData.genre;
     songData.listenersCount = listenersCount || songData.listenersCount;
     songData.length = length || songData.length;

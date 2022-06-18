@@ -32,7 +32,7 @@ const ArtistsTable = (props: Props) => {
       props.setSelectedArtist(selArtist);
       setSelectedArtistId(null);
       props.handleModalOpen("edit");
-    } catch (error) {}
+    } catch (error) { }
   };
 
   const handleDeleteArtist = (selArtist: Artist) => {
@@ -40,7 +40,7 @@ const ArtistsTable = (props: Props) => {
       props.setSelectedArtist(selArtist);
       setSelectedArtistId(null);
       props.handleModalOpen("delete");
-    } catch (error) {}
+    } catch (error) { }
   };
 
   const handleArtistsDetails = (id: string) => (e: any) => {
@@ -86,7 +86,7 @@ const ArtistsTable = (props: Props) => {
                           />
                         </div>
                         <div className="pl-4">
-                          <p className="font-medium">{`${artist.firstName} ${artist.lastName}`}</p>
+                          <p className="font-medium">{`${(artist as any).profileId.firstName} ${(artist as any).profileId.lastName}`}</p>
                         </div>
                       </div>
                     </td>

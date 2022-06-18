@@ -4,13 +4,11 @@ import Request from "../api/request";
 const getSong = async (id: string) => {
   try {
     const { data } = await Request.get(`${baseUrl}/songs/${id}`);
-
-    return { data, error: null };
+    return { data: data.song, error: null };
   } catch (error) {
     return { data: null, error };
   }
 };
-
 
 const getSongs = async ({
   name = "all",

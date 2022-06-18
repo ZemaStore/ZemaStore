@@ -70,7 +70,7 @@ const UsersTable = (props: Props) => {
                           />
                         </div>
                         <div className="pl-4">
-                          <p className="font-medium">{user.firstName} {user.lastName}</p>
+                          <p className="font-medium">{`${(user as any).profileId.firstName} ${(user as any).profileId.lastName}`}</p>
                         </div>
                       </div>
                     </td>

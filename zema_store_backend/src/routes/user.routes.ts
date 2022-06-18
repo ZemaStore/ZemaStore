@@ -4,6 +4,7 @@ import {
   changeUserStatus,
   getUser,
   getusers,
+  updateProfile,
   updateUser,
 } from "../controllers/user.controllers";
 import { isAuthorized } from "../middlewares/auth.middlewares";
@@ -14,6 +15,7 @@ const router = Router();
 router.route("/").get(getusers);
 
 router.route("/status/:id").patch(changeUserStatus);
+router.route("/profile/:id").patch(updateProfile);
 
 router
   .route("/:id")

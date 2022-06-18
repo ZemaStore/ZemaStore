@@ -48,6 +48,18 @@ export const getUsersApi = createAsyncThunk<any, any>(
   }
 );
 
+export const updateUserProfileApi = createAsyncThunk<any, any>(
+  "/updateUserProfile",
+  async (payload, { rejectWithValue, fulfillWithValue, dispatch }) => {
+    try {
+      const { data } = await UsersService.updateUserProfile(payload);
+      return fulfillWithValue(data);
+    } catch (err: any) {
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
 export const usersSlice = createSlice({
   name: "users",
   initialState,

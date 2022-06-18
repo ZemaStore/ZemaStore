@@ -42,9 +42,15 @@ const toggleUserStatus = async (userId: string) => {
   return { data };
 };
 
+const updateUserProfile = async (userId: string) => {
+  const { data } = await Request.patch(`${baseUrl}/users/profile/${userId}`);
+  return { data };
+};
+
 const UsersService = {
   getUsers,
   toggleUserStatus,
+  updateUserProfile,
 };
 
 export default UsersService;
