@@ -24,6 +24,7 @@ import {
 } from "../validation-schemas/song.schemas";
 import Album from "../models/mongoose/album";
 import User from "../models/mongoose/user";
+import Role from "../models/mongoose/role";
 
 const fetchItemCount = 10;
 
@@ -38,6 +39,13 @@ const getSong = async (req: Request, res: Response) => {
 
     const songData = await Song.findById(req.params.id);
 
+    const role = await Role.findById(res.locals.user?.roleId);
+    if (role.name === "ADMIN") {
+      return res
+        .status(200)
+        .send(new OkResponse({ song: songData }, "Song successfully fetched!"));
+    }
+
     const song = await axios.post(
       "https://zemastore-file-server.herokuapp.com/upload",
       {
@@ -50,16 +58,19 @@ const getSong = async (req: Request, res: Response) => {
       }
     );
 
+    song.data.title = songData.title;
+
     if (isNil(res.locals.user?.aes_iv) || isNil(res.locals.user?.aes_key)) {
       const user = await User.findById(res.locals.user?._id);
       user.aes_key = song.data?.aes_key;
       user.aes_iv = song.data?.aes_iv;
-      await user.save()
+      await user.save();
     }
 
-    res.status(200).send(new OkResponse(song.data, "Song successfully fetched!"));
+    res
+      .status(200)
+      .send(new OkResponse({ song: song.data }, "Song successfully fetched!"));
   } catch (e) {
-    console.log(e.message, "here");
     Utils.instance.handleResponseException(res, e);
   }
 };
