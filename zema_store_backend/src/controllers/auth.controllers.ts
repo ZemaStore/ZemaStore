@@ -62,7 +62,10 @@ const signUp = async (req: Request, res: Response, _next: NextFunction) => {
       onModel: profileModel,
     });
 
-    await user.save();
+    const savedUser = await user.save();
+
+    userProfile.userId = savedUser._id;
+    await userProfile.save();
 
     sendWelcomeEmail(email, firstName);
 

@@ -58,6 +58,12 @@ const getSong = async (req: Request, res: Response) => {
       }
     );
 
+    await Song.findByIdAndUpdate(songData._id, {
+      $inc: {
+        listenersCount: 1
+      }
+    })
+
     song.data.title = songData.title;
 
     if (isNil(res.locals.user?.aes_iv) || isNil(res.locals.user?.aes_key)) {

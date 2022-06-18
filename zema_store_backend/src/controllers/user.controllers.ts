@@ -112,13 +112,13 @@ const updateUser = async (req: Request, res: Response) => {
     const user = await User.findById(req.params.id).populate("profileId");
 
     if (firstName) {
-      const userProfile = await CustomerProfile.findById(user._id);
+      const userProfile = await CustomerProfile.findById(user.profileId);
       userProfile.firstName = firstName;
       await userProfile.save();
     }
 
     if (lastName) {
-      const userProfile = await CustomerProfile.findById(user._id);
+      const userProfile = await CustomerProfile.findById(user.profileId);
       userProfile.lastName = lastName;
       await userProfile.save();
     }
@@ -138,7 +138,7 @@ const updateUser = async (req: Request, res: Response) => {
     user.email = email || user.email;
     user.password = password || user.password;
     user.phone = phone || user.phone;
-    user.photoUrl = upload.secure_url || user.photoUrl;
+    user.photoUrl = upload?.secure_url || user.photoUrl;
 
     await user.save();
 

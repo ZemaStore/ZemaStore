@@ -9,6 +9,11 @@ const getPlaylistsSchema = Joi.object({
   sortBy: Joi.string(),
 });
 
+const addUserPreferenceSchema = Joi.object({
+  artists: Joi.array().items(Joi.string().hex()).optional(),
+  genres: Joi.array().items(Joi.string()).optional(),
+});
+
 const createPlaylistSchema = Joi.object({
   userId: Joi.string().hex().required(),
   title: Joi.string().required(),
@@ -33,6 +38,7 @@ const deletePlaylistSchema = Joi.object({
 export {
   getPlaylistSchema,
   getPlaylistsSchema,
+  addUserPreferenceSchema,
   createPlaylistSchema,
   updatePlaylistSchema,
   deletePlaylistSchema,

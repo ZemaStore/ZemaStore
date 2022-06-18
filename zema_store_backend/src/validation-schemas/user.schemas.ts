@@ -32,7 +32,7 @@ const udpateUserSchema = Joi.object({
     phone: Joi.string()
       .min(10)
       .pattern(/^[0-9]+$/),
-    firstName: Joi.string().required(),
+    firstName: Joi.string(),
     lastName: Joi.string(),
   },
 });

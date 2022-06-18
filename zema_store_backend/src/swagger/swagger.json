@@ -1365,6 +1365,127 @@
         }
       }
     },
+    "/playlists/get-recommended": {
+      "get": {
+        "tags": ["Playlists"],
+        "summary": "Returns recommended playlist data",
+        "description": "Retursn recommended playlist data",
+        "security": [
+          {
+            "bearerAuthorization": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/playlists/get-popular": {
+      "get": {
+        "tags": ["Playlists"],
+        "summary": "Returns popular playlist data",
+        "description": "Returns popular playlit data",
+        "security": [
+          {
+            "bearerAuthorization": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/playlists/add-user-preference": {
+      "post": {
+        "tags": ["Playlists"],
+        "summary": "Add user preference",
+        "description": "Add user preference of aritsts and genres",
+        "security": [
+          {
+            "bearerAuthorization": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "artists": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "List of artist id"
+                  },
+                  "genres": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "List of genres"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/playlists": {
       "get": {
         "tags": ["Playlists"],

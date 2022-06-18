@@ -6,6 +6,8 @@ export interface ICustomerProfileDocument extends Document {
   lastName: string;
   subscriptionId: mongoose.Schema.Types.ObjectId;
   notification_token: string;
+  favoriteArtists: mongoose.Schema.Types.ObjectId[];
+  favoriteGenres: string[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -32,6 +34,12 @@ const profileSchema: Schema<ICustomerProfileDocument> = new Schema(
     subscriptionId: {
       type: mongoose.Schema.Types.ObjectId,
     },
+    favoriteArtists: {
+      type: [mongoose.Schema.Types.ObjectId],
+    },
+    favoriteGenres: {
+      type: [String]
+    }
   },
   { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
