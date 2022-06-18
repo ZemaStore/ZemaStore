@@ -32,10 +32,7 @@ const getEvent = async (req: Request, res: Response) => {
     res.status(200).send(
       new OkResponse(
         {
-          event,
-          venue: JSON.parse(
-            '\'{"name":"Addis Ababa, Addis Ababa","latitude":8.9806034,"longitude":38.7577605}\''
-          ),
+          event
         },
         "Event successfully fetched!"
       )
@@ -122,10 +119,12 @@ const createEvent = async (req: Request, res: Response) => {
       imageUrl: (upload && upload.secure_url) || "",
       venue: JSON.parse(venue),
       date,
-      artistId
+      artistId,
     });
 
-    return res.status(200).send(new OkResponse(event, "Event successfully created!"));
+    return res
+      .status(200)
+      .send(new OkResponse(event, "Event successfully created!"));
   } catch (e) {
     Utils.instance.handleResponseException(res, e);
   }
