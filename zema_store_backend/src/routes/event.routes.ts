@@ -6,6 +6,7 @@ import {
   getEvents,
   updateEvent,
 } from "../controllers/event.controllers";
+import { isAdmin, isAuthorized } from "../middlewares/auth.middlewares";
 import { imageUploader } from "../middlewares/multer.middlewares";
 
 const router = Router();
@@ -13,12 +14,12 @@ const router = Router();
 router
   .route("/:id")
   .get(getEvent)
-  .patch(imageUploader.single("cover"), updateEvent)
-  .delete(deleteEvent);
+  .patch(imageUploader.single("cover"), isAdmin, updateEvent)
+  .delete(isAdmin, deleteEvent);
 
 router
   .route("/")
   .get(getEvents)
-  .post(imageUploader.single("cover"), createEvent);
+  .post(imageUploader.single("cover"), isAdmin, createEvent);
 
-export default (() => Router().use("/events", router))();
+export default (() => Router().use("/events", isAuthorized, router))();

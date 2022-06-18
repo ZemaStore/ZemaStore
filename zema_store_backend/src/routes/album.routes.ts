@@ -9,7 +9,7 @@ import {
   updateAlbum,
 } from "../controllers/album.controllers";
 
-import { isAdmin } from "../middlewares/auth.middlewares";
+import { isAdmin, isAuthorized } from "../middlewares/auth.middlewares";
 
 import { imageUploader } from "../middlewares/multer.middlewares";
 
@@ -18,11 +18,14 @@ const router = Router();
 router
   .route("/:id")
   .get(getAlbum)
-  .patch(imageUploader.single("photo"), updateAlbum)
-  .delete(deleteAlbum);
+  .patch(imageUploader.single("photo"), isAdmin, updateAlbum)
+  .delete(isAdmin, deleteAlbum);
 
-router.route("/").get(getAlbums).post(imageUploader.single("photo"), addAlbum);
+router
+  .route("/")
+  .get(getAlbums)
+  .post(imageUploader.single("photo"), isAdmin, addAlbum);
 
 router.route("/artist/:artistId").get(getAlbumsByArtist);
 
-export default (() => Router().use("/albums", router))();
+export default (() => Router().use("/albums", isAuthorized, router))();

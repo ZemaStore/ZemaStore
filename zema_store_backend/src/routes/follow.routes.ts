@@ -22,4 +22,4 @@ router.route("/user/:customerId").get(getArtistsFollowedByUser);
 
 router.route("/").get(getFollowers).delete(deleteFollower).post(createFollower);
 
-export default (() => Router().use("/follows", router))();
+export default (() => Router().use("/follows", isAuthorized, router))();

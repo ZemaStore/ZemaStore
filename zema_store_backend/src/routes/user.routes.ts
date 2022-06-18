@@ -6,6 +6,7 @@ import {
   getusers,
   updateUser,
 } from "../controllers/user.controllers";
+import { isAuthorized } from "../middlewares/auth.middlewares";
 import { imageUploader } from "../middlewares/multer.middlewares";
 
 const router = Router();
@@ -19,4 +20,4 @@ router
   .get(getUser)
   .patch(imageUploader.single("photo"), updateUser);
 
-export default (() => Router().use("/users", router))();
+export default (() => Router().use("/users", isAuthorized, router))();

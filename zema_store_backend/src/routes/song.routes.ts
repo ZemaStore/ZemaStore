@@ -10,18 +10,21 @@ import {
   updateSong,
 } from "../controllers/song.controllers";
 
-import { isAuthorized } from "../middlewares/auth.middlewares";
+import { isAdmin, isAuthorized } from "../middlewares/auth.middlewares";
 import { audioUploader } from "../middlewares/multer.middlewares";
 
 const router = Router();
 
-router.route("/").get(getSongs).post(audioUploader.single("song"), addSong);
+router
+  .route("/")
+  .get(getSongs)
+  .post(audioUploader.single("song"), isAdmin, addSong);
 
 router
   .route("/:id")
   .get(getSong)
-  .patch(audioUploader.single("song"), updateSong)
-  .delete(deleteSong);
+  .patch(audioUploader.single("song"), isAdmin, updateSong)
+  .delete(isAdmin, deleteSong);
 
 router.route("/album/:albumId").get(getSongsByAlbum);
 
