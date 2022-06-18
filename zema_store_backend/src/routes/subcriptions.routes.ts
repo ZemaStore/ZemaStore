@@ -5,6 +5,7 @@ import {
   deleteSubscription,
   getSubscription,
   getSubscriptions,
+  updateSubscription,
 } from "../controllers/subscription.controllers";
 
 import { isAdmin } from "../middlewares/auth.middlewares";
@@ -16,6 +17,6 @@ router.route("/subscribe").post(createCustomerAndSubscription);
 router
   .route("/:id")
   .get(getSubscription)
-  //   .patch(subscription)
+    .patch(updateSubscription)
   .delete(deleteSubscription);
 export default (() => Router().use("/subscriptions", router))();

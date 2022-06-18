@@ -54,6 +54,7 @@ Request.interceptors.response.use(
     // 401 - UNAUTHORIZED
     if (status === 401) {
       if (path !== "login" && path !== "logout-user") {
+        
         notify.error("Unauthorized User.");
       }
       throw err.response.data.error;

@@ -21,6 +21,7 @@ export interface IUserDocument extends Document {
   aes_iv: String;
   createdAt: Date;
   updatedAt: Date;
+  tokens: Array<string>;
 }
 
 const userSchema: Schema<IUserDocument> = new Schema(
@@ -74,6 +75,10 @@ const userSchema: Schema<IUserDocument> = new Schema(
     aes_iv: {
       type: String,
       required: false,
+    },
+    tokens: {
+      type: [String],
+      default: [],
     },
   },
   {

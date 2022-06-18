@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
+import CountUp from "react-countup";
+import ReportService from "../../app/services/reports.service";
 import { Report } from "../../helpers/types";
 
 type Props = {
@@ -6,6 +8,76 @@ type Props = {
 };
 
 const DashboardComponent = (props: Props) => {
+  const [activeUsers, setActiveUsers] = useState(0)
+  const [totalCustomers, setTotalCustomers] = useState(0)
+  const [totalArtists, setTotalArtists] = useState(0)
+  const [totalSongs, setTotalSongs] = useState(0)
+  const [totalAlbums, setTotalAlbums] = useState(0)
+  const [totalActiveEvents, setTotalActiveEvents] = useState(0)
+  const [totalRevenue, settotalRevenue] = useState(0)
+
+  const fetchAlbums = useCallback(
+    async () => {
+      const data = await ReportService.getTotalAlbums()
+      setTotalAlbums(data)
+    },
+    [],
+  )
+  const fetchSongs = useCallback(
+    async () => {
+      const data = await ReportService.getTotalSongs()
+      setTotalSongs(data)
+    },
+    [],
+  )
+  const fetchArtists = useCallback(
+    async () => {
+      const data = await ReportService.getTotalArtists()
+      setTotalArtists(data)
+    },
+    [],
+  )
+  const fetchEvents = useCallback(
+    async () => {
+      const data = await ReportService.getTotalActiveEvents()
+      setTotalActiveEvents(data)
+    },
+    [],
+  )
+  const fetchRevenue = useCallback(
+    async () => {
+      const data = await ReportService.getTotalRevenue()
+      settotalRevenue(data)
+    },
+    [],
+  )
+  const fetchActiveUsers = useCallback(
+    async () => {
+      const { data } = await ReportService.getTotalActiveUsers()
+      setActiveUsers(data)
+    },
+    [],
+  )
+  const fetchCustomers = useCallback(
+    async () => {
+      const data = await ReportService.getTotalCustomers()
+      console.log("data is ", data)
+      setTotalCustomers(data)
+    },
+    [],
+  )
+
+  useEffect(() => {
+    fetchActiveUsers()
+    fetchAlbums()
+    fetchCustomers()
+    fetchEvents()
+    fetchArtists()
+    fetchRevenue()
+    fetchSongs()
+  }, [])
+
+
 
   return (
     <div className="mt-20 relative w-full">
@@ -13,42 +85,54 @@ const DashboardComponent = (props: Props) => {
         <div className="min-h-[200px] bg-white w-full rounded-xl shadow-lg flex items-center justify-around">
           <img className="w-24 h-24" src="/images/users.svg" alt="" />
           <div className="text-center">
-            <h1 className="text-4xl font-bold text-gray-800">{props.report && props.report.totalUsers}</h1>
+            <h1 className="text-4xl font-bold text-gray-800">
+              <CountUp duration={0.5} start={0} end={totalCustomers} />
+            </h1>
             <span className="text-gray-500">Users</span>
           </div>
         </div>
         <div className="min-h-[200px] bg-white w-full rounded-xl shadow-lg flex items-center justify-around">
           <img className="w-24 h-24" src="/images/users.svg" alt="" />
           <div className="text-center">
-            <h1 className="text-4xl font-bold text-gray-800">{props.report && props.report.artists}</h1>
+            <h1 className="text-4xl font-bold text-gray-800">
+              <CountUp duration={0.5} start={0} end={totalArtists} />
+            </h1>
             <span className="text-gray-500">Artists</span>
           </div>
         </div>
         <div className="min-h-[200px] bg-white w-full rounded-xl shadow-lg flex items-center justify-around">
           <img className="w-24 h-24" src="/images/song.svg" alt="" />
           <div className="text-center">
-            <h1 className="text-4xl font-bold text-gray-800">{props.report && props.report.songs}</h1>
+            <h1 className="text-4xl font-bold text-gray-800">
+              <CountUp duration={0.5} start={0} end={totalSongs} />
+            </h1>
             <span className="text-gray-500">Songs</span>
           </div>
         </div>
         <div className="min-h-[200px] bg-white w-full rounded-xl shadow-lg flex items-center justify-around">
           <img className="w-24 h-24" src="/images/folder-music.svg" alt="" />
           <div className="text-center">
-            <h1 className="text-4xl font-bold text-gray-800">{props.report && props.report.albums}</h1>
+            <h1 className="text-4xl font-bold text-gray-800">
+              <CountUp duration={0.5} start={0} end={totalAlbums} />
+            </h1>
             <span className="text-gray-500">Albums</span>
           </div>
         </div>
         <div className="min-h-[200px] bg-white w-full rounded-xl shadow-lg flex items-center justify-around">
           <img className="w-24 h-24" src="/images/economy-grow.svg" alt="" />
           <div className="text-center">
-            <h1 className="text-4xl font-bold text-gray-800">{props.report && props.report.revenue}</h1>
+            <h1 className="text-4xl font-bold text-gray-800">$
+              <CountUp duration={0.5} start={0} end={totalRevenue} />
+            </h1>
             <span className="text-gray-500">Total Revenue</span>
           </div>
         </div>
         <div className="min-h-[200px] bg-white w-full rounded-xl shadow-lg flex items-center justify-around">
           <img className="w-24 h-24" src="/images/concert.svg" alt="" />
           <div className="text-center">
-            <h1 className="text-4xl font-bold text-gray-800">{props.report && props.report.activeEvents}</h1>
+            <h1 className="text-4xl font-bold text-gray-800">
+              <CountUp duration={0.5} start={0} end={totalActiveEvents} />
+            </h1>
             <span className="text-gray-500">Active Events</span>
           </div>
         </div>
@@ -93,7 +177,7 @@ const DashboardComponent = (props: Props) => {
           </div>
         </div>
       </div>
-    </div>
+    </div >
   );
 };
 

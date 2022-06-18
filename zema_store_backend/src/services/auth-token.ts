@@ -9,7 +9,7 @@ const jwtHashAlgorithm = "HS256";
 const getAccessToken = async (payload: any) => {
   return jwt.sign(payload, configs.JWT_ACCESS_TOKEN, {
     algorithm: jwtHashAlgorithm,
-    expiresIn: "1800s",
+    expiresIn: "6hr",
   });
 };
 

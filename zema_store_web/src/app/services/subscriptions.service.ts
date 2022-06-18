@@ -62,6 +62,7 @@ const addSubscription = async (formData: any) => {
 
 const updateSubscription = async (id: string, formData: any) => {
   try {
+    console.log(formData, "formData");
     const { data } = await Request.patch(
       `${baseUrl}/subscriptions/${id}`,
       formData

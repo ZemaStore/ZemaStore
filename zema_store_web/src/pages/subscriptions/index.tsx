@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks/redux_hooks";
-import { getSubscriptionsApi } from "../../app/store/features/subscriptions/subscriptionsSlice";
+import { deleteSubscriptionsApi, getSubscriptionsApi } from "../../app/store/features/subscriptions/subscriptionsSlice";
 import BaseLayout from "../../common/Layout";
 import Pagination from "../../common/Paginations";
 import AddEditSubscriptionModal from "../../components/Modals/AddEditSubcription";
@@ -39,6 +39,11 @@ function SubscriptionsPage() {
     }
   };
 
+  const onDeleteModal = async () => {
+    await dispatch(deleteSubscriptionsApi(selectedSubcription?.id));
+    onCloseModal()
+  };
+
   const [isAddModalOpen, setIsAddModalOpen] = useState<boolean>(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
@@ -74,7 +79,7 @@ function SubscriptionsPage() {
               deleteMessage="Delete Event"
               deleteDescription="Are you sure you want to delete?"
               buttonText="Delete"
-              onDelete={onCloseModal}
+              onDelete={onDeleteModal}
               onClose={onCloseModal}
             />
           )}

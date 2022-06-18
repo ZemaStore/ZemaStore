@@ -8,7 +8,7 @@ const login = async (user: any) => {
   const { email, password } = user;
 
   try {
-    const { data } = await Request.post(`${baseUrl}/auth/sign-in`, {
+    const { data } = await Request.post(`${baseUrl}/auth/admin-sign-in`, {
       email,
       password,
     });

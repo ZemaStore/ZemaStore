@@ -2,14 +2,15 @@ import { FormEvent, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks/redux_hooks";
 import {
   addSubscription,
+  addSubscriptionsApi,
   subscriptionsSelector,
   updateSubscription,
+  updateSubscriptionsApi,
 } from "../../app/store/features/subscriptions/subscriptionsSlice";
 import { Subscription } from "../../helpers/types";
 import notify from "../../utils/notify";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
-import AutoCompleteSearch from "../../widgets/AutocompleteSearch";
 import clsx from "clsx";
 
 type Props = {
@@ -21,7 +22,6 @@ type Props = {
 const AddEditSubscriptionModal = (props: Props) => {
   const { onClose } = props;
   let modal = document.getElementById("modal");
-  const fileUploadFileRef = useRef<HTMLInputElement>(null);
   const { isLoading, searchSubscriptionsList } = useAppSelector(subscriptionsSelector);
 
   const dispatch = useAppDispatch();
@@ -60,10 +60,6 @@ const AddEditSubscriptionModal = (props: Props) => {
     })();
   }
 
-  const handleFileInput = (e: any) => {
-    console.log(e.target.files[0], " is the file");
-  };
-
   return (
     <div>
       <div
@@ -77,9 +73,10 @@ const AddEditSubscriptionModal = (props: Props) => {
           <Formik
             initialValues={{
               title: props.isEditing ? props.subscriptionData?.title : "",
+              amount: props.isEditing ? props.subscriptionData?.amount : 0,
               summary: props.isEditing ? props.subscriptionData?.summary : "",
-              amount: props.isEditing ? props.subscriptionData?.amount : "",
-              subscriptionType: props.isEditing ? props.subscriptionData?.subscriptionType : "",
+              interval: props.isEditing ? props.subscriptionData?.interval : "week",
+              subscriptionType: "premium",
             }}
             validationSchema={AddEditSubscriptionSchema}
             onSubmit={async (values) => {
@@ -89,26 +86,26 @@ const AddEditSubscriptionModal = (props: Props) => {
                     ...props.subscriptionData,
                     ...values,
                   };
-                  console.log(values, updatedData, " is up");
-                  await dispatch(updateSubscription(updatedData));
+                  await dispatch(updateSubscriptionsApi({ subscriptionId: props.subscriptionData?.id, formData: updatedData }));
                   props.onClose();
-                  notify.success("Artist Updated Successufully!");
+                  notify.success("Subscription Updated Successufully!");
                 } else {
-                  await dispatch(addSubscription(values));
+                  await dispatch(addSubscriptionsApi(values));
                   props.onClose();
-                  notify.success("Artist Added Successufully!");
+                  notify.success("Subscription Added Successufully!");
                 }
               } catch (error: any) {
                 notify.error(error.toString());
               }
             }}
           >
-            {({ errors, touched, isValidating }) => (
+            {({ errors, touched, isValidating, values }) => (
               <Form>
                 <div className="relative py-8 px-5 md:px-10 bg-white shadow-md rounded border border-gray-400">
                   <h1 className="text-gray-800 font-lg font-bold tracking-normal leading-tight mb-4">
                     Enter Subscriptions Details
                   </h1>
+                  {JSON.stringify(values)}
 
                   <label
                     htmlFor="title"
@@ -123,14 +120,14 @@ const AddEditSubscriptionModal = (props: Props) => {
                     placeholder="Subscription Title"
                   />
                   <label
-                    htmlFor="price"
+                    htmlFor="amount"
                     className="text-gray-800 text-sm font-bold leading-tight tracking-normal"
                   >
                     Subscription Price
                   </label>
                   <Field
-                    id="price"
-                    name="price"
+                    id="amount"
+                    name="amount"
                     min={0}
                     step={0}
                     type="number"
@@ -138,7 +135,7 @@ const AddEditSubscriptionModal = (props: Props) => {
                     placeholder="Subscription price"
                   />
                   <label
-                    htmlFor="price"
+                    htmlFor="interval"
                     className="text-gray-800 text-sm font-bold leading-tight tracking-normal"
                   >
                     Subscription type
@@ -146,19 +143,23 @@ const AddEditSubscriptionModal = (props: Props) => {
 
                   <Field
                     className="mb-5 bg-none mt-2 text-gray-600 focus:outline-none focus:border focus:border-indigo-700 font-normal w-full h-10 flex items-center pl-3 text-sm border-gray-300 rounded border"
-                    name="color"
+                    name="interval"
                     component="select"
+
+                    id="interval"
                   >
-                    <option className="p-5" value="weekly">
+                    <option className="p-5 border-8" value="week">
                       Weekly
                     </option>
-                    <option className="p-5" value="monthly">
+                    <option className="p-5" value="month">
                       Monthly
                     </option>
-                    <option className="p-5" value="annually">
+                    <option className="p-5" value="year">
                       Annually
                     </option>
                   </Field>
+
+
 
                   <label
                     htmlFor="summary"
@@ -184,21 +185,8 @@ const AddEditSubscriptionModal = (props: Props) => {
                     )}
                   </Field>
 
-                  <div className="overflow-hidden relative mt-4 mb-4">
-                    <label className="block">
-                      <span className="sr-only">Choose profile photo</span>
-                      <Field
-                        type="file"
-                        name="cover"
-                        accept="image/*"
-                        onInput={(e: any) => {
-                          handleFileInput(e);
-                        }}
-                        className="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold  file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100 hover:file:text-violet-800"
-                      />
-                    </label>
-                  </div>
-                  <div className="flex items-center justify-start w-full">
+
+                  <div className="flex items-center justify-start w-full my-3">
                     <button
                       type="submit"
                       data-test-id="add_event_button"

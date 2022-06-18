@@ -62,6 +62,7 @@ const SubscriptionsTable = (props: Props) => {
               <th className="font-normal text-left pl-4">Title</th>
               <th className="font-normal text-left pl-12">Summary</th>
               <th className="font-normal text-left pl-12">Price</th>
+              <th className="font-normal text-left pl-12">Interval</th>
               <th className="font-normal text-left pl-12">Sub Type</th>
               <th className="font-normal text-left pl-12">Created At</th>
             </tr>
@@ -78,10 +79,10 @@ const SubscriptionsTable = (props: Props) => {
                     <td className="pl-4 cursor-pointer">
                       <div className="flex items-center">
                         <div className="w-10 h-10">
-                          <img
+                          {/* <img
                             className="w-full h-full"
-                            src={subscription.cover}
-                          />
+                            src={"https://via.placeholder.com/100"}
+                          /> */}
                         </div>
                         <div className="pl-4">
                           <p className="font-medium">{subscription.title}</p>
@@ -100,6 +101,9 @@ const SubscriptionsTable = (props: Props) => {
                       <div className="w-24 h-3 bg-gray-100 rounded-full mt-2">
                         <div className="w-20 h-3 bg-green-progress rounded-full" />
                       </div>
+                    </td>
+                    <td className="pl-12">
+                      <p className="font-medium">{subscription.interval}ly</p>
                     </td>
                     <td className="pl-12">
                       <p className="font-medium">{subscription.subscriptionType}</p>

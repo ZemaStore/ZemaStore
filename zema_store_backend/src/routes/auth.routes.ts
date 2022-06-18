@@ -1,6 +1,7 @@
 import { Router } from "express";
 
 import {
+  adminSignIn,
   forgotPassword,
   refreshToken,
   resetPassword,
@@ -13,6 +14,7 @@ const router = Router();
 
 router.route("/sign-up").post(signUp);
 router.route("/sign-in").post(signIn);
+router.route("/admin-sign-in").post(adminSignIn);
 router.route("/forgot-password").post(forgotPassword);
 router.route("/reset-password").patch(verifyOTP, resetPassword);
 router.route("/token/refresh").patch(refreshToken);

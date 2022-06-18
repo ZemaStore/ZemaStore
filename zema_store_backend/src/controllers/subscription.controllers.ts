@@ -134,9 +134,9 @@ const createSubscription = async (req: Request, res: Response) => {
 };
 
 const updateSubscription = async (req: Request, res: Response, next) => {
-  const { interval, amount } = req.body;
-
-  const existedSubscription = await Subscription.findById(req.params.id);
+  const { interval, amount, summary, title } = req.body;
+  console.log(req.body, " req.body");
+  let existedSubscription = await Subscription.findById(req.params.id).exec();
 
   if (!existedSubscription) {
     return res
@@ -144,47 +144,67 @@ const updateSubscription = async (req: Request, res: Response, next) => {
       .json({ message: "Subscription does n't exist", success: false });
   }
   try {
-    const previous_price = await stripe.prices.update(
-      existedSubscription.priceId,
-      {
-        active: false,
-      }
-    );
-    if (!previous_price) {
-      return res
-        .status(500)
-        .json({ message: "price is not able to be deleted", success: false });
-    }
+    existedSubscription.amount = !isNil(amount)
+      ? amount
+      : existedSubscription.amount;
+    existedSubscription.title = !isNil(title)
+      ? title
+      : existedSubscription.title;
+    existedSubscription.summary = !isNil(summary)
+      ? summary
+      : existedSubscription.summary;
 
-    const price = await stripe.prices.create({
-      unit_amount: amount
-        ? Utils.instance.formatStripeAmount(amount)
-        : previous_price.unit_amount,
-      currency: "usd",
-      recurring: {
-        interval: interval ? interval : previous_price.recurring,
-      },
-      product: configs.STRIPE_SUBSCRIPTION_PRODUCT_ID,
-    });
+    existedSubscription.interval = !isNil(interval)
+      ? interval
+      : existedSubscription.interval;
 
-    const newObject = {
-      ...existedSubscription,
-      ...req.body,
-      price_id: price.id,
-    };
-    try {
-      const params = req.params;
-      const body = req.body;
-
-      const subscription = await Subscription.findOneAndUpdate(
-        { _id: req.params.id },
-        newObject,
-        { new: true }
+    if (
+      (!isNil(amount) && existedSubscription.amount !== amount) ||
+      (!isNil(interval) && existedSubscription.interval !== interval)
+    ) {
+      const previous_price = await stripe.prices.update(
+        existedSubscription.priceId,
+        {
+          active: false,
+        }
       );
-      res
+      if (!previous_price) {
+        return res
+          .status(500)
+          .json({ message: "price is not able to be deleted", success: false });
+      }
+
+      const price = await stripe.prices.create({
+        unit_amount: amount
+          ? Utils.instance.formatStripeAmount(amount)
+          : previous_price.unit_amount,
+        currency: "usd",
+        recurring: {
+          interval: interval ? interval : previous_price.recurring,
+        },
+        product: configs.STRIPE_SUBSCRIPTION_PRODUCT_ID,
+      });
+
+      existedSubscription.priceId = price.id;
+    }
+    try {
+      console.log(
+        existedSubscription.amount !== amount,
+        existedSubscription.toJSON(),
+        "newObject"
+      );
+
+      const subscription = await Subscription.findByIdAndUpdate(
+        req.params.id,
+        existedSubscription.toJSON()
+      ).exec();
+      return res
         .status(200)
         .send(
-          new OkResponse(subscription, "Subscriptions successfully updated!")
+          new OkResponse(
+            existedSubscription.toJSON(),
+            "Subscriptions successfully updated!"
+          )
         );
     } catch (e) {
       Utils.instance.handleResponseException(res, e);
@@ -224,6 +244,7 @@ const deleteSubscription = async (req: Request, res: Response) => {
       .send(new OkResponse(null, "Subscription successfully deleted!"));
   } catch (e) {
     Utils.instance.handleResponseException(res, e);
+    return res.status(400).send(new ErrorResponse(e.message, null));
   }
 };
 

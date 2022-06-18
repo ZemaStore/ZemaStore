@@ -122,6 +122,82 @@ const signIn = async (req: Request, res: Response, _next: NextFunction) => {
 
     const accessToken = await getAccessToken(payload);
     const refreshToken = await getRefreshToken(payload);
+    const usersTokens = user.tokens;
+    if (user.tokens.length < 3) {
+      usersTokens.push(accessToken);
+      user.tokens = usersTokens;
+      await user.save();
+    } else {
+      usersTokens.pop();
+      usersTokens.push(accessToken);
+      user.tokens = usersTokens;
+      await user.save();
+    }
+
+    res.status(200).send({
+      success: true,
+      message: "user signed in successfully.",
+      data: { user, accessToken, refreshToken },
+    });
+  } catch (e) {
+    return res
+      .status(500)
+      .send({ success: false, message: (e as Error).message });
+  }
+};
+
+const adminSignIn = async (
+  req: Request,
+  res: Response,
+  _next: NextFunction
+) => {
+  try {
+    const { email, password } = req.body;
+
+    const validate = signInSchema.validate(req.body);
+    if (validate.error && validate.error !== null) {
+      return res
+        .status(400)
+        .send({ success: false, message: validate.error.message });
+    }
+
+    const user = await User.findOne({
+      email,
+    }).populate("roleId");
+    console.log(user, " is user");
+    if (!user || (user.roleId as any).name !== "ADMIN") {
+      return res
+        .status(400)
+        .send({ success: false, message: "Invalid credentials." });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password.toString());
+
+    if (!isMatch) {
+      return res
+        .status(400)
+        .send({ success: false, message: "Invalid credentials." });
+    }
+
+    const payload = {
+      _id: user._id,
+    };
+
+    const accessToken = await getAccessToken(payload);
+    const refreshToken = await getRefreshToken(payload);
+    const usersTokens = user.tokens;
+    // const tokenSet = new Set(usersTokens)
+
+    if (user.tokens.length < 3) {
+      usersTokens.push(accessToken);
+      user.tokens = usersTokens;
+      await user.save();
+    } else {
+      usersTokens.shift();
+      usersTokens.push(accessToken);
+      user.tokens = usersTokens;
+      await user.save();
+    }
 
     res.status(200).send({
       success: true,
@@ -254,4 +330,11 @@ const refreshToken = async (req: Request, res: Response) => {
   }
 };
 
-export { signUp, signIn, forgotPassword, resetPassword, refreshToken };
+export {
+  signUp,
+  adminSignIn,
+  signIn,
+  forgotPassword,
+  resetPassword,
+  refreshToken,
+};

@@ -1,10 +1,89 @@
+import { Request, Response } from "express";
+import Stripe from "stripe";
 import configs from "../configs/app.configs";
+import Album from "../models/mongoose/album";
+import ArtistProfie from "../models/mongoose/artist-profile";
+import CustomerProfile from "../models/mongoose/customer-profile";
+import Event from "../models/mongoose/event";
+import Song from "../models/mongoose/song";
+
+const stripe = new Stripe(configs.STRIPE_API_KEY, {
+  apiVersion: "2020-08-27",
+});
 
 const { BetaAnalyticsDataClient } = require("@google-analytics/data");
 
 const analyticsDataClient = new BetaAnalyticsDataClient({
   credentials: configs.GOOGLE_APPLICATION_CREDENTIALS,
 });
+
+export const getTotalCustomers = async (req: Request, res: Response) => {
+  try {
+    const customers = await CustomerProfile.count().exec();
+    return res.json({ code: 200, data: { totalCustomers: customers } });
+  } catch (error) {
+    return res.status(400).json({ code: 400, data: null });
+  }
+};
+
+export const getTotalArtists = async (req: Request, res: Response) => {
+  try {
+    const artists = await ArtistProfie.count().exec();
+    return res.json({ code: 200, data: { totalArtists: artists } });
+  } catch (error) {
+    return res.status(400).json({ code: 400, data: null });
+  }
+};
+
+export const getActiveEvents = async (req: Request, res: Response) => {
+  try {
+    const events = await Event.find({
+      date: {
+        $gte: new Date(),
+      },
+    })
+      .count()
+      .exec();
+    return res.json({ code: 200, data: { activeEvents: events } });
+  } catch (error) {
+    return res.status(400).json({ code: 400, data: null });
+  }
+};
+
+export const getTotalSongs = async (req: Request, res: Response) => {
+  try {
+    const songs = await Song.count().exec();
+    return res.status(200).json({ data: { totalSongs: songs } });
+  } catch (error) {
+    return res.status(400).json({ code: 400, data: null });
+  }
+};
+
+export const getTotalAlbums = async (req: Request, res: Response) => {
+  try {
+    const albums = await Album.count().exec();
+    return res.status(200).json({ data: { totalAlbums: albums } });
+  } catch (error) {
+    return res.status(400).json({ code: 400, data: null });
+  }
+};
+
+export const getTotalRevenue = async (req: Request, res: Response) => {
+  try {
+    const { available, pending } = await stripe.balance.retrieve({});
+    let total = 0;
+    available.forEach((curr) => {
+      total += curr.amount;
+    });
+    pending.forEach((curr) => {
+      total += curr.amount;
+    });
+    console.log("available ", available, pending, total);
+    return res.status(200).json({ data: { totalRevenue: total / 100 } });
+  } catch (error) {
+    return res.status(400).json({ code: 400, data: null });
+  }
+};
 
 export const totalReport = async (req, res) => {
   const propertyId = configs.GOOGLE_ANALYTICS_PROPERTY_ID || 319939776;
@@ -114,10 +193,6 @@ export const getActiveUsers = async (req, res) => {
   const propertyId = configs.GOOGLE_ANALYTICS_PROPERTY_ID || 319939776;
   const startDate = req.body.startDate || "2018-01-01";
   const endDate = req.body.endDate || "today";
-  console.log(
-    configs.GOOGLE_ANALYTICS_PROPERTY_ID,
-    configs.GOOGLE_APPLICATION_CREDENTIALS
-  );
 
   const metrics = [{ name: "activeUsers" }];
 

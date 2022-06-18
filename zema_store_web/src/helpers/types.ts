@@ -81,7 +81,6 @@ export type Subscription = {
   id: string;
   title: string;
   summary: string;
-  cover: string;
   amount: string;
   interval: string;
   subscriptionType: string;
