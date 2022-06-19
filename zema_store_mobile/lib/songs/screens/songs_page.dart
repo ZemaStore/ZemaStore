@@ -48,7 +48,7 @@ class _SongsPageState extends State<SongsPage> {
             // },child: const Icon(Icons.refresh)),
             BlocBuilder<SongsBloc, SongsState>(builder: (context, state) {
               if (state is LoadingState) {
-                return const Center(child: CircularProgressIndicator());
+                return const Center(child: CircularProgressIndicator(color: Colors.black,));
               } else if (state is LoadSuccessState) {
                 return SizedBox(
                     height: MediaQuery.of(context).size.height * 0.70,

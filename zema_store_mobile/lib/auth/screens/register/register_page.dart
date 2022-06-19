@@ -214,7 +214,10 @@ class _RegisterFormValidationState extends State<RegisterFormValidation> {
                 const SizedBox(
                   height: 20,
                 ),
-                const Text('New User? Create Account')
+                InkWell(onTap: (){
+                  Navigator.pushNamed(context, LoginFormValidation.routeName);
+                },child: const Text('Already have an account? Login')),
+                SizedBox(height: 100,),
               ],
             ),
           ),

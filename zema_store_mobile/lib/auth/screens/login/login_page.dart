@@ -4,6 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:tt/auth/bloc/auth_event.dart';
 import 'package:tt/auth/entity/login.dart';
+import 'package:tt/auth/screens/register/register_page.dart';
 import 'package:tt/main.dart';
 
 import '../../bloc/auth_bloc.dart';
@@ -111,6 +112,7 @@ class _LoginFormValidationState extends State<LoginFormValidation> {
                 //     style: TextStyle(color: Colors.blue, fontSize: 15),
                 //   ),
                 // ),
+                const SizedBox(height: 50,),
                 Container(
                   height: 50,
                   width: 250,
@@ -140,7 +142,9 @@ class _LoginFormValidationState extends State<LoginFormValidation> {
                 const SizedBox(
                   height: 20,
                 ),
-                const Text('New User? Create Account')
+                InkWell(child: const Text('New user? Create Account'), onTap: (){
+                  Navigator.pushNamed(context, RegisterFormValidation.routeName);
+                },)
               ],
             ),
           ),

@@ -128,11 +128,21 @@ void main() async {
             ),
           ),
           BlocProvider(
-              create: (_) => SongsSingleBloc(
-                  songsRepository: SongsRepository(
-                      provider: SongsProvider(httpClient: httpClient))))
+            create: (_) => SongsSingleBloc(
+              songsRepository: SongsRepository(
+                provider: SongsProvider(httpClient: httpClient),
+              ),
+            ),
+          ),
+          BlocProvider(
+            create: (_) => PlaylistPopBloc(
+              playlistRepository: PlaylistRepository(
+                provider: PlaylistProvider(httpClient: httpClient),
+              ),
+            ),
+          )
         ],
-        child:  MaterialApp(
+        child: MaterialApp(
           debugShowCheckedModeBanner: false,
           initialRoute:
               (isLoggedIn ?? false) ? '/' : LoginFormValidation.routeName,
@@ -179,9 +189,11 @@ class _HomePageState extends State<HomePage> {
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.home, color: Colors.grey,),
+            icon: Icon(
+              Icons.home,
+              color: Colors.grey,
+            ),
             label: 'Home',
-
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.man_sharp, color: Colors.grey),
@@ -197,7 +209,7 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor:  Colors.blueGrey,
+        selectedItemColor: Colors.blueGrey,
         onTap: _onItemTapped,
       ),
     );
