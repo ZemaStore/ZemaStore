@@ -33,6 +33,40 @@ class PlaylistProvider {
     }
   }
 
+  Future<List<Playlist>> createPlaylist(List<String> songIds, String title) async {
+    final userToken = await secureStorage.getToken();
+    final userID = await secureStorage.getLoginData();
+    print(userID.user.id);
+    print(userID.user.phone);
+    print(userID.user.email);
+    print(userID.user.profileId);
+
+    final response =
+    await httpClient.post(Uri.parse('$_baseUrl/playlists'),
+
+        headers: {
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $userToken',
+    },
+      body:  jsonEncode(<String, dynamic>{
+        "userId": userID.user.id,
+        "title": title,
+        "songs": songIds
+        }));
+    print(response.statusCode);
+    print(response.body);
+    if (response.statusCode == 200) {
+      // final articles = jsonDecode(response.body)['data']['playlists'] as List;
+      // final playlists =
+      // articles.map((playlist) => Playlist.fromJson(playlist)).toList();
+
+      return [];
+    } else {
+      throw Exception('Something went wrong');
+    }
+  }
+
   Future<bool> addUserPreference(List<String> artist, List<String> genere) async {
     final userToken = await secureStorage.getToken();
 print(artist);

@@ -34,7 +34,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState>{
         final playlists = await authRepository.login(event.crediential);
         // debugPrint('is it hear ${playlists.user.email}');
         SecureStorage secureStorage = SecureStorage();
-        await secureStorage.deleteAll();
+        // await secureStorage.deleteAll();
         secureStorage.persistUserData(playlists);
         // print('lets see ${await secureStorage.getToken()}');
         emit(AuthLoginSuccessState(loginData: playlists));

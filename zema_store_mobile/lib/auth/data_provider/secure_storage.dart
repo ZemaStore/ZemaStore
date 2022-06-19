@@ -16,7 +16,7 @@ class SecureStorage {
   static const _rTokenKey = 'RTOKEN';
   static const _emailKey = 'EMAIL';
   static const _userIDKey = '_id';
-  static const _phone = '_id';
+  static const _phone = '_phone';
   static const _profileID = '_idProfile';
 
 

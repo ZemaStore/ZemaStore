@@ -19,4 +19,7 @@ class PlaylistRepository {
   Future<List<Playlist>> getPopularPlaylist() async {
     return await provider.getPopularPlaylist();
   }
+  Future<List<Playlist>> createPlaylist(List<String> songIds, String title) async {
+    return await provider.createPlaylist(songIds, title);
+  }
 }

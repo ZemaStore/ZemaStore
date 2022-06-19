@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:jwt_decode/jwt_decode.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tt/albums/bloc/album_details_bloc.dart';
 import 'package:tt/albums/bloc/bloc.dart';
 import 'package:tt/albums/data_provider/albums_provider.dart';
@@ -28,6 +29,9 @@ import 'package:tt/playlist/respository/playlist_repository.dart';
 import 'package:tt/routes.dart';
 import 'package:tt/screens/homepage.dart';
 import 'package:tt/screens/testpage.dart';
+import 'package:tt/search/bloc/search_bloc.dart';
+import 'package:tt/search/data_provider/search_provider.dart';
+import 'package:tt/search/data_repository/search_repository.dart';
 import 'package:tt/songs/bloc/bloc.dart';
 import 'package:tt/songs/bloc/songle_dart.dart';
 import 'package:tt/songs/data_provider/song_provider.dart';
@@ -41,6 +45,7 @@ import 'collapsing.dart';
 import 'colors.dart';
 
 bool? isLoggedIn = false;
+List<String>? downloadedSongs = [];
 
 _checkLoggedIn() async {
   final SecureStorage loggedIN = SecureStorage();
@@ -54,9 +59,20 @@ _checkLoggedIn() async {
   }
 }
 
+_loadDownloadedSongs() async {
+  SharedPreferences preferences = await SharedPreferences.getInstance();
+  await preferences.setStringList('downloadSongs', ['value']);
+  final songs = preferences.getStringList('downloadSongs');
+  print('we got here $songs');
+  if (songs!.isNotEmpty) {
+    downloadedSongs = songs;
+  }
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await _checkLoggedIn();
+  await _loadDownloadedSongs();
   await dotenv.load(fileName: "assets/.env");
   Stripe.publishableKey = dotenv.env['STRIPE_PUBLICATION_KEY'].toString();
   final http.Client httpClient = http.Client();
@@ -128,11 +144,27 @@ void main() async {
             ),
           ),
           BlocProvider(
-              create: (_) => SongsSingleBloc(
-                  songsRepository: SongsRepository(
-                      provider: SongsProvider(httpClient: httpClient))))
+            create: (_) => SongsSingleBloc(
+              songsRepository: SongsRepository(
+                provider: SongsProvider(httpClient: httpClient),
+              ),
+            ),
+          ),
+          BlocProvider(
+            create: (_) => PlaylistPopBloc(
+              playlistRepository: PlaylistRepository(
+                provider: PlaylistProvider(httpClient: httpClient),
+              ),
+            ),
+          ),
+          BlocProvider(
+            create: (_) => SearchBloc(
+              searchRepository: SearchRepository(
+                  provider: SearchProvider(httpClient: httpClient)),
+            ),
+          )
         ],
-        child:  MaterialApp(
+        child: MaterialApp(
           debugShowCheckedModeBanner: false,
           initialRoute:
               (isLoggedIn ?? false) ? '/' : LoginFormValidation.routeName,
@@ -179,9 +211,11 @@ class _HomePageState extends State<HomePage> {
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.home, color: Colors.grey,),
+            icon: Icon(
+              Icons.home,
+              color: Colors.grey,
+            ),
             label: 'Home',
-
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.man_sharp, color: Colors.grey),
@@ -197,7 +231,7 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor:  Colors.blueGrey,
+        selectedItemColor: Colors.blueGrey,
         onTap: _onItemTapped,
       ),
     );
@@ -223,7 +257,7 @@ class MyApp extends StatelessWidget {
                   image: DecorationImage(
                     colorFilter: ColorFilter.mode(
                         Colors.black.withOpacity(0.2), BlendMode.dstOut),
-                    image: NetworkImage(artist.photoUrl),
+                    image: const AssetImage("assets/singer.png") ,
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -239,7 +273,10 @@ class MyApp extends StatelessWidget {
                       width: 2.0,
                     ),
                     DarkButtton(
-                      onPressed: () {},
+                      onPressed: () {
+                        print(artist.profile.id);
+                        BlocProvider.of<ArtistsBloc>(context).add(AddFollow(profileId: artist.profile.id));
+                      },
                       title: "Follow",
                     ),
                   ],
