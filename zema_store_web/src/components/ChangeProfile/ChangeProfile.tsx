@@ -66,7 +66,7 @@ const ChangeProfile = (props: Props) => {
                         }
                       )
                     );
-                    if (!error && errorMessage) {
+                    if (!error && !errorMessage) {
                       notify.success("User profile updated successfully");
                     } else {
                       // notify.error(errorMessage);
