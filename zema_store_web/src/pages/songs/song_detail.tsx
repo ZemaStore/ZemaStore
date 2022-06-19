@@ -3,6 +3,9 @@ import ReactAudioPlayer from "react-audio-player";
 import { useLocation } from "react-router-dom";
 import SongsService from "../../app/services/songs.service";
 import { Song } from "../../helpers/types";
+import { Audio, BallTriangle } from 'react-loader-spinner'
+import formatter from "../../utils/formatter";
+
 type Props = {
   from: string;
 };
@@ -15,7 +18,7 @@ function SongDetail(props: Props) {
   const artistId = pathnames.pop();
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [songData, setSongData] = useState<Song | null>(null)
-
+  const [isPlaying, setIsPlaying] = useState(false)
 
   const fetchSong = useCallback(
     async () => {
@@ -41,6 +44,9 @@ function SongDetail(props: Props) {
     fetchSong()
   }, [fetchSong])
 
+  const toggleAudioLoader = (status: boolean) => {
+
+  }
 
   const PreviewSongData = useMemo(() => {
     return (
@@ -48,11 +54,27 @@ function SongDetail(props: Props) {
         {
           songData ?
             <div className="h-20 !border-orange-500 w-full  relative my-2 flex flex-col items-center justify-center">
-              <ReactAudioPlayer
-                className=" w-full"
-                src={songData.song}
-                controls
-              />,
+              <div className="flex items-end gap-x-5 w-full">
+                <div className=" my-5 ">
+                  {
+                    isPlaying && (
+                      <Audio
+                        height="100"
+                        width="100"
+                        color={"orange"}
+                        ariaLabel='loading'
+                      />)
+                  }
+                </div>
+                <ReactAudioPlayer
+                  className=" w-full"
+                  src={songData.song}
+                  controls
+                  onPause={() => setIsPlaying(false)}
+                  onPlay={() => setIsPlaying(true)}
+                  onListen={() => setIsPlaying(true)}
+                />
+              </div>
 
             </div>
             : <div className="flex" >
@@ -61,7 +83,7 @@ function SongDetail(props: Props) {
                   <path d="M9 17H5a2 2 0 0 0-2 2 2 2 0 0 0 2 2h2a2 2 0 0 0 2-2zm12-2h-4a2 2 0 0 0-2 2 2 2 0 0 0 2 2h2a2 2 0 0 0 2-2z"></path><circle cx="9" cy="9" r="5"></circle></svg>
               </span>
               <h5>
-                There is an
+
               </h5>
             </div>
         }
@@ -77,43 +99,66 @@ function SongDetail(props: Props) {
             Song Detail
           </p>
         </div>
-        <div className="my-5">
-          <h1 className="text-xl">
-            <span className="font-bold">
-              Title:{" "}
-            </span>
-            {songData?.title}</h1>
-        </div>
-        <div className="my-5">
-          <h1 className="text-xl ">
-            <span className="font-bold">
-              Genre:{" "}
-            </span>{songData?.genre}</h1>
+        <div className="w-full flex flex-col px-10">
+
+          {
+            isLoading ? (
+              <div className="flex w-full h-full items-center justify-center">
+                <BallTriangle
+                  height="100"
+                  width="100"
+                  color={"gray"}
+                  ariaLabel='loading'
+                />
+              </div>
+            ) : (
+              <>
+                <div className="my-5">
+                  <h1 className="text-xl flex justify-between items-center">
+                    <span className="font-bold">
+                      Title:{" "}
+                    </span>
+                    {songData?.title}</h1>
+                </div>
+                <div className="my-5">
+                  <h1 className="text-xl flex justify-between items-center">
+                    <span className="font-bold">
+                      Genre:{" "}
+                    </span>{songData?.genre}</h1>
+                </div>
+
+                <div className="my-5">
+                  <h1 className="text-xl flex justify-between items-center">
+                    <span className="font-bold">
+                      Release: {" "}
+                    </span>
+
+                    {formatter.getYear(songData?.releaseDate || new Date())}</h1>
+                </div>
+
+                <div className="my-5">
+                  <h1 className="text-xl flex justify-between items-center">
+                    <span className="font-bold">
+                      Length: {" "}
+                    </span>
+                    {songData?.length}</h1>
+                </div>
+
+                <div className="my-5">
+                  <h1 className="text-xl flex justify-between items-center">
+                    <span className="font-bold">
+                      Listeners: {" "}
+                    </span> {songData?.listenersCount}</h1>
+                </div>
+
+                <div className="my-5">
+                  {PreviewSongData}
+                </div>
+              </>
+            )
+          }
         </div>
 
-        <div className="my-5">
-          <h1 className="text-xl font-bold">
-            <span className="font-bold">
-              Release: {" "}
-            </span>
-            {songData?.releaseDate}</h1>
-        </div>
-
-        <div className="my-5">
-          <h1 className="text-xl font-bold">
-            <span className="font-bold">
-              Length: {" "}
-            </span>
-            {songData?.length}</h1>
-        </div>
-
-        <div className="my-5">
-          <h1 className="text-xl font-bold">Listeners: {songData?.listenersCount}</h1>
-        </div>
-
-        <div className="my-5">
-          {PreviewSongData}
-        </div>
       </div>
     </main >
   );

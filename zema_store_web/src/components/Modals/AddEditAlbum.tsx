@@ -158,7 +158,6 @@ const AddEditAlbumModal = (props: Props) => {
                 <div className="relative py-8 px-5 md:px-10 bg-white shadow-md rounded border border-gray-400">
                   <h1 className="text-gray-800 font-lg font-bold tracking-normal leading-tight mb-4">
                     Enter Albums Details
-                    {JSON.stringify({ ...values, albumCover })}
                   </h1>
                   <label
                     htmlFor="name"

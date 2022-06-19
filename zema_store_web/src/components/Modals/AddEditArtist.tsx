@@ -66,13 +66,13 @@ const AddEditArtistModal = (props: Props) => {
     password: props.isEditing
       ? Yup.string()
       : Yup.string()
-          .required("Required!")
-          .min(6, "Too Short!")
-          .required("Please Enter the password")
-          .matches(
-            /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
-            "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character"
-          ),
+        .required("Required!")
+        .min(6, "Too Short!")
+        .required("Please Enter the password")
+        .matches(
+          /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
+          "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character"
+        ),
   });
 
   useEffect(() => {
@@ -135,7 +135,7 @@ const AddEditArtistModal = (props: Props) => {
                 if (props.isEditing) {
                   console.log(props.artistData, "arthis data");
                   let updatedData: any = {};
-                  updatedData.id = props.artistData?.id;
+                  // updatedData.id = props.artistData?.id;
                   updatedData.phone = values.phone;
                   updatedData.email = values.email;
                   updatedData.firstName = values.firstName;
@@ -143,7 +143,10 @@ const AddEditArtistModal = (props: Props) => {
                   if (values.password !== "") {
                     updatedData.password = values.password;
                   }
-                  await dispatch(updateArtistsApi(updatedData));
+                  await dispatch(updateArtistsApi({ 
+                    id: props.artistData?.id, 
+                    formData: updatedData 
+                  }));
                   props.onClose();
                   notify.success("Artist Updated Successufully!");
                 } else {

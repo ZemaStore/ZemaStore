@@ -20,7 +20,7 @@ export const verifyEmailTemplate = (otpCode, to) => `
               </div>
           </div>
       </div>
-      `
+      `;
 /* istanbul ignore next */
 export const resetPasswordEmailTemplate = (otpCode, to) => `
         <div style="font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2">
@@ -43,7 +43,8 @@ export const resetPasswordEmailTemplate = (otpCode, to) => `
                 </div>
             </div>
         </div>
-        `
+    
+    `;
 
 /* istanbul ignore next */
 export const emailInviteTemplate = (to) => `
@@ -65,4 +66,4 @@ export const emailInviteTemplate = (to) => `
                 </div>
             </div>
         </div>
-        `
+        `;

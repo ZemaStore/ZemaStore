@@ -17,8 +17,11 @@ const validateAccessToken = async (accessToken: string) => {
   try {
     const payload: any = jwt.verify(accessToken, configs.JWT_ACCESS_TOKEN);
     const user = await User.findById(payload._id);
-
     if (isNil(user)) {
+      return null;
+    }
+    const usersTokens = new Set(user.tokens);
+    if (!usersTokens.has(accessToken)) {
       return null;
     }
     return user;

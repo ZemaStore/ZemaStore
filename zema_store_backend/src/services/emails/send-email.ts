@@ -1,6 +1,9 @@
 import sgMail from "@sendgrid/mail";
 import configs from "../../configs/app.configs";
-import { resetPasswordEmailTemplate } from "../../utils/send-email.template";
+import {
+  resetPasswordEmailTemplate,
+  verifyEmailTemplate,
+} from "../../utils/send-email.template";
 
 const sendGridAPIKey: string = configs.SEND_GRID_API_KEY;
 
@@ -24,6 +27,15 @@ const sendOtpCode = (email: string, name: string, code: string) => {
   });
 };
 
+const sendVerifyEmailOtpCode = (email: string, name: string, code: string) => {
+  sgMail.send({
+    from: "henok.adane@aait.edu.et",
+    to: email,
+    subject: "Zema-Store password reset code",
+    html: verifyEmailTemplate(code, name),
+  });
+};
+
 const sendCancelationEmail = (email: string, name: String) => {
   sgMail.send({
     from: "henok.adane@aait.edu.et",
@@ -34,4 +46,9 @@ const sendCancelationEmail = (email: string, name: String) => {
   });
 };
 
-export { sendWelcomeEmail, sendOtpCode, sendCancelationEmail };
+export {
+  sendWelcomeEmail,
+  sendVerifyEmailOtpCode,
+  sendOtpCode,
+  sendCancelationEmail,
+};

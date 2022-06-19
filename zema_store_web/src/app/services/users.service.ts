@@ -42,9 +42,17 @@ const toggleUserStatus = async (userId: string) => {
   return { data };
 };
 
-const updateUserProfile = async (userId: string) => {
-  const { data } = await Request.patch(`${baseUrl}/users/profile/${userId}`);
-  return { data };
+const updateUserProfile = async (userId: string, formData: any) => {
+  try {
+    const { data } = await Request.patch(
+      `${baseUrl}/users/profile/${userId}`,
+      formData
+    );
+    return { data, error: null };
+  } catch (error) {
+    console.log("rrer is ", error);
+    return { data: null, error: "Invalid old password" };
+  }
 };
 
 const UsersService = {

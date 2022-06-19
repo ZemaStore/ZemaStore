@@ -181,7 +181,7 @@ const updateArtist = async (req: Request, res: Response) => {
     }
 
     const { email, phone, password, firstName, lastName } = req.body;
-
+    console.log(req.body, " is request body")
     const user = await User.findById(req.params.id);
     if (isNil(user)) {
       return res

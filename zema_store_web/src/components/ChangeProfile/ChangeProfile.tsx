@@ -3,13 +3,19 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import clsx from "clsx";
 import notify from "../../utils/notify";
-import { useAppDispatch } from "../../app/hooks/redux_hooks";
-import { updateUserProfileApi } from "../../app/store/features/users/usersSlice";
+import { useAppDispatch, useAppSelector } from "../../app/hooks/redux_hooks";
+import { authSelector, clearMessage, updateUserProfileApi } from "../../app/store/features/auth/authSlice";
 
 type Props = {};
 
 const DisplayingErrorMessagesSchema = Yup.object().shape({
   email: Yup.string().email("Invalid Email").required("Required"),
+  old_password: Yup.string()
+    .required("Please Enter your old password")
+    .matches(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
+      "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character"
+    ),
   password: Yup.string()
     .required("Please Enter your password")
     .matches(
@@ -23,8 +29,9 @@ const DisplayingErrorMessagesSchema = Yup.object().shape({
 });
 
 const ChangeProfile = (props: Props) => {
-  const [loading, setLoading] = useState<boolean>(false);
-  const [errorMessage, setErrorMessage] = useState(null);
+  // const [errorMessage, setErrorMessage] = useState(null);
+
+  const { currentUser, isLoading, errorMessage, error } = useAppSelector(authSelector)
   const dispatch = useAppDispatch()
 
   return (
@@ -43,7 +50,7 @@ const ChangeProfile = (props: Props) => {
             <div className="m-7">
               <Formik
                 initialValues={{
-                  email: "",
+                  email: currentUser ? currentUser.email : "",
                   old_password: "",
                   password: "",
                   confirm: "",
@@ -53,13 +60,26 @@ const ChangeProfile = (props: Props) => {
                   try {
                     await dispatch(
                       updateUserProfileApi(
-                        values
+                        {
+                          userId: currentUser._id,
+                          formData: { password: values.password, old_password: values.old_password, email: values.email }
+                        }
                       )
                     );
-                    notify.success("User profile updated successfully");
+                    if (!error && !errorMessage) {
+                      notify.success("User profile updated successfully");
+                    } else {
+                      // notify.error(errorMessage);
+                    }
+                    setTimeout(async () => {
+                      await dispatch(clearMessage())
+                    }, 5000);
 
                   } catch (error: any) {
-                    notify.error(error.toString());
+                    // notify.error(errorMessage);
+                    setTimeout(async () => {
+                      await dispatch(clearMessage())
+                    }, 2000);
                   }
                 }}
               >
@@ -175,11 +195,11 @@ const ChangeProfile = (props: Props) => {
                     </div>
                     <div className="mb-6">
                       <button
-                        disabled={loading}
+                        disabled={isLoading}
                         type="submit"
                         className="flex cursor-not-allowed justify-center items-center w-full px-3 py-4 text-white bg-indigo-500 disabled:bg-indigo-300 rounded-md focus:bg-indigo-600 focus:outline-none"
                       >
-                        {loading ? (
+                        {isLoading ? (
                           <>
                             <svg
                               className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
@@ -214,7 +234,7 @@ const ChangeProfile = (props: Props) => {
                           className="p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800"
                           role="alert"
                         >
-                          <span className="font-medium">{errorMessage}</span>
+                          <span className="font-medium">{error && errorMessage}</span>
                           <p>
                             Change a few things up and try submitting again.
                           </p>
