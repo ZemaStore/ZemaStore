@@ -24,6 +24,7 @@ function ArtistsPage() {
     setIsAddModalOpen(false);
     setIsEditModalOpen(false);
     setIsDeleteModalOpen(false);
+    setSelectedArtist(null)
     console.log("closed?");
   };
 

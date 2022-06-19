@@ -245,6 +245,7 @@ const getSongsByArtist = async (req: Request, res: Response) => {
 const addSong = async (req: Request, res: Response) => {
   try {
     const { albumId, title, genre, length, releaseDate } = req.body;
+    console.log(req.body, req.file, "1 is request body");
     const validate = addSongSchema.validate(req.body);
     if (validate.error && validate.error !== null) {
       return res
@@ -263,6 +264,8 @@ const addSong = async (req: Request, res: Response) => {
     );
 
     const album = await Album.findById(albumId);
+    console.log(req.body, album, "2 is request body");
+
     if (isNil(album)) {
       return res.status(400).send(new ErrorResponse("Album not found!", null));
     }
@@ -278,10 +281,12 @@ const addSong = async (req: Request, res: Response) => {
       length,
       releaseDate,
     });
+    console.log(req.body, "3 is request body");
 
     const song = await songData.save();
+    console.log(req.body, "4 is request body");
 
-    res.status(201).send({
+    return res.status(201).send({
       success: true,
       message: "Song saved successfully",
       data: song,

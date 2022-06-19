@@ -57,7 +57,7 @@ const SongsTable = (props: Props) => {
           <thead>
             <tr className="h-16 w-full text-sm leading-none text-gray-800">
               <th className="font-normal text-left pl-4">Title</th>
-              <th className="font-normal text-left pl-12">Song</th>
+              {/* <th className="font-normal text-left pl-12">Song</th> */}
               <th className="font-normal text-left pl-12">Released Date</th>
               <th className="font-normal text-left pl-20">Genre</th>
               <th className="font-normal text-left pl-20">Listner Count</th>
@@ -87,7 +87,7 @@ const SongsTable = (props: Props) => {
                         </div>
                       </div>
                     </td>
-                    <td className="pl-20">
+                    {/* <td className="pl-20">
                       <p className="font-medium">
                         <a
                           href={song.song}
@@ -98,7 +98,7 @@ const SongsTable = (props: Props) => {
                           link
                         </a>
                       </p>
-                    </td>
+                    </td> */}
                     <td className="pl-20">
                       <p className="font-medium">
                         {formatter.getYear(song.releaseDate)}

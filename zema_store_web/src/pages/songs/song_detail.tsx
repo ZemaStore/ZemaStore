@@ -4,6 +4,7 @@ import { useLocation } from "react-router-dom";
 import SongsService from "../../app/services/songs.service";
 import { Song } from "../../helpers/types";
 import { Audio, BallTriangle } from 'react-loader-spinner'
+import formatter from "../../utils/formatter";
 
 type Props = {
   from: string;
@@ -113,29 +114,30 @@ function SongDetail(props: Props) {
             ) : (
               <>
                 <div className="my-5">
-                  <h1 className="text-xl">
+                  <h1 className="text-xl flex justify-between items-center">
                     <span className="font-bold">
                       Title:{" "}
                     </span>
                     {songData?.title}</h1>
                 </div>
                 <div className="my-5">
-                  <h1 className="text-xl ">
+                  <h1 className="text-xl flex justify-between items-center">
                     <span className="font-bold">
                       Genre:{" "}
                     </span>{songData?.genre}</h1>
                 </div>
 
                 <div className="my-5">
-                  <h1 className="text-xl font-bold">
+                  <h1 className="text-xl flex justify-between items-center">
                     <span className="font-bold">
                       Release: {" "}
                     </span>
-                    {songData?.releaseDate}</h1>
+
+                    {formatter.getYear(songData?.releaseDate || new Date())}</h1>
                 </div>
 
                 <div className="my-5">
-                  <h1 className="text-xl font-bold">
+                  <h1 className="text-xl flex justify-between items-center">
                     <span className="font-bold">
                       Length: {" "}
                     </span>
@@ -143,7 +145,10 @@ function SongDetail(props: Props) {
                 </div>
 
                 <div className="my-5">
-                  <h1 className="text-xl font-bold">Listeners: {songData?.listenersCount}</h1>
+                  <h1 className="text-xl flex justify-between items-center">
+                    <span className="font-bold">
+                      Listeners: {" "}
+                    </span> {songData?.listenersCount}</h1>
                 </div>
 
                 <div className="my-5">
