@@ -69,8 +69,44 @@ _loadDownloadedSongs() async {
   }
 }
 
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  print('Handling a background message ${message.messageId}');
+}
+
+void registerNotification() async {
+  // 1. Initialize the Firebase app
+  await Firebase.initializeApp();
+
+  // 2. Instantiate Firebase Messaging
+  _messaging = FirebaseMessaging.instance;
+
+  // 3. On iOS, this helps to take the user permissions
+  NotificationSettings settings = await _messaging.requestPermission(
+    alert: true,
+    badge: true,
+    provisional: false,
+    sound: true,
+  );
+
+  if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+    print('User granted permission');
+    // TODO: handle the received notifications
+  } else {
+    print('User declined or has not accepted permission');
+  }
+}
+
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+
+  // Set the background messaging handler early on, as a named top-level function
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  final fcmToken = await FirebaseMessaging.instance.getToken();
+
+
   await _checkLoggedIn();
   await _loadDownloadedSongs();
   await dotenv.load(fileName: "assets/.env");

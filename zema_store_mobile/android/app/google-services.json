@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "363084735224",
+    "project_id": "engaged-proxy-350821",
+    "storage_bucket": "engaged-proxy-350821.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:363084735224:android:505760e9eb85eacc50910d",
+        "android_client_info": {
+          "package_name": "com.example.zema_store_mobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "363084735224-g46vr5ihfgpqq0kgqg3hmdv3mrlo33h6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDNU7-rR6wtsPW6bzIFXgX0u3ibrtjsPjg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "363084735224-g46vr5ihfgpqq0kgqg3hmdv3mrlo33h6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
