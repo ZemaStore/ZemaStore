@@ -91,8 +91,14 @@ const getSongs = async (req: Request, res: Response) => {
     }
 
     const { page, sort } = Utils.instance.getPaginationData(req);
-
+    let field;
+    let word;
     const search = req.query.search;
+    if (search) {
+      const parts = (<string>req.query.search).split(':')
+      field = parts[0]
+      word = parts[1]
+    }
 
     const count = isNil(search)
       ? await Song.count({})
