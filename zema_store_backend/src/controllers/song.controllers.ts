@@ -95,34 +95,58 @@ const getSongs = async (req: Request, res: Response) => {
     let word;
     const search = req.query.search;
     if (search) {
-      const parts = (<string>req.query.search).split(':')
-      field = parts[0]
-      word = parts[1]
+      const parts = (<string>req.query.search).split(":");
+      field = parts[0];
+      word = parts[1];
     }
 
-    const count = isNil(search)
-      ? await Song.count({})
-      : await Song.count({
-          title: {
-            $regex: search,
+    let count;
+    let totalPages;
+    let songs;
+
+    if (!isNil(search)) {
+      if (field === "genre") {
+        count = await Song.count({
+          genre: {
+            $regex: word,
           },
         });
-    const totalPages = Utils.instance.getNumberOfPages(count, fetchItemCount);
+        totalPages = Utils.instance.getNumberOfPages(count, fetchItemCount);
 
-    const songs = isNil(search)
-      ? await Song.find({})
-          .limit(fetchItemCount)
-          .skip(page * fetchItemCount)
-          .sort(sort)
-      : await Song.find({
-          title: {
-            $regex: search,
+        songs = await Song.find({
+          genre: {
+            $regex: word,
           },
         })
           .limit(fetchItemCount)
           .skip(page * fetchItemCount)
           .sort(sort);
+      } else {
+        count = await Song.count({
+          title: {
+            $regex: word,
+          },
+        });
+        totalPages = Utils.instance.getNumberOfPages(count, fetchItemCount);
 
+        songs = await Song.find({
+          title: {
+            $regex: word,
+          },
+        })
+          .limit(fetchItemCount)
+          .skip(page * fetchItemCount)
+          .sort(sort);
+      }
+    } else {
+      count = await Song.count({});
+      totalPages = Utils.instance.getNumberOfPages(count, fetchItemCount);
+
+      songs = await Song.find({})
+        .limit(fetchItemCount)
+        .skip(page * fetchItemCount)
+        .sort(sort);
+    }
     res
       .status(200)
       .send(
@@ -221,7 +245,6 @@ const getSongsByArtist = async (req: Request, res: Response) => {
 const addSong = async (req: Request, res: Response) => {
   try {
     const { albumId, title, genre, length, releaseDate } = req.body;
-    console.log(req.body, "request body");
     const validate = addSongSchema.validate(req.body);
     if (validate.error && validate.error !== null) {
       return res

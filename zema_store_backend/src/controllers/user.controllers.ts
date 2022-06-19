@@ -207,8 +207,6 @@ const changeUserStatus = async (req: Request, res: Response) => {
 
     const id = req.params.id;
 
-    console.log(req.params.id);
-
     const user = await User.findById(id);
     if (isNil(user)) {
       return res.status(400).send(new ErrorResponse("User not found!", null));
