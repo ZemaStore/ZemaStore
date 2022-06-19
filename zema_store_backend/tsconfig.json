@@ -10,7 +10,8 @@
         "allowJs": true,
         "moduleResolution": "node",
         "types": [
-            "node"
+            "node",
+            "jest"
         ],
         "typeRoots": ["./types", "./node_modules/@types"],
         "lib": [

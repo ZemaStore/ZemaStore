@@ -4,6 +4,7 @@ import serviceAccount from "../firebase/serviceAccountKey.json";
 dotenv.config({ path: path.resolve(__dirname, "..", "..", ".env") });
 
 const DATABASE_URL = process.env.DATABASE_URL || "";
+const DATABASE_TEST_URL = process.env.DATABASE_TEST_URL || "";
 const PORT = process.env.PORT || 3000;
 const JWT_ACCESS_TOKEN = process.env.JWT_ACCESS_TOKEN || "JwtSecret";
 const JWT_REFRESH_TOKEN = process.env.JWT_REFRESH_TOKEN || "JwtRefreshToken";
@@ -39,6 +40,7 @@ const FCM_KEY = process.env.FCM_KEY || "";
 
 const configs = {
   DATABASE_URL,
+  DATABASE_TEST_URL,
   PORT,
   JWT_ACCESS_TOKEN,
   JWT_REFRESH_TOKEN,

@@ -164,7 +164,7 @@ const adminSignIn = async (
     const user = await User.findOne({
       email,
     }).populate("roleId");
-    console.log(user, " is user");
+    // console.log(user, " is user");
     if (!user || (user.roleId as any).name !== "ADMIN") {
       return res
         .status(400)
