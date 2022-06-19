@@ -6,6 +6,7 @@ import {
 } from "@reduxjs/toolkit";
 import { RootState } from "../..";
 import AuthService from "../../../services/auth.service";
+import UsersService from "../../../services/users.service";
 
 export type authState = {
   isAuthenticated: boolean;
@@ -47,11 +48,31 @@ export const loginApi = createAsyncThunk<any, any>(
   }
 );
 
+export const updateUserProfileApi = createAsyncThunk<any, any>(
+  "/updateUserProfile",
+  async (payload, { rejectWithValue, fulfillWithValue, dispatch }) => {
+    try {
+      const { data, error } = await UsersService.updateUserProfile(
+        payload.userId,
+        payload.formData
+      );
+      if (error) {
+        return rejectWithValue(error);
+      }
+      return fulfillWithValue(data);
+    } catch (err: any) {
+      console.log(err, " is error");
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
 export const logoutApi = createAsyncThunk<any, any>(
   "/auth/logout",
   async (payload, { rejectWithValue, fulfillWithValue, dispatch }) => {
     try {
-      const data = await AuthService.logoutClientOnly();
+      const data = await AuthService.logoutServerOnly();
+      await AuthService.logoutClientOnly();
       return fulfillWithValue(data);
     } catch (err: any) {
       return rejectWithValue(err.response.data);
@@ -97,7 +118,21 @@ export const authSlice = createSlice({
           state.errorMessage = action.payload;
           state.error = true;
         }
-      );
+      )
+      .addCase(updateUserProfileApi.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(updateUserProfileApi.fulfilled, (state, { payload }) => {
+        state.isLoading = false;
+        state.isAuthenticated = true;
+        state.currentUser = payload.user;
+        state.token = payload.token;
+      })
+      .addCase(updateUserProfileApi.rejected, (state, { payload }) => {
+        state.isLoading = false;
+        state.error = true;
+        state.errorMessage = payload as string;
+      });
   },
 });
 

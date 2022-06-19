@@ -1,7 +1,9 @@
 import * as React from "react";
 import { Routes, Route, Link, BrowserRouter, Navigate } from "react-router-dom";
+import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import { ToastContainer } from "react-toastify";
 import "./App.css";
+
 import NotFoundPage from "./pages/404";
 import AlbumsIndexPage from "./pages/albums";
 import AlbumsPage from "./pages/albums/albums";

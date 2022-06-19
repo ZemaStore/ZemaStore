@@ -27,6 +27,21 @@ const login = async (user: any) => {
     throw new Error("INVALID EMAIL OR PASSWORD!");
   }
 };
+const logoutServerOnly = async () => {
+  const accessToken = encryption.decrypt(
+    localStorage.getItem(configs.ACCESS_TOKEN_KEY)
+  );
+  console.log("acc ", accessToken)
+  try {
+    const { data } = await Request.patch(`${baseUrl}/auth/logout`, {
+      accessToken,
+    });
+    return { data };
+  } catch (error) {
+    throw new Error("There is an error!");
+  }
+};
+
 const logoutClientOnly = async () => {
   localStorage.clear();
 };
@@ -63,6 +78,7 @@ const AuthService = {
   getProfile,
   getRole,
   isAuthenticated,
+  logoutServerOnly,
 };
 
 export default AuthService;

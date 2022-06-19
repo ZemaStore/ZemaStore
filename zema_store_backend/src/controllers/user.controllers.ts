@@ -105,8 +105,8 @@ const updateProfile = async (req: Request, res: Response) => {
     );
     if (validate.error && validate.error !== null) {
       return res
-        .status(400)
-        .send(new ErrorResponse(validate.error.message, null));
+        .status(403)
+        .json(new ErrorResponse(validate.error.message, null));
     }
 
     const { email, password, old_password } = req.body;
@@ -115,8 +115,8 @@ const updateProfile = async (req: Request, res: Response) => {
 
     if (!user) {
       return res
-        .status(400)
-        .send({ success: false, message: "Invalid credentials." });
+        .status(403)
+        .json({ success: false, message: "Invalid credentials." });
     }
     const isMatch = await bcrypt.compare(
       old_password,
@@ -124,14 +124,16 @@ const updateProfile = async (req: Request, res: Response) => {
     );
 
     if (!isMatch) {
-      return res
-        .status(400)
-        .send({ success: false, message: "Invalid old password." });
+      return res.status(403).json({
+        message: "Invalid old password.",
+        success: false,
+        data: null,
+      });
     }
     user.email = email || user.email;
     user.password = password || user.password;
     const userData = await user.save();
-    res.status(200).send({
+    res.status(200).json({
       success: true,
       message: "user signed in successfully.",
       data: { user: userData },
