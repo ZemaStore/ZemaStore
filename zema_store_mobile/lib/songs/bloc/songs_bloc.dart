@@ -20,6 +20,19 @@ class SongsBloc extends Bloc<SongsEvent, SongsState>{
       }
     });
 
+    on<LoadSongsOfArtist>((event, emit) async {
+      emit(LoadingState());
+      try {
+        final songs = await songsRepository.getSongsOfArtist(event.artistId);
+        debugPrint('is it hear ${songs.toString()}');
+
+        emit(LoadSuccessState(newsList: songs));
+      } catch (e) {
+        debugPrint('who');
+        emit(LoadFailureState(errorMessage: e.toString()));
+      }
+    });
+
 
   }
 }

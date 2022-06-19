@@ -32,7 +32,7 @@ import 'package:tt/screens/testpage.dart';
 import 'package:tt/search/bloc/search_bloc.dart';
 import 'package:tt/search/data_provider/search_provider.dart';
 import 'package:tt/search/data_repository/search_repository.dart';
-import 'package:tt/songs/bloc/bloc.dart';
+import 'package:tt/songs/bloc/bloc.dart' as Song;
 import 'package:tt/songs/bloc/songle_dart.dart';
 import 'package:tt/songs/data_provider/song_provider.dart';
 import 'package:tt/songs/respository/songs_repository.dart';
@@ -123,7 +123,7 @@ void main() async {
           ),
           // Songs BLoC
           BlocProvider(
-            create: (_) => SongsBloc(
+            create: (_) => Song.SongsBloc(
               songsRepository: SongsRepository(
                 provider: SongsProvider(httpClient: httpClient),
               ),
@@ -245,7 +245,20 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    BlocProvider.of<Song.SongsBloc>(context).add(Song.LoadSongsOfArtist(artistId: artist.id));
+
     return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(onPressed: (){
+          Navigator.pop(context);
+        }
+          ,icon: Icon(Icons.arrow_back_ios_outlined, color: Colors.black,),),
+        title: Text('Artist Detail page', style: TextStyle(color: Colors.black),
+        ),
+        centerTitle: true,
+        elevation: 0,
+        backgroundColor: Colors.white,
+      ),
       body: SingleChildScrollView(
         child: Center(
           child: Column(
@@ -323,20 +336,7 @@ class MyApp extends StatelessWidget {
                         const SizedBox(
                           height: 10,
                         ),
-                        const Text(
-                          // artist.artistprofile.profile
-                          "I'm Gospel Singer Dawit Getachew",
-                          style: TextStyle(color: Colors.white, fontSize: 20),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        const Text("#AtHomeWithZemaStore",
-                            style:
-                                TextStyle(color: Colors.white, fontSize: 20)),
-                        const SizedBox(
-                          height: 30,
-                        ),
+
                         Column(
                           children: [
                             const Text(
@@ -351,26 +351,41 @@ class MyApp extends StatelessWidget {
                             ),
                             SingleChildScrollView(
                               scrollDirection: Axis.horizontal,
-                              child: Row(
-                                children: [
-                                  buildRow('assets/download.jpeg'),
-                                  const SizedBox(
-                                    width: 40,
-                                  ),
-                                  buildRow('assets/tauren.jpeg'),
-                                  const SizedBox(
-                                    width: 40,
-                                  ),
-                                  buildRow('assets/dave.jpeg'),
-                                  const SizedBox(
-                                    width: 40,
-                                  ),
-                                  buildRow('assets/download.jpeg'),
-                                  const SizedBox(
-                                    width: 40,
-                                  ),
-                                  buildRow('assets/download.jpeg'),
-                                ],
+                              child: BlocBuilder<Song.SongsBloc, Song.SongsState>(
+                                builder: (context, state){
+                                  print('art de sta $state');
+
+                                  if(state is Song.LoadSuccessState){
+
+
+                              return Row(
+                                  children: state.newsList.map((e) => Container()).toList()
+                                  // [
+                                  //   buildRow('assets/download.jpeg'),
+                                  //   const SizedBox(
+                                  //     width: 40,
+                                  //   ),
+                                  //   buildRow('assets/tauren.jpeg'),
+                                  //   const SizedBox(
+                                  //     width: 40,
+                                  //   ),
+                                  //   buildRow('assets/dave.jpeg'),
+                                  //   const SizedBox(
+                                  //     width: 40,
+                                  //   ),
+                                  //   buildRow('assets/download.jpeg'),
+                                  //   const SizedBox(
+                                  //     width: 40,
+                                  //   ),
+                                  //   buildRow('assets/download.jpeg'),
+                                  // ],
+                                  );}else if(state is Song.LoadingState){
+                                    return Center(child: const CircularProgressIndicator(),);
+                                  }
+                                  else{
+                                    BlocProvider.of<Song.SongsBloc>(context).add(Song.LoadSongsOfArtist(artistId: artist.id));
+                                  }
+                                return Container();}
                               ),
                             )
                           ],

@@ -14,4 +14,8 @@ class SongsRepository {
   Future<SongDownload> getSingleSong(String songID) async{
     return await provider.getSingleSong(songID);
   }
+
+  Future<List<Songs>> getSongsOfArtist(String artistID) async {
+    return await provider.getSongsOfArtist(artistID);
+  }
 }
