@@ -31,6 +31,27 @@ class SongsProvider {
     }
   }
 
+  Future<List<Songs>> getSongsOfArtist(String artistID) async {
+    final userToken = await secureStorage.getToken();
+    final response =
+    await httpClient.get(Uri.parse('$_baseUrl/songs/artist/$artistID'), headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $userToken',
+    });
+    print('song of arti');
+    print(response.body);
+    if (response.statusCode == 200) {
+      final songs = jsonDecode(response.body)['data']['songs'] as List;
+      final songsList = songs.map((song) => Songs.fromJson(song)).toList();
+
+      return songsList;
+    } else {
+      throw Exception('Something went wrong');
+    }
+  }
+
+
   Future<SongDownload> getSingleSong(String songID) async {
     final userToken = await secureStorage.getToken();
     final response =
