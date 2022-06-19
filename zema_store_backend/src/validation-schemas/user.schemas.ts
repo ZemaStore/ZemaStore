@@ -13,7 +13,7 @@ const getUsersSchema = Joi.object({
   sortBy: Joi.string().optional(),
 });
 
-const udpateUserSchema = Joi.object({
+const updateUserSchema = Joi.object({
   params: {
     id: Joi.string().hex().required(),
   },
@@ -37,6 +37,26 @@ const udpateUserSchema = Joi.object({
   },
 });
 
+const updateUserProfileSchema = Joi.object({
+  params: {
+    id: Joi.string().hex().required(),
+  },
+  body: {
+    email: Joi.string().email(),
+    password: Joi.string()
+      .pattern(
+        new RegExp(
+          "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}"
+        )
+      )
+      .messages({
+        "string.min": PASSWORD_MESSAGE,
+        "string.pattern.base": PASSWORD_MESSAGE,
+      }),
+    old_password: Joi.string(),
+  },
+});
+
 const changeUserStatusSchema = Joi.object({
   id: Joi.string().hex().required(),
 });
@@ -44,6 +64,7 @@ const changeUserStatusSchema = Joi.object({
 export {
   getUserSchema,
   getUsersSchema,
-  udpateUserSchema,
+  updateUserSchema,
   changeUserStatusSchema,
+  updateUserProfileSchema
 };

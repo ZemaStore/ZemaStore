@@ -33,8 +33,6 @@ const SongsValidationSchema = Yup.object().shape({
 
 const AddEditSongModal = (props: Props) => {
   let modal = document.getElementById("modal");
-  const fileUploadFileRef = useRef<HTMLInputElement>(null);
-  const [songCover, setSongCover] = useState<File | null>(null);
   const [songFile, setSongFile] = useState<File | null>(null)
   const { isLoading } = useAppSelector(songsSelector);
 
@@ -150,11 +148,10 @@ const AddEditSongModal = (props: Props) => {
               const formData = new FormData();
               try {
                 if (props.isEditing) {
-                  const updatedData: any = {
-                    ...props.songData,
-                    ...values,
-                  };
+
                   formData.append("title", values.title || "");
+                  formData.append("genre", values.genre || "reggae");
+                  formData.append("length", values.length?.toString() || "0");
                   formData.append("id", props.songData?.id || "")
                   formData.append("releaseDate", values.releaseDate || new Date().toISOString());
 
@@ -164,10 +161,9 @@ const AddEditSongModal = (props: Props) => {
 
                   await dispatch(updateSongsApi(formData));
                   props.onClose();
-                  notify.success("Album Updated Successufully!");
+                  notify.success("Song Updated Successufully!");
                 } else {
                   formData.append("albumId", albumId || "")
-                  formData.append("artistId", artistId || "")
                   formData.append("title", values.title || "");
                   formData.append("genre", values.genre || "reggae");
                   formData.append("length", values.length?.toString() || "0");
@@ -176,20 +172,14 @@ const AddEditSongModal = (props: Props) => {
                   if (songFile) {
                     formData.append('song', songFile);
                   }
-                  console.log(
-                    formData.has("title"),
-                    formData.has("releaseDate"),
-                    formData.has("length"),
-                    formData.has("song"),
-                    formData.has("genre")
-                  )
+
                   await dispatch(
                     addSongsApi(
                       formData
                     )
                   );
                   props.onClose();
-                  notify.success("Album Added Successufully!");
+                  notify.success("Song Added Successufully!");
                 }
               } catch (error: any) {
                 notify.error(error.toString());

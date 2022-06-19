@@ -78,7 +78,6 @@ export const getTotalRevenue = async (req: Request, res: Response) => {
     pending.forEach((curr) => {
       total += curr.amount;
     });
-    console.log("available ", available, pending, total);
     return res.status(200).json({ data: { totalRevenue: total / 100 } });
   } catch (error) {
     return res.status(400).json({ code: 400, data: null });

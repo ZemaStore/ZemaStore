@@ -1,11 +1,10 @@
 import React, { useEffect, useLayoutEffect, useState } from "react";
-import { Navigate, useLocation, useNavigate } from "react-router-dom";
-import { LocationState } from "../../helpers/types";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import clsx from "clsx";
 import notify from "../../utils/notify";
-import { useAppDispatch, useAppSelector } from "../../app/hooks/redux_hooks";
+import { useAppDispatch } from "../../app/hooks/redux_hooks";
+import { updateUserProfileApi } from "../../app/store/features/users/usersSlice";
 
 type Props = {};
 
@@ -26,6 +25,7 @@ const DisplayingErrorMessagesSchema = Yup.object().shape({
 const ChangeProfile = (props: Props) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState(null);
+  const dispatch = useAppDispatch()
 
   return (
     <div>
@@ -43,48 +43,28 @@ const ChangeProfile = (props: Props) => {
             <div className="m-7">
               <Formik
                 initialValues={{
-                  fullName: "",
                   email: "",
+                  old_password: "",
                   password: "",
                   confirm: "",
                 }}
                 validationSchema={DisplayingErrorMessagesSchema}
                 onSubmit={async (values) => {
-                  //   try {
-                  //     handleLogin(values.email, values.password);
-                  //   } catch (error: any) {
-                  //     notify.error(error.toString());
-                  //   }
+                  try {
+                    await dispatch(
+                      updateUserProfileApi(
+                        values
+                      )
+                    );
+                    notify.success("User profile updated successfully");
+
+                  } catch (error: any) {
+                    notify.error(error.toString());
+                  }
                 }}
               >
-                {({ errors, touched, isValidating }) => (
+                {({ errors, touched, isValidating, values }) => (
                   <Form>
-                    <div className="mb-6">
-                      <label
-                        htmlFor="fullName"
-                        className="block mb-2 text-sm text-gray-600 dark:text-gray-400"
-                      >
-                        Full Name
-                      </label>
-                      <Field
-                        type="fullName"
-                        name="fullName"
-                        autoComplete="on"
-                        id="fullName"
-                        placeholder="you@company.com"
-                        className={clsx(
-                          "w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 dark:border-gray-600 dark:focus:ring-gray-900 dark:focus:border-gray-500",
-                          touched.fullName && errors.fullName
-                            ? "border border-red-500"
-                            : ""
-                        )}
-                      />
-                      <ErrorMessage
-                        className="text-red-500"
-                        name="fullName"
-                        component="div"
-                      />
-                    </div>
                     <div className="mb-6">
                       <label
                         htmlFor="email"
@@ -108,6 +88,33 @@ const ChangeProfile = (props: Props) => {
                       <ErrorMessage
                         className="text-red-500"
                         name="email"
+                        component="div"
+                      />
+                    </div>
+                    <div className="mb-6">
+                      <div className="flex justify-between mb-2">
+                        <label
+                          htmlFor="old_password"
+                          className="text-sm text-gray-600 dark:text-gray-400"
+                        >
+                          Old Password
+                        </label>
+                      </div>
+                      <Field
+                        type="password"
+                        name="old_password"
+                        id="old_password"
+                        placeholder="Your old_password"
+                        className={clsx(
+                          " w-full px-3 py-2 placeholder-gray-300 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 dark:border-gray-600 dark:focus:ring-gray-900 dark:focus:border-gray-500",
+                          touched.old_password && errors.old_password
+                            ? "border border-red-500"
+                            : ""
+                        )}
+                      />
+                      <ErrorMessage
+                        className="text-red-500"
+                        name="old_password"
                         component="div"
                       />
                     </div>
@@ -149,7 +156,7 @@ const ChangeProfile = (props: Props) => {
                         </label>
                       </div>
                       <Field
-                        type="confirm"
+                        type="password"
                         name="confirm"
                         id="confirm"
                         placeholder="Your Password"

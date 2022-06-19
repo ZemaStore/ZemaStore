@@ -3,6 +3,7 @@ import { isNil } from "lodash";
 import { cloudinaryUploader } from "../middlewares/cloudinary.middlewares";
 import CustomerProfile from "../models/mongoose/customer-profile";
 import Role from "../models/mongoose/role";
+import * as bcrypt from "bcryptjs";
 
 import User from "../models/mongoose/user";
 import ErrorResponse from "../models/responses/error-response.model";
@@ -12,7 +13,8 @@ import {
   changeUserStatusSchema,
   getUserSchema,
   getUsersSchema,
-  udpateUserSchema,
+  updateUserProfileSchema,
+  updateUserSchema,
 } from "../validation-schemas/user.schemas";
 
 const fetchItemCount = 10;
@@ -93,11 +95,57 @@ const getusers = async (req: Request, res: Response) => {
   }
 };
 
+const updateProfile = async (req: Request, res: Response) => {
+  try {
+    const params = req.params;
+    const body = req.body;
+    const validate = updateUserProfileSchema.validate(
+      { params, body },
+      { abortEarly: false }
+    );
+    if (validate.error && validate.error !== null) {
+      return res
+        .status(400)
+        .send(new ErrorResponse(validate.error.message, null));
+    }
+
+    const { email, password, old_password } = req.body;
+
+    const user = await User.findById(req.params.id).populate("profileId");
+
+    if (!user) {
+      return res
+        .status(400)
+        .send({ success: false, message: "Invalid credentials." });
+    }
+    const isMatch = await bcrypt.compare(
+      old_password,
+      user.password.toString()
+    );
+
+    if (!isMatch) {
+      return res
+        .status(400)
+        .send({ success: false, message: "Invalid old password." });
+    }
+    user.email = email || user.email;
+    user.password = password || user.password;
+    const userData = await user.save();
+    res.status(200).send({
+      success: true,
+      message: "user signed in successfully.",
+      data: { user: userData },
+    });
+  } catch (error) {
+    Utils.instance.handleResponseException(res, error);
+  }
+};
+
 const updateUser = async (req: Request, res: Response) => {
   try {
     const params = req.params;
     const body = req.body;
-    const validate = udpateUserSchema.validate(
+    const validate = updateUserSchema.validate(
       { params, body },
       { abortEarly: false }
     );
@@ -177,4 +225,4 @@ const changeUserStatus = async (req: Request, res: Response) => {
   }
 };
 
-export { getUser, getusers, updateUser, changeUserStatus };
+export { getUser, getusers, updateUser, updateProfile, changeUserStatus };
