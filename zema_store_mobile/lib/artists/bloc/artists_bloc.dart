@@ -19,5 +19,18 @@ class ArtistsBloc extends Bloc<ArtistEvent, ArtistState>{
         emit(LoadFailureState(errorMessage: e.toString()));
       }
     });
+
+    on<AddFollow>((event, emit) async {
+      emit(LoadingState());
+      try {
+        final news = await artistsRepository.addFollow(event.profileId);
+        // debugPrint('is it hear ${news.toString()}');
+
+        emit(LoadSuccessState(newsList: []));
+      } catch (e) {
+        debugPrint('who');
+        emit(LoadFailureState(errorMessage: e.toString()));
+      }
+    });
   }
 }

@@ -45,6 +45,19 @@ class PlaylistBloc extends Bloc<PlaylistEvent, PlaylistState>{
         emit(LoadFailureState(errorMessage: e.toString()));
       }
     });
+    on<CreatePlayList>((event, emit) async {
+      emit(LoadingState());
+      try {
+        final playlists = await playlistRepository.createPlaylist(event.songIds, event.playlistName);
+        debugPrint('is it hear crated ${playlists.toString()}');
+
+        emit(LoadSuccessState(newsList: playlists));
+      } catch (e) {
+        debugPrint('who');
+        emit(LoadFailureState(errorMessage: e.toString()));
+      }
+    });
+
   }
 }
 

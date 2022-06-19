@@ -85,7 +85,7 @@ class _AlbumDetailsPageState extends State<AlbumDetailsPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           RaisedButton(
-                            onPressed: albumSongs.isEmpty? null:() {
+                            onPressed: albumSongs.isEmpty? (){print('nope');}:() {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(

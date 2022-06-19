@@ -5,6 +5,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:tt/albums/bloc/bloc.dart';
+import 'package:tt/albums/entity/model.dart';
+import 'package:tt/albums/screens/albums_detail_page.dart';
 import 'package:tt/auth/bloc/auth_bloc.dart';
 import 'package:tt/auth/bloc/auth_event.dart';
 import 'package:tt/auth/bloc/auth_state.dart';
@@ -90,6 +92,11 @@ class _HomePageMainState extends State<HomePageMain> {
                         MaterialPageRoute(builder: (_) => SearchPage()));
                   },
                   child: TextField(
+                    onChanged: (value){
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (_) => const SearchPage()));
+
+                    },
                     autofocus: false,
                     style: GoogleFonts.poppins(
                         textStyle: const TextStyle(
@@ -150,7 +157,8 @@ class _HomePageMainState extends State<HomePageMain> {
                                             song.imageUrl,
                                             song.title,
                                             song.artistProfile.fullName,
-                                            false,
+                                            DateTime.now().difference(DateTime.parse(song.releaseDate)).inDays>=10,
+                                            song
                                           ),
                                           const SizedBox(
                                             width: 20,
@@ -190,7 +198,7 @@ class _HomePageMainState extends State<HomePageMain> {
                   'Recently Played',
                   style: GoogleFonts.poppins(fontSize: 25, ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 Column(
@@ -336,7 +344,7 @@ class _HomePageMainState extends State<HomePageMain> {
   }
 
   Column buildSongCard(
-      String imageLink, String title, String subTitle, bool newSong) {
+      String imageLink, String title, String subTitle, bool newSong, Albums albums) {
     return Column(
       children: [
         GestureDetector(
@@ -344,7 +352,7 @@ class _HomePageMainState extends State<HomePageMain> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => const MainCollapsingToolbar()));
+                    builder: (context) =>  AlbumDetailsPage(albumId: albums.id, album: albums)));
           },
           child: Column(
             children: [

@@ -72,6 +72,7 @@ dependencies:
   flutter_secure_storage: ^5.0.2
   jwt_decode: ^0.3.1
   multi_select_flutter: ^4.1.2
+  
 
 dev_dependencies:
   flutter_test:

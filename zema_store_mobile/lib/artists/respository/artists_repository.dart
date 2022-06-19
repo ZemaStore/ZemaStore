@@ -11,4 +11,8 @@ class ArtistsRepository {
   Future<List<Artist>> getArtists() async {
     return await provider.getArtists();
   }
+
+  Future<bool> addFollow(String artistProfileId) async {
+    return await provider.addFollow(artistProfileId);
+  }
 }

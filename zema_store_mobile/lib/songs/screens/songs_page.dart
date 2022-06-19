@@ -5,12 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tt/auth/data_provider/secure_storage.dart';
 import 'package:tt/extentsions.dart';
 import 'package:tt/songs/bloc/bloc.dart';
 import 'package:encrypt/encrypt.dart' as encrypt;
 import 'package:http/http.dart' as http;
 
+import '../../main.dart';
 import '../../player.dart';
 import '../entity/model.dart';
 
@@ -137,7 +139,10 @@ class _SongsPageState extends State<SongsPage> {
                       width: 10,
                     ),
                     IconButton(
-                        onPressed: () async  {
+
+                        onPressed:downloadedSongs!.contains(song.id)? (){
+                          print('fallen here');
+                        }: () async  {
                           setState(() {
                             clickedSong = song.id;
                           });
@@ -154,8 +159,11 @@ class _SongsPageState extends State<SongsPage> {
                             ? downloaded?const Icon(
                           Icons.file_download_done_outlined,
                           size: 40,
-                        ): CircularProgressIndicator()
-                            : const Icon(
+                        ): const CircularProgressIndicator(color: Colors.black,)
+                            : downloadedSongs!.contains(song.id) ? const Icon(
+                          Icons.file_download_done_outlined,
+                          size: 40,
+                        ): const Icon(
                                 Icons.download,
                                 size: 40,
                               ))
@@ -211,5 +219,8 @@ Future<String> download(String songID) async {
   String filePath2 = '$appDocumentsPath/${path.split("/")[3]}';
   File file2 = File(filePath2);
   await file2.writeAsBytes(decrypted);
+  SharedPreferences preferences = await SharedPreferences.getInstance();
+  downloadedSongs?.add(songID);
+  preferences.setStringList('downloadSongs', downloadedSongs!);
   return file2.path;
 }
