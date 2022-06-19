@@ -1,16 +1,16 @@
 import React, { useCallback, useState } from "react";
 import { Link } from "react-router-dom";
-import { useAppDispatch } from "../../app/hooks/redux_hooks";
-import { logout, logoutApi } from "../../app/store/features/auth/authSlice";
+import { useAppDispatch, useAppSelector } from "../../app/hooks/redux_hooks";
+import { authSelector, logout, logoutApi } from "../../app/store/features/auth/authSlice";
 export default function Navbar() {
   const [show, setShow] = useState<boolean>(false);
   const [profile, setProfile] = useState<boolean>(false);
-
-  const MenuHandler = (value: boolean) => {};
+  const { currentUser } = useAppSelector(authSelector)
+  const MenuHandler = (value: boolean) => { };
   const dispatch = useAppDispatch();
 
-  const handleLogout = useCallback(() => {
-    dispatch(logoutApi({}));
+  const handleLogout = useCallback(async () => {
+    await dispatch(logoutApi({}));
     window.location.reload();
   }, [dispatch]);
 
@@ -164,7 +164,9 @@ export default function Navbar() {
                         </ul>
                       )}
                       <div className="cursor-pointer flex items-center gap-x-5 text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-white transition duration-150 ease-in-out">
-                        <p className="text-bold">Nathaniel Hussein</p>
+                        <p className="text-bold">
+                          {currentUser && currentUser.email}
+                        </p>
                         <img
                           className="rounded-full h-10 w-10 object-cover"
                           src="https://tuk-cdn.s3.amazonaws.com/assets/components/horizontal_navigation/hn_2.png"
@@ -477,7 +479,8 @@ export default function Navbar() {
                             className="w-8 h-8 rounded-md"
                           />
                           <p className=" text-gray-800 hover:text-indigo-700 text-base leading-4 ml-2">
-                            Nathaniel Hussein
+                            {currentUser && currentUser.email}
+
                           </p>
                         </div>
                         <ul className="flex">

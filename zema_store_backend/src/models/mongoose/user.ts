@@ -3,6 +3,7 @@ import * as bcrypt from "bcryptjs";
 
 type otpType = {
   code: String;
+  expiresAt: Date;
   createdAt: Date;
 };
 
