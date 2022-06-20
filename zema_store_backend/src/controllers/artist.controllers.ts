@@ -156,7 +156,7 @@ const addArtist = async (req: Request, res: Response) => {
 
     const savedUser = await User.findById(user._id).populate("profileId");
 
-    // sendWelcomeEmail(email, firstName);
+    sendWelcomeEmail(email, firstName);
 
     return res
       .status(200)

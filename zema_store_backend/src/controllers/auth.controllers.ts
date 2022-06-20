@@ -93,7 +93,7 @@ const signUp = async (req: Request, res: Response, _next: NextFunction) => {
     userProfile.userId = savedUser._id;
     await userProfile.save();
 
-    // sendWelcomeEmail(email, firstName);
+    sendWelcomeEmail(email, firstName);
 
     const payload = {
       _id: user._id,
@@ -301,7 +301,7 @@ const forgotPassword = async (req: Request, res: Response) => {
 
     const profile = user.profileId;
 
-    // sendOtpCode(user.email.toString(), profile["firstName"], code.toString());
+    sendOtpCode(user.email.toString(), profile["firstName"], code.toString());
 
     res.status(200).send({
       success: true,

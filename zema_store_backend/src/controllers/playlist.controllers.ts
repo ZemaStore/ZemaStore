@@ -74,7 +74,7 @@ const getPopularPlaylist = async (req: Request, res: Response) => {
     // );
     const playlist = await Song.find({
       listenersCount: {
-        $gte: 1,
+        $gte: 0,
       },
     });
 
