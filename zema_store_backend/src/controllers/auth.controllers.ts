@@ -142,11 +142,11 @@ const signIn = async (req: Request, res: Response, _next: NextFunction) => {
         .send({ success: false, message: "Invalid credentials." });
     }
 
-    if (user.isActive === false) {
-      return res
-        .status(400)
-        .send({ success: false, message: "Your account is not active." });
-    }
+    // if (user.isActive === false) {
+    //   return res
+    //     .status(400)
+    //     .send({ success: false, message: "Your account is not active." });
+    // }
 
     const usersTokens = user.tokens;
 
