@@ -27,14 +27,13 @@ const imageFilter = (req, file, cb) => {
   if (!file.originalname.match(/\.(png|jpg|jpeg)$/)) {
     return cb(new Error("Please upload an  audio file!"));
   }
-
   cb(undefined, true);
 };
 
 const audioUploader = multer({
   storage,
   limits: {
-    fileSize: 10000000,
+    fileSize: 100000000,
   },
   fileFilter: audioFilter,
 });
@@ -42,7 +41,7 @@ const audioUploader = multer({
 const imageUploader = multer({
   storage,
   limits: {
-    fileSize: 10000000,
+    fileSize: 100000000,
   },
   fileFilter: imageFilter,
 });

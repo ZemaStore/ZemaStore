@@ -105,7 +105,6 @@ const AddEditSubscriptionModal = (props: Props) => {
                   <h1 className="text-gray-800 font-lg font-bold tracking-normal leading-tight mb-4">
                     Enter Subscriptions Details
                   </h1>
-                  {JSON.stringify(values)}
 
                   <label
                     htmlFor="title"

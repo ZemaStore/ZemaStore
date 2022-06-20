@@ -31,7 +31,7 @@ const DisplayingErrorMessagesSchema = Yup.object().shape({
 const ChangeProfile = (props: Props) => {
   // const [errorMessage, setErrorMessage] = useState(null);
 
-  const { currentUser, isLoading, errorMessage, error } = useAppSelector(authSelector)
+  const { currentUser, isLoading, errorMessage, error, isAuthenticated } = useAppSelector(authSelector)
   const dispatch = useAppDispatch()
 
   return (
@@ -57,6 +57,7 @@ const ChangeProfile = (props: Props) => {
                 }}
                 validationSchema={DisplayingErrorMessagesSchema}
                 onSubmit={async (values) => {
+                  console.log("values are ", currentUser, values)
                   try {
                     await dispatch(
                       updateUserProfileApi(
@@ -66,7 +67,7 @@ const ChangeProfile = (props: Props) => {
                         }
                       )
                     );
-                    if (!error && !errorMessage) {
+                    if (!error && errorMessage) {
                       notify.success("User profile updated successfully");
                     } else {
                       // notify.error(errorMessage);
@@ -77,6 +78,7 @@ const ChangeProfile = (props: Props) => {
 
                   } catch (error: any) {
                     // notify.error(errorMessage);
+                    console.log(error, " error")
                     setTimeout(async () => {
                       await dispatch(clearMessage())
                     }, 2000);
@@ -84,7 +86,10 @@ const ChangeProfile = (props: Props) => {
                 }}
               >
                 {({ errors, touched, isValidating, values }) => (
+
                   <Form>
+                    {JSON.stringify(errors)}
+                    {JSON.stringify(isLoading)}
                     <div className="mb-6">
                       <label
                         htmlFor="email"
@@ -197,7 +202,9 @@ const ChangeProfile = (props: Props) => {
                       <button
                         disabled={isLoading}
                         type="submit"
-                        className="flex cursor-not-allowed justify-center items-center w-full px-3 py-4 text-white bg-indigo-500 disabled:bg-indigo-300 rounded-md focus:bg-indigo-600 focus:outline-none"
+                        className={clsx(
+                          "flex  justify-center items-center w-full px-3 py-4 text-white bg-indigo-500 disabled:bg-indigo-300 rounded-md focus:bg-indigo-600 focus:outline-none"
+                          , isLoading ? "opacity-50 cursor-not-allowed" : "")}
                       >
                         {isLoading ? (
                           <>
@@ -234,7 +241,7 @@ const ChangeProfile = (props: Props) => {
                           className="p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800"
                           role="alert"
                         >
-                          <span className="font-medium">{error && errorMessage}</span>
+                          <span className="font-medium">{error || errorMessage}</span>
                           <p>
                             Change a few things up and try submitting again.
                           </p>
@@ -248,7 +255,7 @@ const ChangeProfile = (props: Props) => {
           </div>
         </div>
       </div>
-    </div>
+    </div >
   );
 };
 
