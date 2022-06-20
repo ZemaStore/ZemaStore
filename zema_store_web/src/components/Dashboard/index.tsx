@@ -137,7 +137,7 @@ const DashboardComponent = (props: Props) => {
           </div>
         </div>
       </div>
-      <div className="flex flex-col lg:flex-row space-x-4">
+      {/* <div className="flex flex-col lg:flex-row space-x-4">
         <div className="justify-between rounded-xl mt-4 p-4 bg-white shadow-lg">
           <h1 className="text-xl font-bold text-gray-800 mt-4">
             Today’s Status
@@ -176,7 +176,7 @@ const DashboardComponent = (props: Props) => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
     </div >
   );
 };

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/hooks/redux_hooks";
-import { getSongsApi } from "../../app/store/features/songs/songsSlice";
+import { deleteSongsApi, getSongsApi } from "../../app/store/features/songs/songsSlice";
 import Pagination from "../../common/Paginations";
 import AddEditSongModal from "../../components/Modals/AddEditSong";
 import AddSongModal from "../../components/Modals/AddEditSong";
@@ -22,7 +22,7 @@ function SongsPage(props: Props) {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
   const [selectedSong, setSelectedSong] = useState<Song | null>(null);
   const [shouldReload, setShouldReload] = useState(false);
-
+  const [isDeleting, setIsDeleting] = useState(false);
   const { meta } = useAppSelector((state) => state.artists);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const location = useLocation();
@@ -71,6 +71,13 @@ function SongsPage(props: Props) {
     }
   };
 
+  const onDeleteModal = async () => {
+    setIsDeleting(true)
+    await dispatch(deleteSongsApi(selectedSong?.id));
+    onCloseModal()
+    setIsDeleting(false)
+  };
+
   return (
     <main>
       <div className="min-h-[600px] my-10">
@@ -94,7 +101,7 @@ function SongsPage(props: Props) {
             deleteMessage="Delete Song"
             deleteDescription="Are you sure you want to delete?"
             buttonText="Delete"
-            onDelete={onCloseModal}
+            onDelete={onDeleteModal}
             onClose={onCloseModal}
           />
         )}

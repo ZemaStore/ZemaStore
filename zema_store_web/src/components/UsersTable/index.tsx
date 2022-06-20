@@ -169,9 +169,9 @@ const UsersTable = (props: Props) => {
                               {user.isActive ? "Block" : "Unblock"}
                             </p>
                           </div>
-                          <div className="text-xs w-full hover:bg-indigo-300 py-4 px-4 cursor-pointer hover:text-white">
+                          {/* <div className="text-xs w-full hover:bg-indigo-300 py-4 px-4 cursor-pointer hover:text-white">
                             <p>Delete</p>
-                          </div>
+                          </div> */}
                         </div>
                       )}
                     </td>
