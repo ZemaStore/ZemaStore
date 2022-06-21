@@ -40,7 +40,7 @@ export const getArtistsApi = createAsyncThunk<any, any>(
     try {
       const { data } = await ArtistsService.getArtists(
         payload.currentPage,
-        "createdAt%3Aasc"
+        "createdAt%3Adesc"
       );
       const res = data.artists.map((artist: any) => {
         const [fname, lname] = artist.profileId.fullName.split(" ");
