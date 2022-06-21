@@ -190,7 +190,6 @@ const AddEditEventModal = (props: Props) => {
           >
             {({ errors, touched, isValidating, setFieldValue, values }) => (
               <Form>
-                {JSON.stringify(values)}
                 <div className="relative py-8 px-5 md:px-10 bg-white shadow-md rounded border border-gray-400">
                   <h1 className="text-gray-800 font-lg font-bold tracking-normal leading-tight mb-4">
                     Enter Events Details
